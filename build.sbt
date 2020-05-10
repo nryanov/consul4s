@@ -5,6 +5,7 @@ lazy val sttpClientVersion = "2.1.1"
 lazy val kindProjectorVersion = "0.11.0"
 lazy val circeVersion = "0.13.0"
 lazy val json4sVersion = "3.6.8"
+lazy val enumeratumVersion = "1.6.0"
 lazy val slf4jApiVersion = "1.7.25"
 
 lazy val scalaTestVersion = "3.1.1"
@@ -51,6 +52,7 @@ lazy val core = project
     libraryDependencies ++= Seq(
       "eu.timepit" %% "refined" % refinedVersion,
       "com.softwaremill.sttp.client" %% "core" % sttpClientVersion,
+      "com.beachape" %% "enumeratum" % enumeratumVersion,
       "com.dimafeng" %% "testcontainers-scala" % testContainersVersion % Test,
       "ch.qos.logback" % "logback-classic" % logbackVersion % Test
     )
@@ -63,8 +65,7 @@ lazy val circe = project
   .settings(
     name := "consul4s-circe",
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client" %% "circe" % sttpClientVersion,
-      "io.circe" %% "circe-generic" % circeVersion
+      "com.softwaremill.sttp.client" %% "circe" % sttpClientVersion
     )
   )
 

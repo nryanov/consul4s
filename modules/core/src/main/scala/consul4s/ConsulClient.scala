@@ -1,7 +1,7 @@
 package consul4s
 
 import consul4s.api._
-import consul4s.model.KeyValue
+import consul4s.model.{KeyValue, NodeCheck, ServiceCheck, State}
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.numeric.NonNegative
 import sttp.client.{SttpBackend, _}
@@ -12,6 +12,8 @@ class ConsulClient[F[_]](url: String, sttpBackend: SttpBackend[F, Nothing, Nothi
   def kvStore(): KVStore[F] = this
 
   def status(): Status[F] = this
+
+  def health(): Health[F] = this
 
   override def get(key: String, dc: Option[String], ns: Option[String]): F[Response[Option[KeyValue]]] = {
     val dcParam = dc.map(v => s"dc=$v").getOrElse("")
@@ -140,6 +142,63 @@ class ConsulClient[F[_]](url: String, sttpBackend: SttpBackend[F, Nothing, Nothi
 
     val requestTemplate = basicRequest.get(uri"$url/status/peers?$params")
     val request = requestTemplate.copy(response = jsonDecoder.asStringListUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  override def nodeChecks(node: String, dc: Option[String], filter: Option[String], ns: Option[String]): F[Response[List[NodeCheck]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
+    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+    val params = List(dcParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/health/node/$node?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asNodeChecksUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  override def serviceChecks(
+    service: String,
+    dc: Option[String],
+    near: Option[String],
+    nodeMeta: Option[String],
+    filter: Option[String],
+    ns: Option[String]
+  ): F[Response[List[ServiceCheck]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val nearParam = near.map(v => s"near=$v").getOrElse("")
+    val nodeMetaParam = nodeMeta.map(v => s"node-meta=$v").getOrElse("")
+    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
+    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+    val params = List(dcParam, nearParam, nodeMetaParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/health/checks/$service?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asServiceChecksUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  override def checksInState(
+    state: State,
+    dc: Option[String],
+    near: Option[String],
+    nodeMeta: Option[String],
+    filter: Option[String],
+    ns: Option[String]
+  ): F[Response[List[ServiceCheck]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val nearParam = near.map(v => s"near=$v").getOrElse("")
+    val nodeMetaParam = nodeMeta.map(v => s"node-meta=$v").getOrElse("")
+    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
+    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+    val params = List(dcParam, nearParam, nodeMetaParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/health/state/${state.value}?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asServiceChecksUnsafe)
 
     val response = sttpBackend.send(request)
     response
