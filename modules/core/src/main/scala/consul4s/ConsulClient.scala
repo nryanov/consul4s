@@ -8,7 +8,10 @@ import sttp.client.{SttpBackend, _}
 
 class ConsulClient[F[_]](url: String, sttpBackend: SttpBackend[F, Nothing, NothingT])(implicit jsonDecoder: JsonDecoder)
     extends ConsulApi[F] {
+
   def kvStore(): KVStore[F] = this
+
+  def status(): Status[F] = this
 
   override def get(key: String, dc: Option[String], ns: Option[String]): F[Response[Option[KeyValue]]] = {
     val dcParam = dc.map(v => s"dc=$v").getOrElse("")
@@ -115,6 +118,28 @@ class ConsulClient[F[_]](url: String, sttpBackend: SttpBackend[F, Nothing, Nothi
 
     val requestTemplate = basicRequest.delete(uri"$url/kv/$key?$params")
     val request = requestTemplate.copy(response = jsonDecoder.asBooleanUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  override def raftLeader(dc: Option[String]): F[Response[String]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val params = List(dcParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/status/leader?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asStringUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  override def raftPeers(dc: Option[String]): F[Response[List[String]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val params = List(dcParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/status/peers?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asStringListUnsafe)
 
     val response = sttpBackend.send(request)
     response
