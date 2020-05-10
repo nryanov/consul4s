@@ -11,20 +11,31 @@ trait KVStore[F[_]] {
     key: String,
     // query parameters
     dc: Option[String] = None,
-    recurse: Boolean = false,
-    keys: Boolean = false,
-    separator: Option[String] = None,
     ns: Option[String] = None
   ): F[Response[Option[KeyValue]]]
 
-  // GET /kv/:key
+  // GET /kv/:key?recurse
+  def getRecurse(
+    key: String,
+    // query parameters
+    dc: Option[String] = None,
+    ns: Option[String] = None
+  ): F[Response[Option[List[KeyValue]]]]
+
+  // GET /kv/:key?keys
+  def getKeys(
+    key: String,
+    // query parameters
+    dc: Option[String] = None,
+    separator: Option[String] = None,
+    ns: Option[String] = None
+  ): F[Response[Option[List[String]]]]
+
+  // GET /kv/:key?raw
   def getRaw(
     key: String,
     // query parameters
     dc: Option[String] = None,
-    recurse: Boolean = false,
-    keys: Boolean = false,
-    separator: Option[String] = None,
     ns: Option[String] = None
   ): F[Response[Option[String]]]
 
@@ -44,7 +55,13 @@ trait KVStore[F[_]] {
   // DELETE /kv/:key
   def delete(
     key: String,
-    recurse: Boolean = false,
+    cas: Option[Int Refined NonNegative] = None,
+    ns: Option[String] = None
+  ): F[Response[Boolean]]
+
+  // DELETE /kv/:key?recurse
+  def deleteRecurse(
+    key: String,
     cas: Option[Int Refined NonNegative] = None,
     ns: Option[String] = None
   ): F[Response[Boolean]]

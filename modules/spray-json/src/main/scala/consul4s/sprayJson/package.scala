@@ -13,12 +13,16 @@ package object sprayJson {
   import JsonProtocol._
 
   implicit val sprayJsonDecoder = new JsonDecoder {
-    override def asBoolean: ResponseAs[Boolean, Nothing] = asJsonAlwaysUnsafe[Boolean]
+    override def asBooleanUnsafe: ResponseAs[Boolean, Nothing] = asJsonAlwaysUnsafe[Boolean]
 
-    override def asKeyValueOptionList: ResponseAs[Option[List[KeyValue]], Nothing] = asJsonAlwaysUnsafe[Option[List[KeyValue]]]
+    override def asKeyValuesOption: ResponseAs[Option[List[KeyValue]], Nothing] = asJsonAlways[List[KeyValue]].map(_.toOption)
 
-    override def asString: ResponseAs[String, Nothing] = asJsonAlwaysUnsafe[String]
+    override def asStringUnsafe: ResponseAs[String, Nothing] = asJsonAlwaysUnsafe[String]
 
-    override def asStringList: ResponseAs[List[String], Nothing] = asJsonAlwaysUnsafe[List[String]]
+    override def asStringListUnsafe: ResponseAs[List[String], Nothing] = asJsonAlwaysUnsafe[List[String]]
+
+    override def asStringOption: ResponseAs[Option[String], Nothing] = asJsonAlways[String].map(_.toOption)
+
+    override def asStringListOption: ResponseAs[Option[List[String]], Nothing] = asJsonAlways[List[String]].map(_.toOption)
   }
 }

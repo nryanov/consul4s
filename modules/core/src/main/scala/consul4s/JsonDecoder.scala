@@ -4,12 +4,16 @@ import sttp.client._
 import consul4s.model.KeyValue
 
 trait JsonDecoder {
-  def asBoolean: ResponseAs[Boolean, Nothing]
+  def asBooleanUnsafe: ResponseAs[Boolean, Nothing]
 
-  def asKeyValueOptionList: ResponseAs[Option[List[KeyValue]], Nothing]
+  def asKeyValuesOption: ResponseAs[Option[List[KeyValue]], Nothing]
 
-  def asString: ResponseAs[String, Nothing]
+  def asStringUnsafe: ResponseAs[String, Nothing]
 
-  def asStringList: ResponseAs[List[String], Nothing]
+  def asStringListUnsafe: ResponseAs[List[String], Nothing]
+
+  def asStringOption: ResponseAs[Option[String], Nothing]
+
+  def asStringListOption: ResponseAs[Option[List[String]], Nothing]
 
 }

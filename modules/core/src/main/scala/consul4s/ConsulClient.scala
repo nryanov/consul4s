@@ -10,44 +10,56 @@ class ConsulClient[F[_]](url: String, sttpBackend: SttpBackend[F, Nothing, Nothi
     extends ConsulApi[F] {
   def kvStore(): KVStore[F] = this
 
-  override def get(
-    key: String,
-    dc: Option[String],
-    recurse: Boolean,
-    keys: Boolean,
-    separator: Option[String],
-    ns: Option[String]
-  ): F[Response[Option[KeyValue]]] = {
+  override def get(key: String, dc: Option[String], ns: Option[String]): F[Response[Option[KeyValue]]] = {
     val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-    val separatorParam = separator.map(v => s"separator=$v").getOrElse("")
     val nsParam = ns.map(v => s"ns=$v").getOrElse("")
-    val recurseParam = if (recurse) "recurse" else ""
-    val keysParam = if (keys) "keys" else ""
 
-    val params = List(recurseParam, keysParam, dcParam, separatorParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
+    val params = List(dcParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
 
     val requestTemplate = basicRequest.get(uri"$url/kv/$key?$params")
-    val request = requestTemplate.copy(response = jsonDecoder.asKeyValueOptionList.map(_.flatMap(_.headOption)))
+    val request = requestTemplate.copy(response = jsonDecoder.asKeyValuesOption.map(_.flatMap(_.headOption)))
 
     val response = sttpBackend.send(request)
     response
   }
 
-  override def getRaw(
+  override def getRecurse(key: String, dc: Option[String], ns: Option[String]): F[Response[Option[List[KeyValue]]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+
+    val params = List("recurse", dcParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/kv/$key?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asKeyValuesOption)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  override def getKeys(
     key: String,
     dc: Option[String],
-    recurse: Boolean,
-    keys: Boolean,
     separator: Option[String],
     ns: Option[String]
-  ): F[Response[Option[String]]] = {
+  ): F[Response[Option[List[String]]]] = {
     val dcParam = dc.map(v => s"dc=$v").getOrElse("")
     val separatorParam = separator.map(v => s"separator=$v").getOrElse("")
     val nsParam = ns.map(v => s"ns=$v").getOrElse("")
-    val recurseParam = if (recurse) "recurse" else ""
-    val keysParam = if (keys) "keys" else ""
 
-    val params = List("raw", recurseParam, keysParam, dcParam, separatorParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
+    val params = List("keys", dcParam, separatorParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/kv/$key?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asStringListOption)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  override def getRaw(key: String, dc: Option[String], ns: Option[String]): F[Response[Option[String]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+
+    val params = List("raw", dcParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
 
     val requestTemplate = basicRequest.get(uri"$url/kv/$key?$params")
     val request = requestTemplate.copy(response = asString.map(_.toOption))
@@ -76,21 +88,33 @@ class ConsulClient[F[_]](url: String, sttpBackend: SttpBackend[F, Nothing, Nothi
     val params = List(dcParam, flagsParam, casParam, acquireParam, releaseParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
 
     val requestTemplate = basicRequest.put(uri"$url/kv/$key?$params").body(value)
-    val request = requestTemplate.copy(response = jsonDecoder.asBoolean)
+    val request = requestTemplate.copy(response = jsonDecoder.asBooleanUnsafe)
 
     val response = sttpBackend.send(request)
     response
   }
 
-  override def delete(key: String, recurse: Boolean, cas: Option[Refined[Int, NonNegative]], ns: Option[String]): F[Response[Boolean]] = {
+  override def delete(key: String, cas: Option[Refined[Int, NonNegative]], ns: Option[String]): F[Response[Boolean]] = {
     val casParam = cas.map(v => s"cas=$v").getOrElse("")
     val nsParam = ns.map(v => s"ns=$v").getOrElse("")
-    val recurseParam = if (recurse) "recurse" else ""
 
-    val params = List(recurseParam, casParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
+    val params = List(casParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
 
     val requestTemplate = basicRequest.delete(uri"$url/kv/$key?$params")
-    val request = requestTemplate.copy(response = jsonDecoder.asBoolean)
+    val request = requestTemplate.copy(response = jsonDecoder.asBooleanUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  override def deleteRecurse(key: String, cas: Option[Refined[Int, NonNegative]], ns: Option[String]): F[Response[Boolean]] = {
+    val casParam = cas.map(v => s"cas=$v").getOrElse("")
+    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+
+    val params = List("recurse", casParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.delete(uri"$url/kv/$key?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asBooleanUnsafe)
 
     val response = sttpBackend.send(request)
     response

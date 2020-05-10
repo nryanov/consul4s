@@ -1,10 +1,11 @@
 package consul4s.api
 
 import sttp.client._
-import com.dimafeng.testcontainers.scalatest.TestContainerForAll
+import com.dimafeng.testcontainers.scalatest.TestContainerForEach
+import consul4s.model.KeyValue
 import consul4s.{BaseSpec, ConsulClient, ConsulContainer, JsonDecoder}
 
-abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder) extends BaseSpec with TestContainerForAll {
+abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder) extends BaseSpec with TestContainerForEach {
   override val containerDef: ConsulContainer.Def = ConsulContainer.Def()
 
   "kv store" should {
@@ -19,6 +20,26 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder) extends BaseSp
       assert(getRaw.contains("value"))
       assert(get.isDefined)
       assertResult("value")(get.get.value)
+    }
+
+    "put and get keys" in withContainers { consul =>
+      val client = createClient(consul)
+
+      client.createOrUpdate("key1", "value1").body
+      client.createOrUpdate("key2", "value2").body
+      val getKeys: Option[List[String]] = client.getKeys("key").body
+
+      assert(getKeys.contains(List("key1", "key2")))
+    }
+
+    "put and get multiple values" in withContainers { consul =>
+      val client = createClient(consul)
+
+      client.createOrUpdate("key1", "value1").body
+      client.createOrUpdate("key2", "value2").body
+      val getRecurse: Option[List[KeyValue]] = client.getRecurse("key").body
+
+      assert(getRecurse.map(_.map(_.value)).contains(List("value1", "value2")))
     }
 
     "get not existing key" in withContainers { consul =>
@@ -41,6 +62,21 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder) extends BaseSp
       assert(create)
       assert(delete)
       assert(get.isEmpty)
+    }
+
+    "put and delete recurse" in withContainers { consul =>
+      val client = createClient(consul)
+
+      client.createOrUpdate("key1", "value1").body
+      client.createOrUpdate("key2", "value2").body
+      client.createOrUpdate("key3", "value3").body
+      val getBeforeDelete = client.getRecurse("key").body
+
+      client.deleteRecurse("key").body
+      val getAfterDelete = client.get("key").body
+
+      assert(getBeforeDelete.map(_.map(_.value)).contains(List("value1", "value2", "value3")))
+      assert(getAfterDelete.isEmpty)
     }
   }
 
