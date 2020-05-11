@@ -34,7 +34,6 @@ package object json4s {
             {
               case json: JObject =>
                 NodeCheck(
-                  (json \ "ID").extract[String],
                   (json \ "Node").extract[String],
                   (json \ "CheckID").extract[String],
                   (json \ "Name").extract[String],
@@ -96,12 +95,54 @@ package object json4s {
           )
       )
 
+  class ServiceInfoSerializer
+      extends CustomSerializer[ServiceInfo](
+        implicit format =>
+          (
+            {
+              case json: JObject =>
+                ServiceInfo(
+                  (json \ "ID").extract[String],
+                  (json \ "Service").extract[String],
+                  (json \ "Tags").extract[List[String]],
+                  (json \ "Address").extract[String],
+                  (json \ "Meta").extract[Map[String, String]],
+                  (json \ "Port").extract[Int],
+                  (json \ "Weights").extract[Map[String, Int]],
+                  (json \ "EnableTagOverride").extract[Boolean],
+                  (json \ "Proxy").extract[Map[String, Map[String, String]]],
+                  (json \ "Connect").extract[Map[String, String]]
+                )
+            }, {
+              case _: ServiceInfo => JObject()
+            }
+          )
+      )
+
+  class NodeForServiceSerializer
+      extends CustomSerializer[NodeForService](
+        implicit format =>
+          (
+            {
+              case json: JObject =>
+                NodeForService(
+                  (json \ "Node").extract[NodeInfo],
+                  (json \ "Service").extract[ServiceInfo],
+                  (json \ "Checks").extract[List[ServiceCheck]]
+                )
+            }, {
+              case _: NodeForService => JObject()
+            }
+          )
+      )
+
   private implicit val serialization = org.json4s.jackson.Serialization
   implicit val formats = Serialization.formats(NoTypeHints) +
     new KeyValueSerializer +
     new NodeCheckSerializer +
     new ServiceCheckSerializer +
-    new NodeInfoSerializer
+    new NodeInfoSerializer +
+    new ServiceInfoSerializer
 
   implicit val json4sJsonDecoder = new JsonDecoder {
     override def asBooleanUnsafe: ResponseAs[Boolean, Nothing] = asJsonAlwaysUnsafe[Boolean]
@@ -137,12 +178,13 @@ package object json4s {
 
     override def asMapMultipleValuesUnsafe: ResponseAs[Map[String, List[String]], Nothing] = asJsonAlwaysUnsafe[Map[String, List[String]]]
 
-    override def asServicesInfoOption: ResponseAs[Option[List[ServiceInfo]], Nothing] = ???
+    override def asServicesInfoOption: ResponseAs[Option[List[ServiceInfo]], Nothing] = asJsonAlways[List[ServiceInfo]].map(_.toOption)
 
-    override def asServicesInfoUnsafe: ResponseAs[List[ServiceInfo], Nothing] = ???
+    override def asServicesInfoUnsafe: ResponseAs[List[ServiceInfo], Nothing] = asJsonAlwaysUnsafe[List[ServiceInfo]]
 
-    override def asNodesForServiceOption: ResponseAs[Option[List[NodeForService]], Nothing] = ???
+    override def asNodesForServiceOption: ResponseAs[Option[List[NodeForService]], Nothing] =
+      asJsonAlways[List[NodeForService]].map(_.toOption)
 
-    override def asNodesForServiceUnsafe: ResponseAs[List[NodeForService], Nothing] = ???
+    override def asNodesForServiceUnsafe: ResponseAs[List[NodeForService], Nothing] = asJsonAlwaysUnsafe[List[NodeForService]]
   }
 }

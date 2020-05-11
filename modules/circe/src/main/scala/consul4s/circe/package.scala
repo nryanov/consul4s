@@ -21,7 +21,6 @@ package object circe {
   private implicit val nodeCheckDecoder: Decoder[NodeCheck] = new Decoder[NodeCheck] {
     final def apply(c: HCursor): Decoder.Result[NodeCheck] =
       for {
-        id <- c.downField("ID").as[String]
         node <- c.downField("Node").as[String]
         checkId <- c.downField("CheckID").as[String]
         name <- c.downField("Name").as[String]
@@ -32,7 +31,7 @@ package object circe {
         serviceName <- c.downField("ServiceName").as[String]
         serviceTags <- c.downField("ServiceTags").as[List[String]]
         namespace <- c.downField("Namespace").as[Option[String]]
-      } yield NodeCheck(id, node, checkId, name, State.withValue(status), notes, output, serviceId, serviceName, serviceTags, namespace)
+      } yield NodeCheck(node, checkId, name, State.withValue(status), notes, output, serviceId, serviceName, serviceTags, namespace)
   }
 
   private implicit val serviceCheckDecoder: Decoder[ServiceCheck] = new Decoder[ServiceCheck] {
@@ -61,6 +60,31 @@ package object circe {
         taggedAddresses <- c.downField("TaggedAddresses").as[Map[String, String]]
         meta <- c.downField("Meta").as[Map[String, String]]
       } yield NodeInfo(id, address, node, datacenter, taggedAddresses, meta)
+  }
+
+  private implicit val serviceInfoDecoder: Decoder[ServiceInfo] = new Decoder[ServiceInfo] {
+    final def apply(c: HCursor): Decoder.Result[ServiceInfo] =
+      for {
+        id <- c.downField("ID").as[String]
+        service <- c.downField("Service").as[String]
+        tags <- c.downField("Tags").as[List[String]]
+        address <- c.downField("Address").as[String]
+        meta <- c.downField("Meta").as[Map[String, String]]
+        port <- c.downField("Port").as[Int]
+        weights <- c.downField("Weights").as[Map[String, Int]]
+        enableTagOverride <- c.downField("EnableTagOverride").as[Boolean]
+        proxy <- c.downField("Proxy").as[Map[String, Map[String, String]]]
+        connect <- c.downField("Connect").as[Map[String, String]]
+      } yield ServiceInfo(id, service, tags, address, meta, port, weights, enableTagOverride, proxy, connect)
+  }
+
+  private implicit val nodeForServiceDecoder: Decoder[NodeForService] = new Decoder[NodeForService] {
+    final def apply(c: HCursor): Decoder.Result[NodeForService] =
+      for {
+        node <- c.downField("Node").as[NodeInfo]
+        service <- c.downField("Service").as[ServiceInfo]
+        checks <- c.downField("Checks").as[List[ServiceCheck]]
+      } yield NodeForService(node, service, checks)
   }
 
   implicit val circeJsonDecoder = new JsonDecoder {
@@ -97,12 +121,13 @@ package object circe {
 
     override def asMapMultipleValuesUnsafe: ResponseAs[Map[String, List[String]], Nothing] = asJsonAlwaysUnsafe[Map[String, List[String]]]
 
-    override def asServicesInfoOption: ResponseAs[Option[List[ServiceInfo]], Nothing] = ???
+    override def asServicesInfoOption: ResponseAs[Option[List[ServiceInfo]], Nothing] = asJsonAlways[List[ServiceInfo]].map(_.toOption)
 
-    override def asServicesInfoUnsafe: ResponseAs[List[ServiceInfo], Nothing] = ???
+    override def asServicesInfoUnsafe: ResponseAs[List[ServiceInfo], Nothing] = asJsonAlwaysUnsafe[List[ServiceInfo]]
 
-    override def asNodesForServiceOption: ResponseAs[Option[List[NodeForService]], Nothing] = ???
+    override def asNodesForServiceOption: ResponseAs[Option[List[NodeForService]], Nothing] =
+      asJsonAlways[List[NodeForService]].map(_.toOption)
 
-    override def asNodesForServiceUnsafe: ResponseAs[List[NodeForService], Nothing] = ???
+    override def asNodesForServiceUnsafe: ResponseAs[List[NodeForService], Nothing] = asJsonAlwaysUnsafe[List[NodeForService]]
   }
 }

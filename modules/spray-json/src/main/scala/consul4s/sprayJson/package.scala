@@ -19,7 +19,6 @@ package object sprayJson {
     implicit val keyValueFormat = jsonFormat(KeyValue.apply, "CreateIndex", "ModifyIndex", "LockIndex", "Key", "Value", "Flags")
     implicit val nodeCheckFormat = jsonFormat(
       NodeCheck.apply,
-      "ID",
       "Node",
       "CheckID",
       "Name",
@@ -52,6 +51,25 @@ package object sprayJson {
       "Datacenter",
       "TaggedAddresses",
       "Meta"
+    )
+    implicit val serviceInfoFormat = jsonFormat(
+      ServiceInfo.apply,
+      "ID",
+      "Service",
+      "Tags",
+      "Address",
+      "Meta",
+      "Port",
+      "Weights",
+      "EnableTagOverride",
+      "Proxy",
+      "Connect"
+    )
+    implicit val nodeForServiceFormat = jsonFormat(
+      NodeForService.apply,
+      "Node",
+      "Service",
+      "Checks"
     )
   }
 
@@ -91,12 +109,13 @@ package object sprayJson {
 
     override def asMapMultipleValuesUnsafe: ResponseAs[Map[String, List[String]], Nothing] = asJsonAlwaysUnsafe[Map[String, List[String]]]
 
-    override def asServicesInfoOption: ResponseAs[Option[List[ServiceInfo]], Nothing] = ???
+    override def asServicesInfoOption: ResponseAs[Option[List[ServiceInfo]], Nothing] = asJsonAlways[List[ServiceInfo]].map(_.toOption)
 
-    override def asServicesInfoUnsafe: ResponseAs[List[ServiceInfo], Nothing] = ???
+    override def asServicesInfoUnsafe: ResponseAs[List[ServiceInfo], Nothing] = asJsonAlwaysUnsafe[List[ServiceInfo]]
 
-    override def asNodesForServiceOption: ResponseAs[Option[List[NodeForService]], Nothing] = ???
+    override def asNodesForServiceOption: ResponseAs[Option[List[NodeForService]], Nothing] =
+      asJsonAlways[List[NodeForService]].map(_.toOption)
 
-    override def asNodesForServiceUnsafe: ResponseAs[List[NodeForService], Nothing] = ???
+    override def asNodesForServiceUnsafe: ResponseAs[List[NodeForService], Nothing] = asJsonAlwaysUnsafe[List[NodeForService]]
   }
 }

@@ -1,7 +1,23 @@
 package consul4s.model
 
+/*
+Sample response:
+    {
+        "Node": "f2c0eb04d9df",
+        "CheckID": "serfHealth",
+        "Name": "Serf Health Status",
+        "Status": "passing",
+        "Notes": "",
+        "Output": "Agent alive and reachable",
+        "ServiceID": "",
+        "ServiceName": "",
+        "ServiceTags": [],
+        // todo
+        "Type": "",
+        "Definition": {}
+    }
+ */
 final case class NodeCheck(
-  id: String,
   node: String,
   checkId: String,
   name: String,

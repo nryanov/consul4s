@@ -4,7 +4,6 @@ import com.dimafeng.testcontainers.scalatest.TestContainerForAll
 import consul4s.model.State
 import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder}
 
-// todo: use catalog api to get nodes/services
 abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder) extends ConsulSpec with TestContainerForAll {
   override val containerDef: ConsulContainer.Def = ConsulContainer.Def()
 
@@ -12,15 +11,18 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder) extends ConsulS
     "return node checks" in withContainers { consul =>
       val client = createClient(consul)
 
-      val result = client.nodeChecks("node").body
+      val node = client.nodes().body.head
+      val result = client.nodeChecks(node.node).body
 
-      assert(true)
+      assertResult(State.Passing)(result.head.status)
     }
 
+    // todo: register service and get check
     "return service checks" in withContainers { consul =>
       val client = createClient(consul)
 
-      val result = client.serviceChecks("service").body
+      val service = client.services().body
+      val result = client.serviceChecks(service.head._1).body
 
       assert(true)
     }
@@ -30,7 +32,25 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder) extends ConsulS
 
       val result = client.checksInState(State.Passing).body
 
-      assert(true)
+      assertResult(State.Passing)(result.head.status)
+    }
+
+    "return nodes for service" in withContainers { consul =>
+      val client = createClient(consul)
+
+      val service = client.services().body
+      val result = client.nodesForService(service.head._1).body
+
+      assert(result.length == 1)
+    }
+
+    "return nodes for connect capable service" in withContainers { consul =>
+      val client = createClient(consul)
+
+      val service = client.services().body
+      val result = client.nodesForConnectCapableService(service.head._1).body
+
+      assert(result.isEmpty)
     }
   }
 }
