@@ -1,7 +1,7 @@
 package consul4s
 
 import sttp.client._
-import consul4s.model.{KeyValue, NodeCheck, ServiceCheck}
+import consul4s.model.{KeyValue, NodeCheck, NodeInfo, ServiceCheck}
 
 trait JsonDecoder {
   def asBooleanUnsafe: ResponseAs[Boolean, Nothing]
@@ -24,4 +24,15 @@ trait JsonDecoder {
 
   def asStringListOption: ResponseAs[Option[List[String]], Nothing]
 
+  def asNodeInfosOption: ResponseAs[Option[List[NodeInfo]], Nothing]
+
+  def asNodeInfosUnsafe: ResponseAs[List[NodeInfo], Nothing]
+
+  def asMapOption: ResponseAs[Option[Map[String, String]], Nothing]
+
+  def asMapUnsafe: ResponseAs[Map[String, String], Nothing]
+
+  def asMapMultipleValuesOption: ResponseAs[Option[Map[String, List[String]]], Nothing]
+
+  def asMapMultipleValuesUnsafe: ResponseAs[Map[String, List[String]], Nothing]
 }

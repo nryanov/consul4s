@@ -1,6 +1,6 @@
 package consul4s
 
-import consul4s.model.{KeyValue, NodeCheck, ServiceCheck, State}
+import consul4s.model.{KeyValue, NodeCheck, NodeInfo, ServiceCheck, State}
 import sttp.client.ResponseAs
 import sttp.client.circe._
 import io.circe._
@@ -51,6 +51,18 @@ package object circe {
       } yield ServiceCheck(node, checkId, name, State.withValue(status), notes, output, serviceId, serviceName, serviceTags, namespace)
   }
 
+  private implicit val nodeInfoDecoder: Decoder[NodeInfo] = new Decoder[NodeInfo] {
+    final def apply(c: HCursor): Decoder.Result[NodeInfo] =
+      for {
+        id <- c.downField("ID").as[String]
+        address <- c.downField("Node").as[String]
+        node <- c.downField("Address").as[String]
+        datacenter <- c.downField("Datacenter").as[String]
+        taggedAddresses <- c.downField("TaggedAddresses").as[Map[String, String]]
+        meta <- c.downField("Meta").as[Map[String, String]]
+      } yield NodeInfo(id, address, node, datacenter, taggedAddresses, meta)
+  }
+
   implicit val circeJsonDecoder = new JsonDecoder {
     override def asBooleanUnsafe: ResponseAs[Boolean, Nothing] = asJsonAlwaysUnsafe[Boolean]
 
@@ -71,5 +83,18 @@ package object circe {
     override def asStringOption: ResponseAs[Option[String], Nothing] = asJsonAlways[String].map(_.toOption)
 
     override def asStringListOption: ResponseAs[Option[List[String]], Nothing] = asJsonAlways[List[String]].map(_.toOption)
+
+    override def asNodeInfosOption: ResponseAs[Option[List[NodeInfo]], Nothing] = asJsonAlways[List[NodeInfo]].map(_.toOption)
+
+    override def asNodeInfosUnsafe: ResponseAs[List[NodeInfo], Nothing] = asJsonAlwaysUnsafe[List[NodeInfo]]
+
+    override def asMapOption: ResponseAs[Option[Map[String, String]], Nothing] = asJsonAlways[Map[String, String]].map(_.toOption)
+
+    override def asMapUnsafe: ResponseAs[Map[String, String], Nothing] = asJsonAlwaysUnsafe[Map[String, String]]
+
+    override def asMapMultipleValuesOption: ResponseAs[Option[Map[String, List[String]]], Nothing] =
+      asJsonAlways[Map[String, List[String]]].map(_.toOption)
+
+    override def asMapMultipleValuesUnsafe: ResponseAs[Map[String, List[String]], Nothing] = asJsonAlwaysUnsafe[Map[String, List[String]]]
   }
 }

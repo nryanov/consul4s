@@ -2,11 +2,10 @@ package consul4s.api
 
 import com.dimafeng.testcontainers.scalatest.TestContainerForAll
 import consul4s.model.State
-import consul4s.{BaseSpec, ConsulClient, ConsulContainer, JsonDecoder}
-import sttp.client.{HttpURLConnectionBackend, Identity}
+import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder}
 
 // todo: use catalog api to get nodes/services
-abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder) extends BaseSpec with TestContainerForAll {
+abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder) extends ConsulSpec with TestContainerForAll {
   override val containerDef: ConsulContainer.Def = ConsulContainer.Def()
 
   "health" should {
@@ -33,12 +32,5 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder) extends BaseSpe
 
       assert(true)
     }
-  }
-
-  private def createClient(consul: ConsulContainer): Health[Identity] = {
-    val backend = HttpURLConnectionBackend()
-    val client = ConsulClient(s"http://${consul.containerIpAddress}:${consul.mappedPort(8500)}/v1", backend)
-
-    client.health()
   }
 }

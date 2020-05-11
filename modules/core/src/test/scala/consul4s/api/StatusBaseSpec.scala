@@ -1,10 +1,9 @@
 package consul4s.api
 
 import com.dimafeng.testcontainers.scalatest.TestContainerForAll
-import consul4s.{BaseSpec, ConsulClient, ConsulContainer, JsonDecoder}
-import sttp.client.{HttpURLConnectionBackend, Identity}
+import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder}
 
-abstract class StatusBaseSpec(implicit jsonDecoder: JsonDecoder) extends BaseSpec with TestContainerForAll {
+abstract class StatusBaseSpec(implicit jsonDecoder: JsonDecoder) extends ConsulSpec with TestContainerForAll {
   override val containerDef: ConsulContainer.Def = ConsulContainer.Def()
 
   "status" should {
@@ -23,12 +22,5 @@ abstract class StatusBaseSpec(implicit jsonDecoder: JsonDecoder) extends BaseSpe
 
       assertResult(List("127.0.0.1:8300"))(peers)
     }
-  }
-
-  private def createClient(consul: ConsulContainer): Status[Identity] = {
-    val backend = HttpURLConnectionBackend()
-    val client = ConsulClient(s"http://${consul.containerIpAddress}:${consul.mappedPort(8500)}/v1", backend)
-
-    client.status()
   }
 }

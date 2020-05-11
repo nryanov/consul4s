@@ -1,19 +1,13 @@
 package consul4s
 
 import consul4s.api._
-import consul4s.model.{KeyValue, NodeCheck, ServiceCheck, State}
+import consul4s.model.{KeyValue, NodeCheck, NodeInfo, ServiceCheck, State}
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.numeric.NonNegative
 import sttp.client.{SttpBackend, _}
 
 class ConsulClient[F[_]](url: String, sttpBackend: SttpBackend[F, Nothing, NothingT])(implicit jsonDecoder: JsonDecoder)
     extends ConsulApi[F] {
-
-  def kvStore(): KVStore[F] = this
-
-  def status(): Status[F] = this
-
-  def health(): Health[F] = this
 
   override def get(key: String, dc: Option[String], ns: Option[String]): F[Response[Option[KeyValue]]] = {
     val dcParam = dc.map(v => s"dc=$v").getOrElse("")
@@ -199,6 +193,46 @@ class ConsulClient[F[_]](url: String, sttpBackend: SttpBackend[F, Nothing, Nothi
 
     val requestTemplate = basicRequest.get(uri"$url/health/state/${state.value}?$params")
     val request = requestTemplate.copy(response = jsonDecoder.asServiceChecksUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  override def datacenters(): F[Response[List[String]]] = {
+    val requestTemplate = basicRequest.get(uri"$url/catalog/datacenters")
+    val request = requestTemplate.copy(response = jsonDecoder.asStringListUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  override def nodes(
+    dc: Option[String],
+    near: Option[String],
+    nodeMeta: Option[String],
+    filter: Option[String]
+  ): F[Response[List[NodeInfo]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val nearParam = near.map(v => s"near=$v").getOrElse("")
+    val nodeMetaParam = nodeMeta.map(v => s"node-meta=$v").getOrElse("")
+    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
+    val params = List(dcParam, nearParam, nodeMetaParam, filterParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/catalog/nodes?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asNodeInfosUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  override def services(dc: Option[String], nodeMeta: Option[String], ns: Option[String]): F[Response[Map[String, List[String]]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val nodeMetaParam = nodeMeta.map(v => s"node-meta=$v").getOrElse("")
+    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+    val params = List(dcParam, nodeMetaParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/catalog/services?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asMapMultipleValuesUnsafe)
 
     val response = sttpBackend.send(request)
     response

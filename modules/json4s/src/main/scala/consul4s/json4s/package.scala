@@ -1,6 +1,6 @@
 package consul4s
 
-import consul4s.model.{KeyValue, NodeCheck, ServiceCheck, State}
+import consul4s.model.{KeyValue, NodeCheck, NodeInfo, ServiceCheck, State}
 import sttp.client.ResponseAs
 import sttp.client.json4s._
 import org.json4s._
@@ -9,19 +9,18 @@ import org.json4s.native.Serialization
 package object json4s {
   class KeyValueSerializer
       extends CustomSerializer[KeyValue](
-        format =>
+        implicit format =>
           (
             {
-              case JObject(
-                  JField("CreateIndex", JLong(f1)) ::
-                    JField("ModifyIndex", JLong(f2)) ::
-                    JField("LockIndex", JLong(f3)) ::
-                    JField("Key", JString(f4)) ::
-                    JField("Value", JString(f5)) ::
-                    JField("Flags", JInt(f6)) ::
-                    Nil
-                  ) =>
-                KeyValue(f1, f2, f3, f4, f5, f6.intValue)
+              case json: JObject =>
+                KeyValue(
+                  (json \ "CreateIndex").extract[Long],
+                  (json \ "ModifyIndex").extract[Long],
+                  (json \ "LockIndex").extract[Long],
+                  (json \ "Key").extract[String],
+                  (json \ "Value").extract[String],
+                  (json \ "Flags").extract[Int]
+                )
             }, {
               case _: KeyValue => JObject()
             }
@@ -30,40 +29,22 @@ package object json4s {
 
   class NodeCheckSerializer
       extends CustomSerializer[NodeCheck](
-        format =>
+        implicit format =>
           (
             {
-              case JObject(
-                  JField("ID", JString(f1)) ::
-                    JField("Node", JString(f2)) ::
-                    JField("CheckID", JString(f3)) ::
-                    JField("Name", JString(f4)) ::
-                    JField("Status", JString(f5)) ::
-                    JField("Notes", JString(f6)) ::
-                    JField("Output", JString(f7)) ::
-                    JField("ServiceID", JString(f8)) ::
-                    JField("ServiceName", JString(f9)) ::
-                    JField("ServiceTags", JArray(items)) ::
-                    JField("Namespace", f11: JString) ::
-                    Nil
-                  ) =>
+              case json: JObject =>
                 NodeCheck(
-                  f1,
-                  f2,
-                  f3,
-                  f4,
-                  State.withValue(f5),
-                  f6,
-                  f7,
-                  f8,
-                  f9,
-                  items.map {
-                    case JString(value) => value
-                    case x              => throw new MappingException(s"Cannot convert $x to String")
-                  },
-                  f11.toOption.map {
-                    case JString(value) => value
-                  }
+                  (json \ "ID").extract[String],
+                  (json \ "Node").extract[String],
+                  (json \ "CheckID").extract[String],
+                  (json \ "Name").extract[String],
+                  State.withValue((json \ "Status").extract[String]),
+                  (json \ "Notes").extract[String],
+                  (json \ "Output").extract[String],
+                  (json \ "ServiceID").extract[String],
+                  (json \ "ServiceName").extract[String],
+                  (json \ "ServiceTags").extract[List[String]],
+                  (json \ "Namespace").extract[Option[String]]
                 )
             }, {
               case _: NodeCheck => JObject()
@@ -73,38 +54,21 @@ package object json4s {
 
   class ServiceCheckSerializer
       extends CustomSerializer[ServiceCheck](
-        format =>
+        implicit format =>
           (
             {
-              case JObject(
-                  JField("Node", JString(f2)) ::
-                    JField("CheckID", JString(f3)) ::
-                    JField("Name", JString(f4)) ::
-                    JField("Status", JString(f5)) ::
-                    JField("Notes", JString(f6)) ::
-                    JField("Output", JString(f7)) ::
-                    JField("ServiceID", JString(f8)) ::
-                    JField("ServiceName", JString(f9)) ::
-                    JField("ServiceTags", JArray(items)) ::
-                    JField("Namespace", f11: JString) ::
-                    Nil
-                  ) =>
+              case json: JObject =>
                 ServiceCheck(
-                  f2,
-                  f3,
-                  f4,
-                  State.withValue(f5),
-                  f6,
-                  f7,
-                  f8,
-                  f9,
-                  items.map {
-                    case JString(value) => value
-                    case x              => throw new MappingException(s"Cannot convert $x to String")
-                  },
-                  f11.toOption.map {
-                    case JString(value) => value
-                  }
+                  (json \ "Node").extract[String],
+                  (json \ "CheckID").extract[String],
+                  (json \ "Name").extract[String],
+                  State.withValue((json \ "Status").extract[String]),
+                  (json \ "Notes").extract[String],
+                  (json \ "Output").extract[String],
+                  (json \ "ServiceID").extract[String],
+                  (json \ "ServiceName").extract[String],
+                  (json \ "ServiceTags").extract[List[String]],
+                  (json \ "Namespace").extract[Option[String]]
                 )
             }, {
               case _: ServiceCheck => JObject()
@@ -112,8 +76,32 @@ package object json4s {
           )
       )
 
+  class NodeInfoSerializer
+      extends CustomSerializer[NodeInfo](
+        implicit format =>
+          (
+            {
+              case json: JObject =>
+                NodeInfo(
+                  (json \ "ID").extract[String],
+                  (json \ "Node").extract[String],
+                  (json \ "Address").extract[String],
+                  (json \ "Datacenter").extract[String],
+                  (json \ "TaggedAddresses").extract[Map[String, String]],
+                  (json \ "Meta").extract[Map[String, String]]
+                )
+            }, {
+              case _: NodeInfo => JObject()
+            }
+          )
+      )
+
   private implicit val serialization = org.json4s.native.Serialization
-  implicit val formats = Serialization.formats(NoTypeHints) + new KeyValueSerializer + new NodeCheckSerializer + new ServiceCheckSerializer
+  implicit val formats = Serialization.formats(NoTypeHints) +
+    new KeyValueSerializer +
+    new NodeCheckSerializer +
+    new ServiceCheckSerializer +
+    new NodeInfoSerializer
 
   implicit val json4sJsonDecoder = new JsonDecoder {
     override def asBooleanUnsafe: ResponseAs[Boolean, Nothing] = asJsonAlwaysUnsafe[Boolean]
@@ -135,5 +123,18 @@ package object json4s {
     override def asStringOption: ResponseAs[Option[String], Nothing] = asJsonAlways[String].map(_.toOption)
 
     override def asStringListOption: ResponseAs[Option[List[String]], Nothing] = asJsonAlways[List[String]].map(_.toOption)
+
+    override def asNodeInfosOption: ResponseAs[Option[List[NodeInfo]], Nothing] = asJsonAlways[List[NodeInfo]].map(_.toOption)
+
+    override def asNodeInfosUnsafe: ResponseAs[List[NodeInfo], Nothing] = asJsonAlwaysUnsafe[List[NodeInfo]]
+
+    override def asMapOption: ResponseAs[Option[Map[String, String]], Nothing] = asJsonAlways[Map[String, String]].map(_.toOption)
+
+    override def asMapUnsafe: ResponseAs[Map[String, String], Nothing] = asJsonAlwaysUnsafe[Map[String, String]]
+
+    override def asMapMultipleValuesOption: ResponseAs[Option[Map[String, List[String]]], Nothing] =
+      asJsonAlways[Map[String, List[String]]].map(_.toOption)
+
+    override def asMapMultipleValuesUnsafe: ResponseAs[Map[String, List[String]], Nothing] = asJsonAlwaysUnsafe[Map[String, List[String]]]
   }
 }

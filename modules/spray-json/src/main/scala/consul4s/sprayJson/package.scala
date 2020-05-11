@@ -1,6 +1,6 @@
 package consul4s
 
-import consul4s.model.{KeyValue, NodeCheck, ServiceCheck, State}
+import consul4s.model.{KeyValue, NodeCheck, NodeInfo, ServiceCheck, State}
 import sttp.client.ResponseAs
 import sttp.client.sprayJson._
 import spray.json._
@@ -44,6 +44,15 @@ package object sprayJson {
       "ServiceTags",
       "Namespace"
     )
+    implicit val nodeInfoFormat = jsonFormat(
+      NodeInfo.apply,
+      "ID",
+      "Node",
+      "Address",
+      "Datacenter",
+      "TaggedAddresses",
+      "Meta"
+    )
   }
 
   import JsonProtocol._
@@ -68,5 +77,18 @@ package object sprayJson {
     override def asStringOption: ResponseAs[Option[String], Nothing] = asJsonAlways[String].map(_.toOption)
 
     override def asStringListOption: ResponseAs[Option[List[String]], Nothing] = asJsonAlways[List[String]].map(_.toOption)
+
+    override def asNodeInfosOption: ResponseAs[Option[List[NodeInfo]], Nothing] = asJsonAlways[List[NodeInfo]].map(_.toOption)
+
+    override def asNodeInfosUnsafe: ResponseAs[List[NodeInfo], Nothing] = asJsonAlwaysUnsafe[List[NodeInfo]]
+
+    override def asMapOption: ResponseAs[Option[Map[String, String]], Nothing] = asJsonAlways[Map[String, String]].map(_.toOption)
+
+    override def asMapUnsafe: ResponseAs[Map[String, String], Nothing] = asJsonAlwaysUnsafe[Map[String, String]]
+
+    override def asMapMultipleValuesOption: ResponseAs[Option[Map[String, List[String]]], Nothing] =
+      asJsonAlways[Map[String, List[String]]].map(_.toOption)
+
+    override def asMapMultipleValuesUnsafe: ResponseAs[Map[String, List[String]], Nothing] = asJsonAlwaysUnsafe[Map[String, List[String]]]
   }
 }

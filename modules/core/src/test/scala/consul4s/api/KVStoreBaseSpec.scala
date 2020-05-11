@@ -1,11 +1,10 @@
 package consul4s.api
 
-import sttp.client._
 import com.dimafeng.testcontainers.scalatest.TestContainerForEach
 import consul4s.model.KeyValue
-import consul4s.{BaseSpec, ConsulClient, ConsulContainer, JsonDecoder}
+import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder}
 
-abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder) extends BaseSpec with TestContainerForEach {
+abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder) extends ConsulSpec with TestContainerForEach {
   override val containerDef: ConsulContainer.Def = ConsulContainer.Def()
 
   "kv store" should {
@@ -78,12 +77,5 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder) extends BaseSp
       assert(getBeforeDelete.map(_.map(_.value)).contains(List("value1", "value2", "value3")))
       assert(getAfterDelete.isEmpty)
     }
-  }
-
-  private def createClient(consul: ConsulContainer): KVStore[Identity] = {
-    val backend = HttpURLConnectionBackend()
-    val client = ConsulClient(s"http://${consul.containerIpAddress}:${consul.mappedPort(8500)}/v1", backend)
-
-    client.kvStore()
   }
 }
