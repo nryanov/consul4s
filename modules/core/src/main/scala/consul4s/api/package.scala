@@ -9,4 +9,5 @@ package object api {
       with Status[F]
       with Health[F]
       with Catalog[F]
+      with Agent[F]
 }

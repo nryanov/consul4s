@@ -1,6 +1,6 @@
 package consul4s
 
-import consul4s.model.{KeyValue, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo, State}
+import consul4s.model.{KeyValue, MemberInfo, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo, State}
 import sttp.client.ResponseAs
 import sttp.client.sprayJson._
 import spray.json._
@@ -71,6 +71,20 @@ package object sprayJson {
       "Service",
       "Checks"
     )
+    implicit val memberInfoFormat = jsonFormat(
+      MemberInfo.apply,
+      "Name",
+      "Addr",
+      "Port",
+      "Tags",
+      "Status",
+      "ProtocolMin",
+      "ProtocolMax",
+      "ProtocolCur",
+      "DelegateMin",
+      "DelegateMax",
+      "DelegateCur"
+    )
   }
 
   import JsonProtocol._
@@ -117,5 +131,9 @@ package object sprayJson {
       asJsonAlways[List[NodeForService]].map(_.toOption)
 
     override def asNodesForServiceUnsafe: ResponseAs[List[NodeForService], Nothing] = asJsonAlwaysUnsafe[List[NodeForService]]
+
+    override def asMembersInfoOption: ResponseAs[Option[List[MemberInfo]], Nothing] = asJsonAlways[List[MemberInfo]].map(_.toOption)
+
+    override def asMembersInfoUnsafe: ResponseAs[List[MemberInfo], Nothing] = asJsonAlwaysUnsafe[List[MemberInfo]]
   }
 }

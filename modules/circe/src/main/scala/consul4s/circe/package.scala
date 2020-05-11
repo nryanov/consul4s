@@ -1,6 +1,6 @@
 package consul4s
 
-import consul4s.model.{KeyValue, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo, State}
+import consul4s.model.{KeyValue, MemberInfo, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo, State}
 import sttp.client.ResponseAs
 import sttp.client.circe._
 import io.circe._
@@ -87,6 +87,23 @@ package object circe {
       } yield NodeForService(node, service, checks)
   }
 
+  private implicit val memberInfoDecoder: Decoder[MemberInfo] = new Decoder[MemberInfo] {
+    final def apply(c: HCursor): Decoder.Result[MemberInfo] =
+      for {
+        name <- c.downField("Name").as[String]
+        addr <- c.downField("Addr").as[String]
+        port <- c.downField("Port").as[Int]
+        tags <- c.downField("Tags").as[Map[String, String]]
+        status <- c.downField("Status").as[Int]
+        protocolMin <- c.downField("ProtocolMin").as[Int]
+        protocolMax <- c.downField("ProtocolMax").as[Int]
+        protocolCur <- c.downField("ProtocolCur").as[Int]
+        delegateMin <- c.downField("DelegateMin").as[Int]
+        delegateMax <- c.downField("DelegateMax").as[Int]
+        delegateCur <- c.downField("DelegateCur").as[Int]
+      } yield MemberInfo(name, addr, port, tags, status, protocolMin, protocolMax, protocolCur, delegateMin, delegateMax, delegateCur)
+  }
+
   implicit val circeJsonDecoder = new JsonDecoder {
     override def asBooleanUnsafe: ResponseAs[Boolean, Nothing] = asJsonAlwaysUnsafe[Boolean]
 
@@ -129,5 +146,9 @@ package object circe {
       asJsonAlways[List[NodeForService]].map(_.toOption)
 
     override def asNodesForServiceUnsafe: ResponseAs[List[NodeForService], Nothing] = asJsonAlwaysUnsafe[List[NodeForService]]
+
+    override def asMembersInfoOption: ResponseAs[Option[List[MemberInfo]], Nothing] = asJsonAlways[List[MemberInfo]].map(_.toOption)
+
+    override def asMembersInfoUnsafe: ResponseAs[List[MemberInfo], Nothing] = asJsonAlwaysUnsafe[List[MemberInfo]]
   }
 }

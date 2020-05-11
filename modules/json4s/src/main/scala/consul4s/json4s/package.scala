@@ -1,6 +1,6 @@
 package consul4s
 
-import consul4s.model.{KeyValue, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo, State}
+import consul4s.model.{KeyValue, MemberInfo, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo, State}
 import sttp.client.ResponseAs
 import sttp.client.json4s._
 import org.json4s._
@@ -136,13 +136,39 @@ package object json4s {
           )
       )
 
+  class MemberInfoSerializer
+      extends CustomSerializer[MemberInfo](
+        implicit format =>
+          (
+            {
+              case json: JObject =>
+                MemberInfo(
+                  (json \ "Name").extract[String],
+                  (json \ "Addr").extract[String],
+                  (json \ "Port").extract[Int],
+                  (json \ "Tags").extract[Map[String, String]],
+                  (json \ "Status").extract[Int],
+                  (json \ "ProtocolMin").extract[Int],
+                  (json \ "ProtocolMax").extract[Int],
+                  (json \ "ProtocolCur").extract[Int],
+                  (json \ "DelegateMin").extract[Int],
+                  (json \ "DelegateMax").extract[Int],
+                  (json \ "DelegateCur").extract[Int]
+                )
+            }, {
+              case _: MemberInfo => JObject()
+            }
+          )
+      )
+
   private implicit val serialization = org.json4s.jackson.Serialization
   implicit val formats = Serialization.formats(NoTypeHints) +
     new KeyValueSerializer +
     new NodeCheckSerializer +
     new ServiceCheckSerializer +
     new NodeInfoSerializer +
-    new ServiceInfoSerializer
+    new ServiceInfoSerializer +
+    new MemberInfoSerializer
 
   implicit val json4sJsonDecoder = new JsonDecoder {
     override def asBooleanUnsafe: ResponseAs[Boolean, Nothing] = asJsonAlwaysUnsafe[Boolean]
@@ -186,5 +212,9 @@ package object json4s {
       asJsonAlways[List[NodeForService]].map(_.toOption)
 
     override def asNodesForServiceUnsafe: ResponseAs[List[NodeForService], Nothing] = asJsonAlwaysUnsafe[List[NodeForService]]
+
+    override def asMembersInfoOption: ResponseAs[Option[List[MemberInfo]], Nothing] = asJsonAlways[List[MemberInfo]].map(_.toOption)
+
+    override def asMembersInfoUnsafe: ResponseAs[List[MemberInfo], Nothing] = asJsonAlwaysUnsafe[List[MemberInfo]]
   }
 }
