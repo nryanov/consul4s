@@ -77,7 +77,7 @@ lazy val json4s = project
     name := "consul4s-json4s",
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client" %% "json4s" % sttpClientVersion,
-      "org.json4s" %% "json4s-native" % json4sVersion
+      "org.json4s" %% "json4s-jackson" % json4sVersion
     )
   )
 

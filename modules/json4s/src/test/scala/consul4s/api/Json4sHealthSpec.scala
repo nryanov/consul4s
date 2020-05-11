@@ -2,4 +2,4 @@ package consul4s.api
 
 import consul4s.json4s._
 
-class HealthSpec extends HealthBaseSpec
+class Json4sHealthSpec extends HealthBaseSpec
