@@ -1,4 +1,4 @@
-package consul4s.circe.event
+package consul4s.circe.model
 
 import consul4s.model.event.UserEvent
 import io.circe.Decoder.Result

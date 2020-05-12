@@ -1,12 +1,9 @@
-package consul4s.circe.agent
+package consul4s.circe.model
 
-import consul4s.circe.Common
-import consul4s.circe.catalog.Catalog
-import consul4s.circe.health.Health
-import consul4s.model.{ServiceKind, Status}
 import consul4s.model.agent._
 import consul4s.model.catalog.ServiceAddress
 import consul4s.model.health.{HealthCheck, HealthCheckDefinition}
+import consul4s.model.{ServiceKind, Status}
 import io.circe.Decoder.Result
 import io.circe._
 

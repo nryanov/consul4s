@@ -1,4 +1,4 @@
-package consul4s.circe.kv
+package consul4s.circe.model
 
 import consul4s.model.kv.KVPair
 import io.circe.Decoder.Result

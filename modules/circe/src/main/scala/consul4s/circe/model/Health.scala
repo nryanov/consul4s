@@ -1,6 +1,5 @@
-package consul4s.circe.health
+package consul4s.circe.model
 
-import consul4s.circe.Common
 import consul4s.model.Status
 import consul4s.model.health.{HealthCheck, HealthCheckDefinition}
 import io.circe.Decoder.Result

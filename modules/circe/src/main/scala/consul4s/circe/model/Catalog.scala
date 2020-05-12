@@ -1,7 +1,5 @@
-package consul4s.circe.catalog
+package consul4s.circe.model
 
-import consul4s.circe.agent.Agent
-import consul4s.circe.health.Health
 import consul4s.model.agent.{AgentCheck, AgentService, AgentServiceConnectProxyConfig}
 import consul4s.model.catalog._
 import consul4s.model.health.HealthCheck

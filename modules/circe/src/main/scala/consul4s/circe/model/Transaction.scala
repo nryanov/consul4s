@@ -1,9 +1,5 @@
-package consul4s.circe.transaction
+package consul4s.circe.model
 
-import consul4s.circe.agent.Agent
-import consul4s.circe.catalog.Catalog
-import consul4s.circe.health.Health
-import consul4s.circe.kv.KV
 import consul4s.model.agent.AgentService
 import consul4s.model.catalog.{CatalogService, Node}
 import consul4s.model.health.HealthCheck

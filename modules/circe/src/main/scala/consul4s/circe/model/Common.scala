@@ -1,4 +1,4 @@
-package consul4s.circe
+package consul4s.circe.model
 
 import consul4s.model.{ServiceKind, Status}
 import io.circe.Decoder.Result
