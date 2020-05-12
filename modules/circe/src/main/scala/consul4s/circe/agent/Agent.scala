@@ -140,7 +140,7 @@ trait Agent extends Common { this: Catalog with Health =>
     override def apply(c: HCursor): Result[AgentServiceCheck] = for {
       checkID <- c.downField("CheckID").as[Option[String]]
       name <- c.downField("Name").as[Option[String]]
-      args <- c.downField("Args").as[Option[List[String]]]
+      args <- c.downField("ScriptArgs").as[Option[List[String]]]
       dockerContainerID <- c.downField("DockerContainerID").as[Option[String]]
       shell <- c.downField("Shell").as[Option[String]]
       interval <- c.downField("Interval").as[Option[String]]
