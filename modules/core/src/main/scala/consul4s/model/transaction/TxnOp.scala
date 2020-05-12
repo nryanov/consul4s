@@ -1,14 +1,5 @@
 package consul4s.model.transaction
 
-class TxnOp {}
+import consul4s.model.kv.KVPair
 
-/*
-// TxnOp is the internal format we send to Consul. Currently only K/V and
-// check operations are supported.
-type TxnOp struct {
-	KV      *KVTxnOp
-	Node    *NodeTxnOp
-	Service *ServiceTxnOp
-	Check   *CheckTxnOp
-}
- */
+final case class TxnOp(kv: KVPair, node: NodeTxnOp, service: ServiceTxnOp, check: CheckTxnOp)

@@ -1,12 +1,5 @@
 package consul4s.model.transaction
 
-class ServiceTxnOp {}
+import consul4s.model.agent.AgentService
 
-/*
-// ServiceTxnOp defines a single operation inside a transaction.
-type ServiceTxnOp struct {
-	Verb    ServiceOp
-	Node    string
-	Service AgentService
-}
- */
+final case class ServiceTxnOp(verb: ServiceOp, node: String, service: AgentService)

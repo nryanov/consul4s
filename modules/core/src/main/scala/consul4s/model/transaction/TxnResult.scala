@@ -1,13 +1,7 @@
 package consul4s.model.transaction
 
-class TxnResult {}
+import consul4s.model.catalog.{CatalogService, Node}
+import consul4s.model.health.HealthCheck
+import consul4s.model.kv.KVPair
 
-/*
-// TxnResult is the internal format we receive from Consul.
-type TxnResult struct {
-	KV      *KVPair
-	Node    *Node
-	Service *CatalogService
-	Check   *HealthCheck
-}
- */
+final case class TxnResult(kv: KVPair, node: Node, service: CatalogService, check: HealthCheck)

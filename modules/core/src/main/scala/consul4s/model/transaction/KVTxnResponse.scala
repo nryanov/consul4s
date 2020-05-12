@@ -1,15 +1,5 @@
 package consul4s.model.transaction
 
-class KVTxnResponse {}
+import consul4s.model.kv.KVPair
 
-/*
-// KVTxnOps defines a set of operations to be performed inside a single
-// transaction.
-type KVTxnOps []*KVTxnOp
-
-// KVTxnResponse has the outcome of a transaction.
-type KVTxnResponse struct {
-	Results []*KVPair
-	Errors  TxnErrors
-}
- */
+final case class KVTxnResponse(results: List[KVPair], errors: List[TxnError])

@@ -1,11 +1,5 @@
 package consul4s.model.transaction
 
-class NodeTxnOp {}
+import consul4s.model.catalog.Node
 
-/*
-// NodeTxnOp defines a single operation inside a transaction.
-type NodeTxnOp struct {
-	Verb NodeOp
-	Node Node
-}
- */
+final case class NodeTxnOp(verb: NodeOp, node: Node)
