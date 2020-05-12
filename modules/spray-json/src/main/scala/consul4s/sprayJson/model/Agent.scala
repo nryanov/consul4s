@@ -4,6 +4,15 @@ import consul4s.model.agent._
 import spray.json.{DefaultJsonProtocol, JsString, JsValue, RootJsonFormat, deserializationError}
 
 trait Agent extends DefaultJsonProtocol { this: Health with Catalog with Common =>
+  implicit object UpstreamDestTypeFormat extends RootJsonFormat[UpstreamDestType] {
+    override def write(obj: UpstreamDestType): JsValue = JsString(obj.value)
+
+    override def read(json: JsValue): UpstreamDestType = json match {
+      case JsString(value) => UpstreamDestType.withValue(value)
+      case _               => deserializationError("UpstreamDestType expected")
+    }
+  }
+
   implicit val agentAuthorizeFormat: RootJsonFormat[AgentAuthorize] = jsonFormat(AgentAuthorize.apply, "Authorized", "Reason")
 
   implicit val agentAuthorizeParamsFormat: RootJsonFormat[AgentAuthorizeParams] =
@@ -146,13 +155,4 @@ trait Agent extends DefaultJsonProtocol { this: Health with Catalog with Common 
     "LocalBindPort",
     "Config"
   )
-
-  implicit object UpstreamDestTypeFormat extends RootJsonFormat[UpstreamDestType] {
-    override def write(obj: UpstreamDestType): JsValue = JsString(obj.value)
-
-    override def read(json: JsValue): UpstreamDestType = json match {
-      case JsString(value) => UpstreamDestType.withValue(value)
-      case _               => deserializationError("UpstreamDestType expected")
-    }
-  }
 }

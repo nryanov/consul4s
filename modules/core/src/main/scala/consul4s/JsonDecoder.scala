@@ -1,5 +1,9 @@
 package consul4s
 
+import consul4s.model.agent.AgentMember
+import consul4s.model.catalog.{CatalogNode, CatalogNodeServiceList, CatalogService, Node}
+import consul4s.model.health.{HealthCheck, ServiceEntry}
+import consul4s.model.kv.KVPair
 import sttp.client._
 
 trait JsonDecoder {
@@ -9,15 +13,25 @@ trait JsonDecoder {
 
   def asStringListUnsafe: ResponseAs[List[String], Nothing]
 
-  def asStringOption: ResponseAs[Option[String], Nothing]
-
   def asStringListOption: ResponseAs[Option[List[String]], Nothing]
-
-  def asMapOption: ResponseAs[Option[Map[String, String]], Nothing]
 
   def asMapUnsafe: ResponseAs[Map[String, String], Nothing]
 
-  def asMapMultipleValuesOption: ResponseAs[Option[Map[String, List[String]]], Nothing]
-
   def asMapMultipleValuesUnsafe: ResponseAs[Map[String, List[String]], Nothing]
+
+  def asKVPairsOption: ResponseAs[Option[List[KVPair]], Nothing]
+
+  def asHealthChecksUnsafe: ResponseAs[List[HealthCheck], Nothing]
+
+  def asServiceEntriesUnsafe: ResponseAs[List[ServiceEntry], Nothing]
+
+  def asNodesUnsafe: ResponseAs[List[Node], Nothing]
+
+  def asCatalogServicesUnsafe: ResponseAs[List[CatalogService], Nothing]
+
+  def asCatalogNodeOption: ResponseAs[Option[CatalogNode], Nothing]
+
+  def asCatalogNodeServiceListOption: ResponseAs[Option[CatalogNodeServiceList], Nothing]
+
+  def asAgentMembersUnsafe: ResponseAs[List[AgentMember], Nothing]
 }

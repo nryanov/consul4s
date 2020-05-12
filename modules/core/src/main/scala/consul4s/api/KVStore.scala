@@ -15,7 +15,7 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
     val params = List(dcParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
 
     val requestTemplate = basicRequest.get(uri"$url/kv/$key?$params")
-    val request = requestTemplate.copy(response = jsonDecoder.asKeyValuesOption.map(_.flatMap(_.headOption)))
+    val request = requestTemplate.copy(response = jsonDecoder.asKVPairsOption.map(_.flatMap(_.headOption)))
 
     val response = sttpBackend.send(request)
     response
@@ -29,7 +29,7 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
     val params = List("recurse", dcParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
 
     val requestTemplate = basicRequest.get(uri"$url/kv/$key?$params")
-    val request = requestTemplate.copy(response = jsonDecoder.asKeyValuesOption)
+    val request = requestTemplate.copy(response = jsonDecoder.asKVPairsOption)
 
     val response = sttpBackend.send(request)
     response

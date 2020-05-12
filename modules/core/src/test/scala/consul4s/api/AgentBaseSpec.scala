@@ -8,12 +8,6 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder) extends ConsulSp
 
   "agent" should {
     "return member info" in withContainers { consul =>
-      val client = createClient(consul)
-
-      val nodes = client.nodes().body
-      val result = client.members().body
-
-      assert(nodes.length == result.length)
     }
   }
 }

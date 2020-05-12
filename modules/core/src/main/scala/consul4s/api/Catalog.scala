@@ -1,8 +1,34 @@
 package consul4s.api
 
+import consul4s.model.catalog.{CatalogDeregistration, CatalogNode, CatalogNodeServiceList, CatalogRegistration, CatalogService, Node}
 import sttp.client._
 
 trait Catalog[F[_]] { this: ConsulApi[F] =>
+  // PUT /catalog/register
+  def registerEntity(catalogRegistration: CatalogRegistration, ns: Option[String] = None): F[Response[Unit]] = {
+    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+    val params = List(nsParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.put(uri"$url/catalog/register?$params")
+    val request = requestTemplate.copy(response = ignore)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  // PUT /catalog/deregister
+  // CatalogDeregistration: namespace > ns
+  def deregisterEntity(catalogDeregistration: CatalogDeregistration, ns: Option[String] = None): F[Response[Unit]] = {
+    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+    val params = List(nsParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.put(uri"$url/catalog/deregister?$params")
+    val request = requestTemplate.copy(response = ignore)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
   // GET	/catalog/datacenters
   def datacenters(): F[Response[List[String]]] = {
     val requestTemplate = basicRequest.get(uri"$url/catalog/datacenters")
@@ -18,7 +44,7 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     near: Option[String] = None,
     nodeMeta: Option[String] = None,
     filter: Option[String] = None
-  ): F[Response[List[NodeInfo]]] = {
+  ): F[Response[List[Node]]] = {
     val dcParam = dc.map(v => s"dc=$v").getOrElse("")
     val nearParam = near.map(v => s"near=$v").getOrElse("")
     val nodeMetaParam = nodeMeta.map(v => s"node-meta=$v").getOrElse("")
@@ -26,7 +52,7 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     val params = List(dcParam, nearParam, nodeMetaParam, filterParam).filterNot(_.isBlank).mkString("", "&", "")
 
     val requestTemplate = basicRequest.get(uri"$url/catalog/nodes?$params")
-    val request = requestTemplate.copy(response = jsonDecoder.asNodeInfosUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asNodesUnsafe)
 
     val response = sttpBackend.send(request)
     response
@@ -45,6 +71,94 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
 
     val requestTemplate = basicRequest.get(uri"$url/catalog/services?$params")
     val request = requestTemplate.copy(response = jsonDecoder.asMapMultipleValuesUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  // GET /catalog/service/" + service
+  def nodesInfoForService(
+    service: String,
+    dc: Option[String] = None,
+    tag: Option[String] = None,
+    near: Option[String] = None,
+    nodeMeta: Option[String] = None,
+    filter: Option[String] = None,
+    ns: Option[String] = None
+  ): F[Response[List[CatalogService]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val tagParam = tag.map(v => s"tag=$v").getOrElse("")
+    val nearParam = near.map(v => s"near=$v").getOrElse("")
+    val nodeMetaParam = nodeMeta.map(v => s"node-meta=$v").getOrElse("")
+    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
+    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+    val params = List(dcParam, tagParam, nearParam, nodeMetaParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/catalog/service/$service?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asCatalogServicesUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  // GET /catalog/connect/" + service
+  def nodesInfoForConnectCapableService(
+    service: String,
+    dc: Option[String] = None,
+    tag: Option[String] = None,
+    near: Option[String] = None,
+    nodeMeta: Option[String] = None,
+    filter: Option[String] = None,
+    ns: Option[String] = None
+  ): F[Response[List[CatalogService]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val tagParam = tag.map(v => s"tag=$v").getOrElse("")
+    val nearParam = near.map(v => s"near=$v").getOrElse("")
+    val nodeMetaParam = nodeMeta.map(v => s"node-meta=$v").getOrElse("")
+    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
+    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+    val params = List(dcParam, tagParam, nearParam, nodeMetaParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/catalog/connect/$service?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asCatalogServicesUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  // GET	/catalog/node/:node
+  def mapOfServicesForNode(
+    node: String,
+    dc: Option[String] = None,
+    filter: Option[String] = None,
+    ns: Option[String] = None
+  ): F[Response[Option[CatalogNode]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
+    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+    val params = List(dcParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/catalog/node/$node?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asCatalogNodeOption)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  // GET	/catalog/node-services/:node
+  def listServicesForNode(
+    node: String,
+    dc: Option[String] = None,
+    filter: Option[String] = None,
+    ns: Option[String] = None
+  ): F[Response[Option[CatalogNodeServiceList]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
+    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+    val params = List(dcParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/catalog/node-services/$node?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asCatalogNodeServiceListOption)
 
     val response = sttpBackend.send(request)
     response

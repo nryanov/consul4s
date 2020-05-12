@@ -1,7 +1,7 @@
 package consul4s.api
 
 import com.dimafeng.testcontainers.scalatest.TestContainerForEach
-import consul4s.model.deprecated.KeyValue
+import consul4s.model.kv.KVPair
 import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder}
 
 abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder) extends ConsulSpec with TestContainerForEach {
@@ -36,7 +36,7 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder) extends Consul
 
       client.createOrUpdate("key1", "value1").body
       client.createOrUpdate("key2", "value2").body
-      val getRecurse: Option[List[KeyValue]] = client.getRecurse("key").body
+      val getRecurse: Option[List[KVPair]] = client.getRecurse("key").body
 
       assert(getRecurse.map(_.map(_.value)).contains(List("value1", "value2")))
     }
