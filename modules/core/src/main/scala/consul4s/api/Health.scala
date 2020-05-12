@@ -1,6 +1,6 @@
 package consul4s.api
 
-import consul4s.model.{NodeCheck, NodeForService, ServiceCheck, State}
+import consul4s.model.{Status => ConsulStatus}
 import sttp.client._
 
 trait Health[F[_]] { this: ConsulApi[F] =>
@@ -107,7 +107,7 @@ trait Health[F[_]] { this: ConsulApi[F] =>
 
   // GET	/health/state/:state
   def checksInState(
-    state: State,
+    state: ConsulStatus,
     dc: Option[String] = None,
     near: Option[String] = None,
     nodeMeta: Option[String] = None,

@@ -1,7 +1,7 @@
 package consul4s.api
 
 import com.dimafeng.testcontainers.scalatest.TestContainerForEach
-import consul4s.model.KeyValue
+import consul4s.model.deprecated.KeyValue
 import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder}
 
 abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder) extends ConsulSpec with TestContainerForEach {

@@ -1,6 +1,7 @@
 package consul4s
 
-import consul4s.model.{KeyValue, MemberInfo, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo, State}
+import consul4s.model.deprecated.{KeyValue, MemberInfo, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo}
+import consul4s.model.{MemberInfo, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo, State}
 import sttp.client.ResponseAs
 import sttp.client.sprayJson._
 import spray.json._
@@ -135,5 +136,10 @@ package object sprayJson {
     override def asMembersInfoOption: ResponseAs[Option[List[MemberInfo]], Nothing] = asJsonAlways[List[MemberInfo]].map(_.toOption)
 
     override def asMembersInfoUnsafe: ResponseAs[List[MemberInfo], Nothing] = asJsonAlwaysUnsafe[List[MemberInfo]]
+
+    override def asServicesInfoMapOption: ResponseAs[Option[Map[String, ServiceInfo]], Nothing] =
+      asJsonAlways[Map[String, ServiceInfo]].map(_.toOption)
+
+    override def asServicesInfoMapUnsafe: ResponseAs[Map[String, ServiceInfo], Nothing] = asJsonAlwaysUnsafe[Map[String, ServiceInfo]]
   }
 }

@@ -1,6 +1,6 @@
 package consul4s.api
 
-import consul4s.model.KeyValue
+import consul4s.model.kv.KVPair
 import sttp.client._
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.numeric._
@@ -8,7 +8,7 @@ import eu.timepit.refined.numeric._
 trait KVStore[F[_]] { this: ConsulApi[F] =>
 
   // GET /kv/:key
-  def get(key: String, dc: Option[String] = None, ns: Option[String] = None): F[Response[Option[KeyValue]]] = {
+  def get(key: String, dc: Option[String] = None, ns: Option[String] = None): F[Response[Option[KVPair]]] = {
     val dcParam = dc.map(v => s"dc=$v").getOrElse("")
     val nsParam = ns.map(v => s"ns=$v").getOrElse("")
 
@@ -22,7 +22,7 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
   }
 
   // GET /kv/:key?recurse
-  def getRecurse(key: String, dc: Option[String] = None, ns: Option[String] = None): F[Response[Option[List[KeyValue]]]] = {
+  def getRecurse(key: String, dc: Option[String] = None, ns: Option[String] = None): F[Response[Option[List[KVPair]]]] = {
     val dcParam = dc.map(v => s"dc=$v").getOrElse("")
     val nsParam = ns.map(v => s"ns=$v").getOrElse("")
 
