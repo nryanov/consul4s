@@ -32,20 +32,20 @@ trait Health { this: Common =>
 
   implicit val healthCheckDecoder: Decoder[HealthCheck] = new Decoder[HealthCheck] {
     override def apply(c: HCursor): Result[HealthCheck] = for {
-      node <- c.downField("node").as[String]
-      checkId <- c.downField("checkId").as[String]
-      name <- c.downField("name").as[String]
-      status <- c.downField("status").as[Status]
-      notes <- c.downField("notes").as[String]
-      output <- c.downField("output").as[String]
-      serviceId <- c.downField("serviceId").as[String]
-      serviceName <- c.downField("serviceName").as[String]
-      serviceTags <- c.downField("serviceTags").as[List[String]]
-      tType <- c.downField("type").as[String]
-      namespace <- c.downField("namespace").as[Option[String]]
-      definition <- c.downField("definition").as[Option[HealthCheckDefinition]]
-      createIndex <- c.downField("createIndex").as[Long]
-      modifyIndex <- c.downField("modifyIndex").as[Long]
+      node <- c.downField("Node").as[String]
+      checkId <- c.downField("CheckId").as[String]
+      name <- c.downField("Name").as[String]
+      status <- c.downField("Status").as[Status]
+      notes <- c.downField("Notes").as[String]
+      output <- c.downField("Output").as[String]
+      serviceId <- c.downField("ServiceId").as[String]
+      serviceName <- c.downField("ServiceName").as[String]
+      serviceTags <- c.downField("ServiceTags").as[List[String]]
+      tType <- c.downField("Type").as[String]
+      namespace <- c.downField("Namespace").as[Option[String]]
+      definition <- c.downField("Definition").as[Option[HealthCheckDefinition]]
+      createIndex <- c.downField("CreateIndex").as[Long]
+      modifyIndex <- c.downField("ModifyIndex").as[Long]
     } yield HealthCheck(
       node,
       checkId,

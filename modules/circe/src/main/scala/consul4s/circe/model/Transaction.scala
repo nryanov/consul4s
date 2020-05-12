@@ -9,26 +9,26 @@ import io.circe.Decoder.Result
 import io.circe._
 
 trait Transaction { this: Health with KV with Catalog with Agent =>
-  implicit val CheckOpDecoder: Decoder[CheckOp] = new Decoder[CheckOp] {
+  implicit val checkOpDecoder: Decoder[CheckOp] = new Decoder[CheckOp] {
     override def apply(c: HCursor): Result[CheckOp] = for {
       value <- c.as[String]
     } yield CheckOp.withValue(value)
   }
 
-  implicit val CheckTxnOpDecoder: Decoder[CheckTxnOp] = new Decoder[CheckTxnOp] {
+  implicit val checkTxnOpDecoder: Decoder[CheckTxnOp] = new Decoder[CheckTxnOp] {
     override def apply(c: HCursor): Result[CheckTxnOp] = for {
       verb <- c.downField("Verb").as[CheckOp]
       check <- c.downField("Check").as[HealthCheck]
     } yield CheckTxnOp(verb, check)
   }
 
-  implicit val KVOpDecoder: Decoder[KVOp] = new Decoder[KVOp] {
+  implicit val kvOpDecoder: Decoder[KVOp] = new Decoder[KVOp] {
     override def apply(c: HCursor): Result[KVOp] = for {
       value <- c.as[String]
     } yield KVOp.withValue(value)
   }
 
-  implicit val KVTxnOpDecoder: Decoder[KVTxnOp] = new Decoder[KVTxnOp] {
+  implicit val kvTxnOpDecoder: Decoder[KVTxnOp] = new Decoder[KVTxnOp] {
     override def apply(c: HCursor): Result[KVTxnOp] = for {
       verb <- c.downField("Verb").as[KVOp]
       key <- c.downField("Key").as[String]
@@ -48,33 +48,33 @@ trait Transaction { this: Health with KV with Catalog with Agent =>
     )
   }
 
-  implicit val KVTxnResponseDecoder: Decoder[KVTxnResponse] = new Decoder[KVTxnResponse] {
+  implicit val kvTxnResponseDecoder: Decoder[KVTxnResponse] = new Decoder[KVTxnResponse] {
     override def apply(c: HCursor): Result[KVTxnResponse] = for {
       results <- c.downField("Results").as[List[KVPair]]
       errors <- c.downField("Errors").as[List[TxnError]]
     } yield KVTxnResponse(results, errors)
   }
 
-  implicit val NodeOpDecoder: Decoder[NodeOp] = new Decoder[NodeOp] {
+  implicit val nodeOpDecoder: Decoder[NodeOp] = new Decoder[NodeOp] {
     override def apply(c: HCursor): Result[NodeOp] = for {
       value <- c.as[String]
     } yield NodeOp.withValue(value)
   }
 
-  implicit val NodeTxnOpDecoder: Decoder[NodeTxnOp] = new Decoder[NodeTxnOp] {
+  implicit val nodeTxnOpDecoder: Decoder[NodeTxnOp] = new Decoder[NodeTxnOp] {
     override def apply(c: HCursor): Result[NodeTxnOp] = for {
       verb <- c.downField("Verb").as[NodeOp]
       check <- c.downField("Check").as[Node]
     } yield NodeTxnOp(verb, check)
   }
 
-  implicit val ServiceOpDecoder: Decoder[ServiceOp] = new Decoder[ServiceOp] {
+  implicit val serviceOpDecoder: Decoder[ServiceOp] = new Decoder[ServiceOp] {
     override def apply(c: HCursor): Result[ServiceOp] = for {
       value <- c.as[String]
     } yield ServiceOp.withValue(value)
   }
 
-  implicit val ServiceTxnOpDecoder: Decoder[ServiceTxnOp] = new Decoder[ServiceTxnOp] {
+  implicit val serviceTxnOpDecoder: Decoder[ServiceTxnOp] = new Decoder[ServiceTxnOp] {
     override def apply(c: HCursor): Result[ServiceTxnOp] = for {
       verb <- c.downField("Verb").as[ServiceOp]
       node <- c.downField("Node").as[String]
@@ -82,26 +82,26 @@ trait Transaction { this: Health with KV with Catalog with Agent =>
     } yield ServiceTxnOp(verb, node, service)
   }
 
-  implicit val SessionOpDecoder: Decoder[SessionOp] = new Decoder[SessionOp] {
+  implicit val sessionOpDecoder: Decoder[SessionOp] = new Decoder[SessionOp] {
     override def apply(c: HCursor): Result[SessionOp] = for {
       value <- c.as[String]
     } yield SessionOp.withValue(value)
   }
 
-  implicit val SessionTxnOpDecoder: Decoder[SessionTxnOp] = new Decoder[SessionTxnOp] {
+  implicit val sessionTxnOpDecoder: Decoder[SessionTxnOp] = new Decoder[SessionTxnOp] {
     override def apply(c: HCursor): Result[SessionTxnOp] = for {
       verb <- c.downField("Verb").as[SessionOp]
     } yield SessionTxnOp(verb)
   }
 
-  implicit val TxnErrorDecoder: Decoder[TxnError] = new Decoder[TxnError] {
+  implicit val txnErrorDecoder: Decoder[TxnError] = new Decoder[TxnError] {
     override def apply(c: HCursor): Result[TxnError] = for {
       opIndex <- c.downField("OpIndex").as[Int]
       what <- c.downField("What").as[String]
     } yield TxnError(opIndex, what)
   }
 
-  implicit val TxnOpDecoder: Decoder[TxnOp] = new Decoder[TxnOp] {
+  implicit val txnOpDecoder: Decoder[TxnOp] = new Decoder[TxnOp] {
     override def apply(c: HCursor): Result[TxnOp] = for {
       kv <- c.downField("KV").as[KVPair]
       node <- c.downField("Node").as[NodeTxnOp]
@@ -110,14 +110,14 @@ trait Transaction { this: Health with KV with Catalog with Agent =>
     } yield TxnOp(kv, node, service, check)
   }
 
-  implicit val TxnResponseDecoder: Decoder[TxnResponse] = new Decoder[TxnResponse] {
+  implicit val txnResponseDecoder: Decoder[TxnResponse] = new Decoder[TxnResponse] {
     override def apply(c: HCursor): Result[TxnResponse] = for {
-      results <- c.downField("results").as[List[TxnResult]]
-      errors <- c.downField("errors").as[List[TxnError]]
+      results <- c.downField("Results").as[List[TxnResult]]
+      errors <- c.downField("Errors").as[List[TxnError]]
     } yield TxnResponse(results, errors)
   }
 
-  implicit val TxnResultDecoder: Decoder[TxnResult] = new Decoder[TxnResult] {
+  implicit val txnResultDecoder: Decoder[TxnResult] = new Decoder[TxnResult] {
     override def apply(c: HCursor): Result[TxnResult] = for {
       kv <- c.downField("KV").as[KVPair]
       node <- c.downField("Node").as[Node]

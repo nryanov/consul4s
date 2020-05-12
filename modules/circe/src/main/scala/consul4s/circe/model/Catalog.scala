@@ -57,7 +57,7 @@ trait Catalog { this: Agent with Health =>
       service <- c.downField("Service").as[Option[AgentService]]
       check <- c.downField("Check").as[Option[AgentCheck]]
       checks <- c.downField("Checks").as[List[HealthCheck]]
-      skipNodeUpdate <- c.downField("skipNodeUpdate").as[Boolean]
+      skipNodeUpdate <- c.downField("SkipNodeUpdate").as[Boolean]
     } yield CatalogRegistration(id, node, address, taggedAddresses, nodeMeta, datacenter, service, check, checks, skipNodeUpdate)
   }
 
