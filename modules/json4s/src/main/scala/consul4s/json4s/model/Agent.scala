@@ -224,21 +224,21 @@ trait Agent {
         {
           case json: JObject =>
             AgentServiceRegistration(
-              (json \ "kind").extract[Option[ServiceKind]],
-              (json \ "id").extract[Option[String]],
-              (json \ "name").extract[Option[String]],
-              (json \ "tags").extract[Option[List[String]]],
-              (json \ "port").extract[Option[Int]],
-              (json \ "address").extract[Option[String]],
-              (json \ "taggedAddresses").extract[Option[Map[String, ServiceAddress]]],
-              (json \ "enableTagOverride").extract[Option[Boolean]],
-              (json \ "meta").extract[Option[Map[String, String]]],
-              (json \ "weights").extract[AgentWeights],
-              (json \ "check").extract[AgentServiceCheck],
-              (json \ "checks").extract[List[AgentServiceCheck]],
-              (json \ "proxy").extract[Option[AgentServiceConnectProxyConfig]],
-              (json \ "connect").extract[Option[AgentServiceConnect]],
-              (json \ "namespace").extract[Option[String]]
+              (json \ "Kind").extract[Option[ServiceKind]],
+              (json \ "ID").extract[Option[String]],
+              (json \ "Name").extract[Option[String]],
+              (json \ "Tags").extract[Option[List[String]]],
+              (json \ "Port").extract[Option[Int]],
+              (json \ "Address").extract[Option[String]],
+              (json \ "TaggedAddresses").extract[Option[Map[String, ServiceAddress]]],
+              (json \ "EnableTagOverride").extract[Option[Boolean]],
+              (json \ "Meta").extract[Option[Map[String, String]]],
+              (json \ "Weights").extract[AgentWeights],
+              (json \ "Check").extract[AgentServiceCheck],
+              (json \ "Checks").extract[List[AgentServiceCheck]],
+              (json \ "Proxy").extract[Option[AgentServiceConnectProxyConfig]],
+              (json \ "Connect").extract[Option[AgentServiceConnect]],
+              (json \ "Namespace").extract[Option[String]]
             )
         }, {
           case _ => JObject()

@@ -217,21 +217,21 @@ trait Agent { this: Catalog with Health with Common =>
 
   implicit val agentServiceRegistrationDecoder: Decoder[AgentServiceRegistration] = new Decoder[AgentServiceRegistration] {
     override def apply(c: HCursor): Result[AgentServiceRegistration] = for {
-      kind <- c.downField("kind").as[Option[ServiceKind]]
-      id <- c.downField("id").as[Option[String]]
-      name <- c.downField("name").as[Option[String]]
-      tags <- c.downField("tags").as[Option[List[String]]]
-      port <- c.downField("port").as[Option[Int]]
-      address <- c.downField("address").as[Option[String]]
-      taggedAddresses <- c.downField("taggedAddresses").as[Option[Map[String, ServiceAddress]]]
-      enableTagOverride <- c.downField("enableTagOverride").as[Option[Boolean]]
-      meta <- c.downField("meta").as[Option[Map[String, String]]]
-      weights <- c.downField("weights").as[AgentWeights]
-      check <- c.downField("check").as[AgentServiceCheck]
-      checks <- c.downField("checks").as[List[AgentServiceCheck]]
-      proxy <- c.downField("proxy").as[Option[AgentServiceConnectProxyConfig]]
-      connect <- c.downField("connect").as[Option[AgentServiceConnect]]
-      namespace <- c.downField("namespace").as[Option[String]]
+      kind <- c.downField("Kind").as[Option[ServiceKind]]
+      id <- c.downField("ID").as[Option[String]]
+      name <- c.downField("Name").as[Option[String]]
+      tags <- c.downField("Tags").as[Option[List[String]]]
+      port <- c.downField("Port").as[Option[Int]]
+      address <- c.downField("Address").as[Option[String]]
+      taggedAddresses <- c.downField("TaggedAddresses").as[Option[Map[String, ServiceAddress]]]
+      enableTagOverride <- c.downField("EnableTagOverride").as[Option[Boolean]]
+      meta <- c.downField("Meta").as[Option[Map[String, String]]]
+      weights <- c.downField("Weights").as[AgentWeights]
+      check <- c.downField("Check").as[AgentServiceCheck]
+      checks <- c.downField("Checks").as[List[AgentServiceCheck]]
+      proxy <- c.downField("Proxy").as[Option[AgentServiceConnectProxyConfig]]
+      connect <- c.downField("Connect").as[Option[AgentServiceConnect]]
+      namespace <- c.downField("Namespace").as[Option[String]]
     } yield AgentServiceRegistration(
       kind,
       id,
