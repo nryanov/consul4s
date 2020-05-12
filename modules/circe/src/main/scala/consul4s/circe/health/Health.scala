@@ -6,7 +6,7 @@ import consul4s.model.health.{HealthCheck, HealthCheckDefinition}
 import io.circe.Decoder.Result
 import io.circe._
 
-trait Health extends Common {
+trait Health { this: Common =>
   implicit val healthCheckDefinitionDecoder: Decoder[HealthCheckDefinition] = new Decoder[HealthCheckDefinition] {
     override def apply(c: HCursor): Result[HealthCheckDefinition] = for {
       http <- c.downField("HTTP").as[String]

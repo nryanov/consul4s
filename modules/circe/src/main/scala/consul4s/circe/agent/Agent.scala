@@ -10,7 +10,7 @@ import consul4s.model.health.{HealthCheck, HealthCheckDefinition}
 import io.circe.Decoder.Result
 import io.circe._
 
-trait Agent extends Common { this: Catalog with Health =>
+trait Agent { this: Catalog with Health with Common =>
   implicit val agentAuthorizeDecoder: Decoder[AgentAuthorize] = new Decoder[AgentAuthorize] {
     override def apply(c: HCursor): Result[AgentAuthorize] = for {
       authorized <- c.downField("Authorized").as[Boolean]
