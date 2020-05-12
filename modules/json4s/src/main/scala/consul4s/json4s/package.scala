@@ -216,5 +216,10 @@ package object json4s {
     override def asMembersInfoOption: ResponseAs[Option[List[MemberInfo]], Nothing] = asJsonAlways[List[MemberInfo]].map(_.toOption)
 
     override def asMembersInfoUnsafe: ResponseAs[List[MemberInfo], Nothing] = asJsonAlwaysUnsafe[List[MemberInfo]]
+
+    override def asServicesInfoMapOption: ResponseAs[Option[Map[String, ServiceInfo]], Nothing] =
+      asJsonAlways[Map[String, ServiceInfo]].map(_.toOption)
+
+    override def asServicesInfoMapUnsafe: ResponseAs[Map[String, ServiceInfo], Nothing] = asJsonAlwaysUnsafe[Map[String, ServiceInfo]]
   }
 }

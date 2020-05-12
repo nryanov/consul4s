@@ -40,6 +40,10 @@ trait JsonDecoder {
 
   def asServicesInfoUnsafe: ResponseAs[List[ServiceInfo], Nothing]
 
+  def asServicesInfoMapOption: ResponseAs[Option[Map[String, ServiceInfo]], Nothing]
+
+  def asServicesInfoMapUnsafe: ResponseAs[Map[String, ServiceInfo], Nothing]
+
   def asNodesForServiceOption: ResponseAs[Option[List[NodeForService]], Nothing]
 
   def asNodesForServiceUnsafe: ResponseAs[List[NodeForService], Nothing]

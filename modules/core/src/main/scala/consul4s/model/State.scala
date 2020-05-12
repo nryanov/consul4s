@@ -15,3 +15,12 @@ object State extends StringEnum[State] {
 
   case object Critical extends State("critical")
 }
+//const (
+//// HealthAny is special, and is used as a wild card,
+//// not as a specific state.
+//HealthAny      = "any"
+//HealthPassing  = "passing"
+//HealthWarning  = "warning"
+//HealthCritical = "critical"
+//HealthMaint    = "maintenance"
+//)
