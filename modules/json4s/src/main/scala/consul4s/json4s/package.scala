@@ -1,6 +1,7 @@
 package consul4s
 
-import consul4s.model.{KeyValue, MemberInfo, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo, State}
+import consul4s.model.deprecated.{KeyValue, MemberInfo, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo}
+import consul4s.model.{MemberInfo, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo, State, deprecated}
 import sttp.client.ResponseAs
 import sttp.client.json4s._
 import org.json4s._
@@ -33,7 +34,7 @@ package object json4s {
           (
             {
               case json: JObject =>
-                NodeCheck(
+                deprecated.NodeCheck(
                   (json \ "Node").extract[String],
                   (json \ "CheckID").extract[String],
                   (json \ "Name").extract[String],
@@ -57,7 +58,7 @@ package object json4s {
           (
             {
               case json: JObject =>
-                ServiceCheck(
+                deprecated.ServiceCheck(
                   (json \ "Node").extract[String],
                   (json \ "CheckID").extract[String],
                   (json \ "Name").extract[String],
@@ -125,7 +126,7 @@ package object json4s {
           (
             {
               case json: JObject =>
-                NodeForService(
+                deprecated.NodeForService(
                   (json \ "Node").extract[NodeInfo],
                   (json \ "Service").extract[ServiceInfo],
                   (json \ "Checks").extract[List[ServiceCheck]]

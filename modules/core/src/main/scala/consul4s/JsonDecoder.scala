@@ -1,7 +1,7 @@
 package consul4s
 
+import consul4s.model.deprecated.{KeyValue, MemberInfo, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo}
 import sttp.client._
-import consul4s.model.{KeyValue, MemberInfo, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo}
 
 trait JsonDecoder {
   def asBooleanUnsafe: ResponseAs[Boolean, Nothing]

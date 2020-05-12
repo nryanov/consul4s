@@ -1,6 +1,6 @@
 package consul4s.api
 
-import consul4s.model.{MemberInfo, ServiceInfo}
+import consul4s.model.deprecated.{MemberInfo, ServiceInfo}
 import sttp.client._
 
 trait Agent[F[_]] { this: ConsulApi[F] =>

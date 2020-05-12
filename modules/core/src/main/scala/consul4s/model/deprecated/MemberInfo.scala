@@ -1,4 +1,4 @@
-package consul4s.model
+package consul4s.model.deprecated
 
 /*
 Sample response:

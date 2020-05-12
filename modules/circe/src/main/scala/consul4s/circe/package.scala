@@ -1,6 +1,7 @@
 package consul4s
 
-import consul4s.model.{KeyValue, MemberInfo, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo, State}
+import consul4s.model.deprecated.{KeyValue, MemberInfo, NodeCheck, NodeForService, NodeInfo, ServiceCheck, ServiceInfo}
+import consul4s.model.{State, deprecated}
 import sttp.client.ResponseAs
 import sttp.client.circe._
 import io.circe._
@@ -31,7 +32,18 @@ package object circe {
         serviceName <- c.downField("ServiceName").as[String]
         serviceTags <- c.downField("ServiceTags").as[List[String]]
         namespace <- c.downField("Namespace").as[Option[String]]
-      } yield NodeCheck(node, checkId, name, State.withValue(status), notes, output, serviceId, serviceName, serviceTags, namespace)
+      } yield deprecated.NodeCheck(
+        node,
+        checkId,
+        name,
+        State.withValue(status),
+        notes,
+        output,
+        serviceId,
+        serviceName,
+        serviceTags,
+        namespace
+      )
   }
 
   private implicit val serviceCheckDecoder: Decoder[ServiceCheck] = new Decoder[ServiceCheck] {
@@ -47,7 +59,18 @@ package object circe {
         serviceName <- c.downField("ServiceName").as[String]
         serviceTags <- c.downField("ServiceTags").as[List[String]]
         namespace <- c.downField("Namespace").as[Option[String]]
-      } yield ServiceCheck(node, checkId, name, State.withValue(status), notes, output, serviceId, serviceName, serviceTags, namespace)
+      } yield deprecated.ServiceCheck(
+        node,
+        checkId,
+        name,
+        State.withValue(status),
+        notes,
+        output,
+        serviceId,
+        serviceName,
+        serviceTags,
+        namespace
+      )
   }
 
   private implicit val nodeInfoDecoder: Decoder[NodeInfo] = new Decoder[NodeInfo] {
@@ -84,7 +107,7 @@ package object circe {
         node <- c.downField("Node").as[NodeInfo]
         service <- c.downField("Service").as[ServiceInfo]
         checks <- c.downField("Checks").as[List[ServiceCheck]]
-      } yield NodeForService(node, service, checks)
+      } yield deprecated.NodeForService(node, service, checks)
   }
 
   private implicit val memberInfoDecoder: Decoder[MemberInfo] = new Decoder[MemberInfo] {

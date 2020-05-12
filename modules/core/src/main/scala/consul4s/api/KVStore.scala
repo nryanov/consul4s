@@ -1,6 +1,6 @@
 package consul4s.api
 
-import consul4s.model.KeyValue
+import consul4s.model.deprecated.KeyValue
 import sttp.client._
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.numeric._

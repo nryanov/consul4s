@@ -1,4 +1,6 @@
-package consul4s.model
+package consul4s.model.deprecated
+
+import consul4s.model.State
 
 final case class ServiceCheck(
   node: String,

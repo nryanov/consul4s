@@ -1,6 +1,7 @@
 package consul4s.api
 
-import consul4s.model.{NodeCheck, NodeForService, ServiceCheck, State}
+import consul4s.model.deprecated.{NodeCheck, NodeForService, ServiceCheck}
+import consul4s.model.{State}
 import sttp.client._
 
 trait Health[F[_]] { this: ConsulApi[F] =>
