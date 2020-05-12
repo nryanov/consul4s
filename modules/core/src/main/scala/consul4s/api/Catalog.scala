@@ -1,6 +1,5 @@
 package consul4s.api
 
-import consul4s.model.deprecated.NodeInfo
 import sttp.client._
 
 trait Catalog[F[_]] { this: ConsulApi[F] =>
