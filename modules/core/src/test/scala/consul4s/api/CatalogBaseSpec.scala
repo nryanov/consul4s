@@ -1,9 +1,9 @@
 package consul4s.api
 
 import com.dimafeng.testcontainers.scalatest.TestContainerForAll
-import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder}
+import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
 
-abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder) extends ConsulSpec with TestContainerForAll {
+abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) extends ConsulSpec with TestContainerForAll {
   override val containerDef: ConsulContainer.Def = ConsulContainer.Def()
 
   "catalog" should {

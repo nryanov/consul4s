@@ -4,26 +4,6 @@ import consul4s.model.kv.KVPair
 import org.json4s.{CustomSerializer, JObject}
 
 trait KV {
-  val kvPairSerializer = new CustomSerializer[KVPair](
-    implicit format =>
-      (
-        {
-          case json: JObject =>
-            KVPair(
-              (json \ "Key").extract[String],
-              (json \ "CreateIndex").extract[Long],
-              (json \ "ModifyIndex").extract[Long],
-              (json \ "LockIndex").extract[Long],
-              (json \ "Flags").extract[Int],
-              (json \ "Value").extract[String],
-              (json \ "Session").extract[Option[String]],
-              (json \ "Namespace").extract[Option[String]]
-            )
-        }, {
-          case _: KVPair => JObject()
-        }
-      )
-  )
 
-  val kvAllSerializers = List(kvPairSerializer)
+  val kvAllSerializers = List()
 }
