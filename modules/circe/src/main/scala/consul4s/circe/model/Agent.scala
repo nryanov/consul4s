@@ -5,6 +5,7 @@ import consul4s.model.catalog.ServiceAddress
 import consul4s.model.health.{HealthCheck, HealthCheckDefinition}
 import consul4s.model.{ServiceKind, Status}
 import io.circe.Decoder.Result
+import io.circe.syntax._
 import io.circe._
 
 trait Agent { this: Catalog with Health with Common =>
@@ -54,18 +55,80 @@ trait Agent { this: Catalog with Health with Common =>
   implicit val agentCheckRegistrationDecoder: Decoder[AgentCheckRegistration] = new Decoder[AgentCheckRegistration] {
     override def apply(c: HCursor): Result[AgentCheckRegistration] = for {
       id <- c.downField("ID").as[Option[String]]
-      name <- c.downField("Name").as[Option[String]]
-      notes <- c.downField("Notes").as[Option[String]]
+      name <- c.downField("Name").as[String]
       serviceId <- c.downField("ServiceId").as[Option[String]]
-      agentServiceCheck <- c.downField("AgentServiceCheck").as[Option[AgentServiceCheck]]
-      namespace <- c.downField("Namespace").as[Option[String]]
+      checkID <- c.downField("CheckID").as[Option[String]]
+      args <- c.downField("Args").as[Option[List[String]]]
+      dockerContainerID <- c.downField("DockerContainerID").as[Option[String]]
+      shell <- c.downField("Shell").as[Option[String]]
+      interval <- c.downField("Interval").as[Option[String]]
+      timeout <- c.downField("Timeout").as[Option[String]]
+      ttl <- c.downField("TTL").as[Option[String]]
+      http <- c.downField("HTTP").as[Option[String]]
+      header <- c.downField("Header").as[Option[Map[String, String]]]
+      method <- c.downField("Method").as[Option[String]]
+      body <- c.downField("Body").as[Option[String]]
+      tcp <- c.downField("TCP").as[Option[String]]
+      status <- c.downField("Status").as[Option[Status]]
+      notes <- c.downField("Notes").as[Option[String]]
+      tlsSkipVerify <- c.downField("TLSSkipVerify").as[Option[Boolean]]
+      gRPC <- c.downField("GRPC").as[Option[String]]
+      gRPCUseTLS <- c.downField("GRPCUseTLS").as[Option[Boolean]]
+      aliasNode <- c.downField("AliasNode").as[Option[String]]
+      aliasService <- c.downField("AliasService").as[Option[String]]
+      deregisterCriticalServiceAfter <- c.downField("DeregisterCriticalServiceAfter").as[Option[String]]
     } yield AgentCheckRegistration(
       id,
       name,
-      notes,
       serviceId,
-      agentServiceCheck,
-      namespace
+      checkID,
+      args,
+      dockerContainerID,
+      shell,
+      interval,
+      timeout,
+      ttl,
+      http,
+      header,
+      method,
+      body,
+      tcp,
+      status,
+      notes,
+      tlsSkipVerify,
+      gRPC,
+      gRPCUseTLS,
+      aliasNode,
+      aliasService,
+      deregisterCriticalServiceAfter
+    )
+  }
+
+  implicit val agentCheckRegistrationEncoder: Encoder[AgentCheckRegistration] = new Encoder[AgentCheckRegistration] {
+    override def apply(a: AgentCheckRegistration): Json = Json.obj(
+      ("ID", a.id.asJson),
+      ("Name", a.name.asJson),
+      ("ServiceId", a.serviceId.asJson),
+      ("CheckID", a.checkID.asJson),
+      ("Args", a.args.asJson),
+      ("DockerContainerID", a.dockerContainerID.asJson),
+      ("Shell", a.shell.asJson),
+      ("Interval", a.interval.asJson),
+      ("Timeout", a.timeout.asJson),
+      ("TTL", a.ttl.asJson),
+      ("HTTP", a.http.asJson),
+      ("Header", a.header.asJson),
+      ("Method", a.method.asJson),
+      ("Body", a.body.asJson),
+      ("TCP", a.tcp.asJson),
+      ("Status", a.status.asJson),
+      ("Notes", a.notes.asJson),
+      ("TLSSkipVerify", a.tlsSkipVerify.asJson),
+      ("GRPC", a.gRPC.asJson),
+      ("GRPCUseTLS", a.gRPCUseTLS.asJson),
+      ("AliasNode", a.aliasNode.asJson),
+      ("AliasService", a.aliasService.asJson),
+      ("DeregisterCriticalServiceAfter", a.deregisterCriticalServiceAfter.asJson)
     )
   }
 
@@ -133,6 +196,26 @@ trait Agent { this: Catalog with Health with Common =>
     )
   }
 
+  implicit val agentServiceEncoder: Encoder[AgentService] = new Encoder[AgentService] {
+    override def apply(a: AgentService): Json = Json.obj(
+      ("Kind", a.kind.asJson),
+      ("ID", a.id.asJson),
+      ("Service", a.service.asJson),
+      ("Tags", a.tags.asJson),
+      ("Meta", a.meta.asJson),
+      ("Port", a.port.asJson),
+      ("Address", a.address.asJson),
+      ("TaggedAddresses", a.taggedAddresses.asJson),
+      ("Weights", a.weights.asJson),
+      ("EnableTagOverride", a.enableTagOverride.asJson),
+      ("CreateIndex", a.createIndex.asJson),
+      ("ModifyIndex", a.modifyIndex.asJson),
+      ("ContentHash", a.contentHash.asJson),
+      ("Proxy", a.proxy.asJson),
+      ("Connect", a.connect.asJson)
+    )
+  }
+
   implicit val agentServiceCheckDecoder: Decoder[AgentServiceCheck] = new Decoder[AgentServiceCheck] {
     override def apply(c: HCursor): Result[AgentServiceCheck] = for {
       checkID <- c.downField("CheckID").as[Option[String]]
@@ -196,6 +279,13 @@ trait Agent { this: Catalog with Health with Common =>
     } yield AgentServiceConnect(native, sedicarService)
   }
 
+  implicit val agentServiceConnectEncoder: Encoder[AgentServiceConnect] = new Encoder[AgentServiceConnect] {
+    override def apply(a: AgentServiceConnect): Json = Json.obj(
+      ("Native", a.native.asJson),
+      ("SedicarService", a.sedicarService.asJson)
+    )
+  }
+
   implicit val agentServiceConnectProxyConfigDecoder: Decoder[AgentServiceConnectProxyConfig] =
     new Decoder[AgentServiceConnectProxyConfig] {
       override def apply(c: HCursor): Result[AgentServiceConnectProxyConfig] = for {
@@ -212,6 +302,18 @@ trait Agent { this: Catalog with Health with Common =>
         localServicePort,
         config,
         upstreams
+      )
+    }
+
+  implicit val agentServiceConnectProxyConfigEncoder: Encoder[AgentServiceConnectProxyConfig] =
+    new Encoder[AgentServiceConnectProxyConfig] {
+      override def apply(a: AgentServiceConnectProxyConfig): Json = Json.obj(
+        ("DestinationServiceName", a.destinationServiceName.asJson),
+        ("DestinationServiceID", a.destinationServiceID.asJson),
+        ("LocalServiceAddress", a.localServiceAddress.asJson),
+        ("LocalServicePort", a.localServicePort.asJson),
+        ("Config", a.config.asJson),
+        ("Upstreams", a.upstreams.asJson)
       )
     }
 
@@ -315,9 +417,25 @@ trait Agent { this: Catalog with Health with Common =>
     )
   }
 
+  implicit val upstreamEncoder: Encoder[Upstream] = new Encoder[Upstream] {
+    override def apply(a: Upstream): Json = Json.obj(
+      ("DestinationType", a.destinationType.asJson),
+      ("DestinationNamespace", a.destinationNamespace.asJson),
+      ("DestinationName", a.destinationName.asJson),
+      ("Datacenter", a.datacenter.asJson),
+      ("LocalBindAddress", a.localBindAddress.asJson),
+      ("LocalBindPort", a.localBindPort.asJson),
+      ("Config", a.config.asJson)
+    )
+  }
+
   implicit val upstreamDestTypeDecoder: Decoder[UpstreamDestType] = new Decoder[UpstreamDestType] {
     override def apply(c: HCursor): Result[UpstreamDestType] = for {
       value <- c.as[String]
     } yield UpstreamDestType.withValue(value)
+  }
+
+  implicit val upstreamDestTypeEncoder: Encoder[UpstreamDestType] = new Encoder[UpstreamDestType] {
+    override def apply(a: UpstreamDestType): Json = Json.fromString(a.value)
   }
 }

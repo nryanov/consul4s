@@ -4,14 +4,13 @@ import consul4s.model.agent.{AgentCheck, AgentService}
 import consul4s.model.health.HealthCheck
 
 final case class CatalogRegistration(
-  id: String,
+  id: Option[String] = None,
   node: String,
   address: String,
-  taggedAddresses: Map[String, String],
-  nodeMeta: Map[String, String],
-  datacenter: String,
-  service: Option[AgentService],
-  check: Option[AgentCheck],
-  checks: List[HealthCheck],
-  skipNodeUpdate: Boolean
+  taggedAddresses: Option[Map[String, String]] = None,
+  nodeMeta: Option[Map[String, String]] = None,
+  datacenter: Option[String] = None,
+  service: Option[AgentService] = None,
+  checks: Option[List[HealthCheck]] = None,
+  skipNodeUpdate: Boolean = false
 )

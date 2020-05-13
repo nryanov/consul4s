@@ -4,6 +4,7 @@ import consul4s.model.agent.{AgentCheck, AgentService, AgentServiceConnectProxyC
 import consul4s.model.catalog._
 import consul4s.model.health.HealthCheck
 import io.circe.Decoder.Result
+import io.circe.syntax._
 import io.circe._
 
 trait Catalog { this: Agent with Health =>
@@ -24,12 +25,19 @@ trait Catalog { this: Agent with Health =>
   implicit val catalogDeregistrationDecoder: Decoder[CatalogDeregistration] = new Decoder[CatalogDeregistration] {
     override def apply(c: HCursor): Result[CatalogDeregistration] = for {
       node <- c.downField("Node").as[String]
-      address <- c.downField("Address").as[Option[String]]
-      datacenter <- c.downField("Datacenter").as[String]
-      serviceId <- c.downField("ServiceId").as[String]
-      checkId <- c.downField("CheckId").as[String]
-      namespace <- c.downField("Namespace").as[Option[String]]
-    } yield CatalogDeregistration(node, address, datacenter, serviceId, checkId, namespace)
+      datacenter <- c.downField("Datacenter").as[Option[String]]
+      serviceId <- c.downField("ServiceId").as[Option[String]]
+      checkId <- c.downField("CheckId").as[Option[String]]
+    } yield CatalogDeregistration(node, datacenter, serviceId, checkId)
+  }
+
+  implicit val catalogDeregistrationEncoder: Encoder[CatalogDeregistration] = new Encoder[CatalogDeregistration] {
+    override def apply(a: CatalogDeregistration): Json = Json.obj(
+      ("Node", a.node.asJson),
+      ("Datacenter", a.datacenter.asJson),
+      ("ServiceId", a.serviceId.asJson),
+      ("CheckId", a.checkId.asJson)
+    )
   }
 
   implicit val catalogNodeDecoder: Decoder[CatalogNode] = new Decoder[CatalogNode] {
@@ -48,17 +56,30 @@ trait Catalog { this: Agent with Health =>
 
   implicit val catalogRegistrationDecoder: Decoder[CatalogRegistration] = new Decoder[CatalogRegistration] {
     override def apply(c: HCursor): Result[CatalogRegistration] = for {
-      id <- c.downField("ID").as[String]
+      id <- c.downField("ID").as[Option[String]]
       node <- c.downField("Node").as[String]
       address <- c.downField("Address").as[String]
-      taggedAddresses <- c.downField("TaggedAddresses").as[Map[String, String]]
-      nodeMeta <- c.downField("NodeMeta").as[Map[String, String]]
-      datacenter <- c.downField("Datacenter").as[String]
+      taggedAddresses <- c.downField("TaggedAddresses").as[Option[Map[String, String]]]
+      nodeMeta <- c.downField("NodeMeta").as[Option[Map[String, String]]]
+      datacenter <- c.downField("Datacenter").as[Option[String]]
       service <- c.downField("Service").as[Option[AgentService]]
-      check <- c.downField("Check").as[Option[AgentCheck]]
-      checks <- c.downField("Checks").as[List[HealthCheck]]
+      checks <- c.downField("Checks").as[Option[List[HealthCheck]]]
       skipNodeUpdate <- c.downField("SkipNodeUpdate").as[Boolean]
-    } yield CatalogRegistration(id, node, address, taggedAddresses, nodeMeta, datacenter, service, check, checks, skipNodeUpdate)
+    } yield CatalogRegistration(id, node, address, taggedAddresses, nodeMeta, datacenter, service, checks, skipNodeUpdate)
+  }
+
+  implicit val catalogRegistrationEncoder: Encoder[CatalogRegistration] = new Encoder[CatalogRegistration] {
+    override def apply(a: CatalogRegistration): Json = Json.obj(
+      ("ID", a.id.asJson),
+      ("Node", a.node.asJson),
+      ("Address", a.address.asJson),
+      ("TaggedAddresses", a.taggedAddresses.asJson),
+      ("NodeMeta", a.nodeMeta.asJson),
+      ("Datacenter", a.datacenter.asJson),
+      ("Service", a.service.asJson),
+      ("Checks", a.checks.asJson),
+      ("SkipNodeUpdate", a.skipNodeUpdate.asJson)
+    )
   }
 
   implicit val catalogServiceDecoder: Decoder[CatalogService] = new Decoder[CatalogService] {

@@ -4,7 +4,7 @@ import consul4s.model.ServiceKind
 import consul4s.model.catalog.ServiceAddress
 
 final case class AgentService(
-  kind: Option[ServiceKind],
+  kind: Option[ServiceKind] = Some(ServiceKind.Typical),
   id: String,
   service: String,
   tags: List[String],

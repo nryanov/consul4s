@@ -1,9 +1,11 @@
 package consul4s
 
+import consul4s.model.catalog.{CatalogDeregistration, CatalogRegistration}
+
 trait JsonEncoder {
-  def catalogRegistrationToJson(): Unit
+  def catalogRegistrationToJson(catalogRegistration: CatalogRegistration): String
 
-  def catalogDeregistrationToJson(): Unit
+  def catalogDeregistrationToJson(catalogDeregistration: CatalogDeregistration): String
 
-  def membersOptsToJson(): Unit
+  def membersOptsToJson(): String
 }
