@@ -3,7 +3,7 @@ package consul4s.json4s.model
 import consul4s.model.agent.{AgentCheck, AgentService, AgentServiceConnectProxyConfig}
 import consul4s.model.catalog._
 import consul4s.model.health.HealthCheck
-import org.json4s.{CustomSerializer, JObject}
+import org.json4s.{CustomSerializer, JObject, NoTypeHints}
 
 trait Catalog {
   val serviceAddressSerializer = new CustomSerializer[ServiceAddress](
@@ -62,7 +62,7 @@ trait Catalog {
           case json: JObject =>
             CatalogNode(
               (json \ "Node").extract[Option[Node]],
-              (json \ "Services").extract[Map[String, AgentService]]
+              (json \ "Services").extract[Option[Map[String, AgentService]]]
             )
         }, {
           case _: CatalogNode => JObject()
@@ -150,7 +150,7 @@ trait Catalog {
               (json \ "ID").extract[String],
               (json \ "Node").extract[String],
               (json \ "Address").extract[String],
-              (json \ "Datacanter").extract[String],
+              (json \ "Datacenter").extract[String],
               (json \ "TaggedAddresses").extract[Map[String, String]],
               (json \ "Meta").extract[Map[String, String]],
               (json \ "CreateIndex").extract[Long],
@@ -160,5 +160,16 @@ trait Catalog {
           case _: Node => JObject()
         }
       )
+  )
+
+  val catalogAllSerializers = List(
+    serviceAddressSerializer,
+    weightsSerializer,
+    catalogDeregistrationSerializer,
+    catalogNodeSerializer,
+    catalogNodeServiceListSerializer,
+    catalogRegistrationSerializer,
+    catalogServiceSerializer,
+    nodeSerializer
   )
 }

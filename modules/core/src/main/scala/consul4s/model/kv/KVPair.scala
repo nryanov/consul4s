@@ -9,9 +9,9 @@ final case class KVPair(
   modifyIndex: Long,
   lockIndex: Long,
   flags: Long,
-  valueBase64: Array[Byte],
-  session: String,
+  valueBase64: String,
+  session: Option[String],
   namespace: Option[String]
 ) {
-  lazy val value: String = new String(Base64.getDecoder.decode(valueBase64), StandardCharsets.UTF_8)
+  lazy val value: String = new String(Base64.getDecoder.decode(valueBase64.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8)
 }

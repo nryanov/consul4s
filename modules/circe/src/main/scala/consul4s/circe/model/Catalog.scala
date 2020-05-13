@@ -35,7 +35,7 @@ trait Catalog { this: Agent with Health =>
   implicit val catalogNodeDecoder: Decoder[CatalogNode] = new Decoder[CatalogNode] {
     override def apply(c: HCursor): Result[CatalogNode] = for {
       node <- c.downField("Node").as[Option[Node]]
-      services <- c.downField("Services").as[Map[String, AgentService]]
+      services <- c.downField("Services").as[Option[Map[String, AgentService]]]
     } yield CatalogNode(node, services)
   }
 
@@ -112,7 +112,7 @@ trait Catalog { this: Agent with Health =>
       id <- c.downField("ID").as[String]
       node <- c.downField("Node").as[String]
       address <- c.downField("Address").as[String]
-      datacenter <- c.downField("Datacanter").as[String]
+      datacenter <- c.downField("Datacenter").as[String]
       taggedAddresses <- c.downField("TaggedAddresses").as[Map[String, String]]
       meta <- c.downField("Meta").as[Map[String, String]]
       createIndex <- c.downField("CreateIndex").as[Long]

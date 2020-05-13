@@ -15,8 +15,8 @@ trait KV {
               (json \ "ModifyIndex").extract[Long],
               (json \ "LockIndex").extract[Long],
               (json \ "Flags").extract[Int],
-              (json \ "Value").extract[Array[Byte]],
-              (json \ "Session").extract[String],
+              (json \ "Value").extract[String],
+              (json \ "Session").extract[Option[String]],
               (json \ "Namespace").extract[Option[String]]
             )
         }, {
@@ -24,4 +24,6 @@ trait KV {
         }
       )
   )
+
+  val kvAllSerializers = List(kvPairSerializer)
 }

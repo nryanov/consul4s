@@ -35,4 +35,6 @@ trait Event {
         }
       )
   )
+
+  val eventAllSerializers = List(eventSerializer)
 }

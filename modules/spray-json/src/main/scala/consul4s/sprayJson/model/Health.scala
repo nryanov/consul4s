@@ -1,9 +1,9 @@
 package consul4s.sprayJson.model
 
-import consul4s.model.health.{HealthCheck, HealthCheckDefinition}
+import consul4s.model.health.{HealthCheck, HealthCheckDefinition, ServiceEntry}
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
-trait Health extends DefaultJsonProtocol { this: Common =>
+trait Health extends DefaultJsonProtocol { this: Common with Agent with Catalog =>
   implicit val healthCheckDefinitionFormat: RootJsonFormat[HealthCheckDefinition] = jsonFormat(
     HealthCheckDefinition.apply,
     "HTTP",
@@ -33,5 +33,12 @@ trait Health extends DefaultJsonProtocol { this: Common =>
     "Definition",
     "CreateIndex",
     "ModifyIndex"
+  )
+
+  implicit val serviceEntryFormat: RootJsonFormat[ServiceEntry] = jsonFormat(
+    ServiceEntry.apply,
+    "Node",
+    "Service",
+    "Checks"
   )
 }

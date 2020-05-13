@@ -4,8 +4,8 @@ import consul4s.model.{ServiceKind, Status}
 import consul4s.model.agent._
 import consul4s.model.catalog.ServiceAddress
 import consul4s.model.health.{HealthCheck, HealthCheckDefinition}
+import org.json4s._
 import org.json4s.JsonAST.JString
-import org.json4s.{CustomSerializer, JObject}
 
 trait Agent {
   val agentAuthorizeSerializer = new CustomSerializer[AgentAuthorize](
@@ -352,5 +352,26 @@ trait Agent {
           case destType: UpstreamDestType => JString(destType.value)
         }
       )
+  )
+
+  val agentAllSerializers = List(
+    agentAuthorizeSerializer,
+    agentAuthorizeParamsSerializer,
+    agentCheckSerializer,
+    agentCheckRegistrationSerializer,
+    agentMemberSerializer,
+    agentServiceSerializer,
+    agentServiceCheckSerializer,
+    agentServiceChecksInfoSerializer,
+    agentServiceConnectSerializer,
+    agentServiceConnectProxyConfigSerializer,
+    agentServiceRegistrationSerializer,
+    agentTokenSerializer,
+    agentWeightsSerializer,
+    connectProxyConfigSerializer,
+    membersOptsSerializer,
+    serviceRegisterOptsSerializer,
+    upstreamSerializer,
+    upstreamDestTypeSerializer
   )
 }

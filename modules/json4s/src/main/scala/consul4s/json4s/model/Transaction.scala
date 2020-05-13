@@ -222,4 +222,22 @@ trait Transaction {
         }
       )
   )
+
+  val transactionAllSerializers = List(
+    checkOpSerializer,
+    checkTxnOpSerializer,
+    kvOpSerializer,
+    kvTxnOpSerializer,
+    kvTxnResponseSerializer,
+    nodeOpSerializer,
+    nodeTxnOpSerializer,
+    serviceOpSerializer,
+    serviceTxnOpSerializer,
+    sessionOpSerializer,
+    sessionTxnOpSerializer,
+    txnErrorSerializer,
+    txnOpSerializer,
+    txnResponseSerializer,
+    txnResultSerializer
+  )
 }

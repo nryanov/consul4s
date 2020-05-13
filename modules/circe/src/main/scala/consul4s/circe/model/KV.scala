@@ -12,8 +12,8 @@ trait KV {
       modifyIndex <- c.downField("ModifyIndex").as[Long]
       lockIndex <- c.downField("LockIndex").as[Long]
       flags <- c.downField("Flags").as[Long]
-      valueBase64 <- c.downField("Value").as[Array[Byte]]
-      session <- c.downField("Session").as[String]
+      valueBase64 <- c.downField("Value").as[String]
+      session <- c.downField("Session").as[Option[String]]
       namespace <- c.downField("Namespace").as[Option[String]]
     } yield KVPair(key, createIndex, modifyIndex, lockIndex, flags, valueBase64, session, namespace)
   }

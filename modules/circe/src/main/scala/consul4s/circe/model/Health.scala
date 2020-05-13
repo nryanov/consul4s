@@ -1,11 +1,13 @@
 package consul4s.circe.model
 
 import consul4s.model.Status
-import consul4s.model.health.{HealthCheck, HealthCheckDefinition}
+import consul4s.model.agent.AgentService
+import consul4s.model.catalog.Node
+import consul4s.model.health.{HealthCheck, HealthCheckDefinition, ServiceEntry}
 import io.circe.Decoder.Result
 import io.circe._
 
-trait Health { this: Common =>
+trait Health { this: Common with Agent with Catalog =>
   implicit val healthCheckDefinitionDecoder: Decoder[HealthCheckDefinition] = new Decoder[HealthCheckDefinition] {
     override def apply(c: HCursor): Result[HealthCheckDefinition] = for {
       http <- c.downField("HTTP").as[String]
@@ -61,6 +63,18 @@ trait Health { this: Common =>
       definition,
       createIndex,
       modifyIndex
+    )
+  }
+
+  implicit val serviceEntryDecoder: Decoder[ServiceEntry] = new Decoder[ServiceEntry] {
+    override def apply(c: HCursor): Result[ServiceEntry] = for {
+      node <- c.downField("Node").as[Node]
+      service <- c.downField("Service").as[AgentService]
+      checks <- c.downField("Checks").as[List[HealthCheck]]
+    } yield ServiceEntry(
+      node,
+      service,
+      checks
     )
   }
 }

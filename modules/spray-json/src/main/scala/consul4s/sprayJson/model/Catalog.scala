@@ -55,6 +55,6 @@ trait Catalog extends DefaultJsonProtocol { this: Health with Agent =>
   )
 
   implicit val nodeFormat: RootJsonFormat[Node] =
-    jsonFormat(Node.apply, "ID", "Node", "Address", "Datacanter", "TaggedAddresses", "Meta", "CreateIndex", "ModifyIndex")
+    jsonFormat(Node.apply, "ID", "Node", "Address", "Datacenter", "TaggedAddresses", "Meta", "CreateIndex", "ModifyIndex")
 
 }
