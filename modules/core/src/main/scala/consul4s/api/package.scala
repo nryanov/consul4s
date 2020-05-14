@@ -11,4 +11,5 @@ package object api {
       with Health[F]
       with Catalog[F]
       with Agent[F]
+      with Event[F]
 }

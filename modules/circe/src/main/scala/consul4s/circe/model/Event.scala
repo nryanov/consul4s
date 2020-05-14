@@ -5,6 +5,5 @@ import io.circe._
 import io.circe.generic.semiauto._
 
 trait Event {
-  implicit val userEventEncoder: Encoder[UserEvent] = deriveEncoder[UserEvent]
   implicit val userEventDecoder: Decoder[UserEvent] = deriveDecoder[UserEvent]
 }

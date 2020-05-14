@@ -3,6 +3,7 @@ package consul4s
 import consul4s.circe.model._
 import consul4s.model.agent._
 import consul4s.model.catalog._
+import consul4s.model.event.UserEvent
 import consul4s.model.health.{HealthCheck, ServiceEntry}
 import consul4s.model.kv.KVPair
 import sttp.client.ResponseAs
@@ -37,6 +38,10 @@ package object circe extends Agent with Catalog with Common with Event with Heal
     override def asNodeServiceListUnsafe: ResponseAs[NodeServiceList, Nothing] = asJsonAlwaysUnsafe[NodeServiceList]
 
     override def asNodeServiceMap: ResponseAs[Option[NodeServiceMap], Nothing] = asJsonAlways[NodeServiceMap].map(_.toOption)
+
+    override def asUserEventUnsafe: ResponseAs[UserEvent, Nothing] = asJsonAlwaysUnsafe[UserEvent]
+
+    override def asUserEventListUnsafe: ResponseAs[List[UserEvent], Nothing] = asJsonAlwaysUnsafe[List[UserEvent]]
   }
 
   val printer: Printer = Printer.noSpaces.copy(dropNullValues = true)
