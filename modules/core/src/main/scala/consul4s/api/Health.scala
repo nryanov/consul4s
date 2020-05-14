@@ -1,7 +1,7 @@
 package consul4s.api
 
 import consul4s.model.health.{HealthCheck, ServiceEntry}
-import consul4s.model.{Status => ConsulStatus}
+import consul4s.model.{CheckStatus => ConsulStatus}
 import sttp.client._
 
 trait Health[F[_]] { this: ConsulApi[F] =>

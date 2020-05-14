@@ -1,9 +1,5 @@
 package consul4s.model.catalog
 
-import eu.timepit.refined.api.Refined
-import eu.timepit.refined.string._
-import consul4s.model.agent.TaggedAddress
-
 /**
  *
  * @param Node - Specifies the node ID to register.
@@ -28,9 +24,9 @@ final case class EntityRegistration(
   Node: String,
   Address: String,
   Service: Option[Service] = None,
-  ID: Option[Refined[String, Uuid]] = None,
+  ID: Option[String] = None,
   Datacenter: Option[String] = None,
-  TaggedAddresses: Option[Map[String, TaggedAddress]] = None,
+  TaggedAddresses: Option[Map[String, String]] = None,
   NodeMeta: Option[Map[String, String]] = None,
   SkipNodeUpdate: Boolean = false
 )

@@ -1,7 +1,7 @@
 package consul4s.circe.model
 
-import consul4s.model.agent.AgentService
-import consul4s.model.catalog.{CatalogService, Node}
+import consul4s.model.agent._
+import consul4s.model.catalog._
 import consul4s.model.health.HealthCheck
 import consul4s.model.kv.KVPair
 import consul4s.model.transaction._

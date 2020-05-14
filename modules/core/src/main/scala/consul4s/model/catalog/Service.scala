@@ -1,7 +1,7 @@
 package consul4s.model.catalog
 
 import consul4s.model.ServiceKind
-import consul4s.model.agent.{Check, TaggedAddress, Weights}
+import consul4s.model.agent._
 
 /**
  *
@@ -49,5 +49,5 @@ final case class Service(
   Port: Option[Int] = None,
   Checks: Option[List[Check]] = None,
   EnableTagOverride: Boolean = false,
-  Weights: Weights = Weights.DEFAULT
+  Weights: Option[Weights] = None
 )

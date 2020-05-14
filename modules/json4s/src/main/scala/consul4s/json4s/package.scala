@@ -1,8 +1,8 @@
 package consul4s
 
 import consul4s.json4s.model._
-import consul4s.model.agent.AgentMember
-import consul4s.model.catalog.{CatalogNode, CatalogNodeServiceList, CatalogService, Node}
+import consul4s.model.agent._
+import consul4s.model.catalog._
 import consul4s.model.health.{HealthCheck, ServiceEntry}
 import consul4s.model.kv.KVPair
 import sttp.client.ResponseAs

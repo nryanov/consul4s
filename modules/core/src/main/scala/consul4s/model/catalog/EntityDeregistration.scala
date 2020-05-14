@@ -1,7 +1,5 @@
 package consul4s.model.catalog
 
-import consul4s.model._
-
 /**
  *
  * @param Node - Specifies the ID of the node. If no other values are provided, this node, all its services, and all its checks are removed.
@@ -11,7 +9,7 @@ import consul4s.model._
  */
 final case class EntityDeregistration(
   Node: String,
-  Datacenter: String = DEFAULT_VALUE,
-  CheckID: String = DEFAULT_VALUE,
-  ServiceID: String = DEFAULT_VALUE
+  Datacenter: Option[String] = None,
+  CheckID: Option[String] = None,
+  ServiceID: Option[String] = None
 )

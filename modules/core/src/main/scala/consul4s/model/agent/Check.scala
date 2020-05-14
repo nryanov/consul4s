@@ -1,6 +1,6 @@
 package consul4s.model.agent
 
-import consul4s.model.Status
+import consul4s.model.CheckStatus
 
 sealed trait Check
 
@@ -11,7 +11,7 @@ final case class ScriptCheck(
   Interval: String,
   Timeout: String,
   ServiceID: Option[String] = None,
-  Status: Status = Status.Critical,
+  Status: CheckStatus,
   Notes: Option[String] = None
 ) extends Check
 
@@ -26,7 +26,7 @@ final case class HttpCheck(
   Interval: String,
   Timeout: String,
   ServiceID: Option[String] = None,
-  Status: Status = Status.Critical,
+  Status: CheckStatus,
   Notes: Option[String] = None,
   SuccessBeforePassing: Int = 0,
   FailuresBeforeCritical: Int = 0
@@ -39,7 +39,7 @@ final case class TCPCheck(
   Interval: String,
   Timeout: String,
   ServiceID: Option[String] = None,
-  Status: Status = Status.Critical,
+  Status: CheckStatus,
   Notes: Option[String] = None,
   SuccessBeforePassing: Int = 0,
   FailuresBeforeCritical: Int = 0
@@ -50,7 +50,7 @@ final case class TTLCheck(
   ID: String,
   TTL: String,
   ServiceID: Option[String] = None,
-  Status: Status = Status.Critical,
+  Status: CheckStatus,
   Notes: Option[String] = None
 ) extends Check
 
@@ -62,7 +62,7 @@ final case class DockerCheck(
   Args: List[String],
   Interval: String,
   ServiceID: Option[String] = None,
-  Status: Status = Status.Critical,
+  Status: CheckStatus,
   Notes: Option[String] = None,
   SuccessBeforePassing: Int = 0,
   FailuresBeforeCritical: Int = 0
@@ -75,7 +75,7 @@ final case class GRpcCheck(
   GRPCUseTLS: Boolean,
   Interval: String,
   ServiceID: Option[String] = None,
-  Status: Status = Status.Critical,
+  Status: CheckStatus,
   Notes: Option[String] = None,
   SuccessBeforePassing: Int = 0,
   FailuresBeforeCritical: Int = 0

@@ -1,12 +1,12 @@
 package consul4s.model.health
 
-import consul4s.model.Status
+import consul4s.model.CheckStatus
 
 final case class HealthCheck(
   Node: String,
   CheckId: String,
   Name: String,
-  Status: Status,
+  Status: CheckStatus,
   Notes: String,
   Output: String,
   ServiceId: String,
