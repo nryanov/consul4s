@@ -47,7 +47,7 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     val params = List(dcParam, nearParam, nodeMetaParam, filterParam).filterNot(_.isBlank).mkString("", "&", "")
 
     val requestTemplate = basicRequest.get(uri"$url/catalog/nodes?$params")
-    val request = requestTemplate.copy(response = jsonDecoder.asNodesUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asNodeListUnsafe)
 
     val response = sttpBackend.send(request)
     response
@@ -68,52 +68,52 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     val response = sttpBackend.send(request)
     response
   }
-//
-//  // GET /catalog/service/" + service
-//  def nodesInfoForService(
-//    service: String,
-//    dc: Option[String] = None,
-//    tag: Option[String] = None,
-//    near: Option[String] = None,
-//    nodeMeta: Option[String] = None,
-//    filter: Option[String] = None
-//  ): F[Response[List[CatalogService]]] = {
-//    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-//    val tagParam = tag.map(v => s"tag=$v").getOrElse("")
-//    val nearParam = near.map(v => s"near=$v").getOrElse("")
-//    val nodeMetaParam = nodeMeta.map(v => s"node-meta=$v").getOrElse("")
-//    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
-//    val params = List(dcParam, tagParam, nearParam, nodeMetaParam, filterParam).filterNot(_.isBlank).mkString("", "&", "")
-//
-//    val requestTemplate = basicRequest.get(uri"$url/catalog/service/$service?$params")
-//    val request = requestTemplate.copy(response = jsonDecoder.asCatalogServicesUnsafe)
-//
-//    val response = sttpBackend.send(request)
-//    response
-//  }
-//
-//  // GET /catalog/connect/" + service
-//  def nodesInfoForConnectCapableService(
-//    service: String,
-//    dc: Option[String] = None,
-//    tag: Option[String] = None,
-//    near: Option[String] = None,
-//    nodeMeta: Option[String] = None,
-//    filter: Option[String] = None
-//  ): F[Response[List[CatalogService]]] = {
-//    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-//    val tagParam = tag.map(v => s"tag=$v").getOrElse("")
-//    val nearParam = near.map(v => s"near=$v").getOrElse("")
-//    val nodeMetaParam = nodeMeta.map(v => s"node-meta=$v").getOrElse("")
-//    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
-//    val params = List(dcParam, tagParam, nearParam, nodeMetaParam, filterParam).filterNot(_.isBlank).mkString("", "&", "")
-//
-//    val requestTemplate = basicRequest.get(uri"$url/catalog/connect/$service?$params")
-//    val request = requestTemplate.copy(response = jsonDecoder.asCatalogServicesUnsafe)
-//
-//    val response = sttpBackend.send(request)
-//    response
-//  }
+
+  // GET /catalog/service/ + service
+  def nodesInfoForService(
+    service: String,
+    dc: Option[String] = None,
+    tag: Option[String] = None,
+    near: Option[String] = None,
+    nodeMeta: Option[String] = None,
+    filter: Option[String] = None
+  ): F[Response[List[ServiceInfo]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val tagParam = tag.map(v => s"tag=$v").getOrElse("")
+    val nearParam = near.map(v => s"near=$v").getOrElse("")
+    val nodeMetaParam = nodeMeta.map(v => s"node-meta=$v").getOrElse("")
+    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
+    val params = List(dcParam, tagParam, nearParam, nodeMetaParam, filterParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/catalog/service/$service?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asServiceInfoListUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  // GET /catalog/connect/ + service
+  def nodesInfoForConnectCapableService(
+    service: String,
+    dc: Option[String] = None,
+    tag: Option[String] = None,
+    near: Option[String] = None,
+    nodeMeta: Option[String] = None,
+    filter: Option[String] = None
+  ): F[Response[List[ServiceInfo]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val tagParam = tag.map(v => s"tag=$v").getOrElse("")
+    val nearParam = near.map(v => s"near=$v").getOrElse("")
+    val nodeMetaParam = nodeMeta.map(v => s"node-meta=$v").getOrElse("")
+    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
+    val params = List(dcParam, tagParam, nearParam, nodeMetaParam, filterParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/catalog/connect/$service?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asServiceInfoListUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
 //
 //  // GET	/catalog/node/:node
 //  def mapOfServicesForNode(

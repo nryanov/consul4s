@@ -46,5 +46,22 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
       val afterDeregistration = client.nodes().body
       assert(!afterDeregistration.exists(_.Node == "node"))
     }
+
+    "register, get info and deregister service" in withContainers { consul =>
+      val client = createClient(consul)
+
+      val registerNode = EntityRegistration("node", "address", Service = Some(Service("testService")))
+      val deleteNode = EntityDeregistration("node")
+
+      client.registerEntity(registerNode)
+
+      val result1 = client.nodesInfoForService("testService").body
+      assert(result1.exists(_.ServiceName == "testService"))
+
+      client.deregisterEntity(deleteNode)
+
+      val result2 = client.nodesInfoForService("testService").body
+      assert(!result2.exists(_.ServiceName == "testService"))
+    }
   }
 }

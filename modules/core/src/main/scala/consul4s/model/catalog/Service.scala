@@ -1,18 +1,12 @@
 package consul4s.model.catalog
 
-import consul4s.model.ServiceKind
 import consul4s.model.agent._
 
 /**
  *
- * @param Name - Specifies the logical name of the service.
+ * @param Service - Specifies the logical name of the service.
  *             Many service instances may share the same logical service name.
  *             We recommend using valid DNS labels for compatibility with external DNS.
- * @param serviceKind - The kind of service. Defaults to "" which is a typical Consul service.
- *                    This value may also be "connect-proxy" for Connect proxies representing another service,
- *                    "mesh-gateway" for instances of a mesh gateway,
- *                    "terminating-gateway" for instances of a terminating gateway, or
- *                    "ingress-gateway" for instances of a ingress gateway.
  * @param ID - Specifies a unique ID for this service. This must be unique per agent. This defaults to the Name parameter if not provided.
  * @param Tags - Specifies a list of tags to assign to the service. These tags can be used for later filtering and are exposed via the APIs. We recommend using valid DNS labels for compatibility with external DNS
  * @param Address - Specifies the address of the service. If not provided, the agent's address is used as the address for the service during DNS queries.
@@ -39,8 +33,7 @@ import consul4s.model.agent._
  */
 // todo: Proxy & Connect
 final case class Service(
-  Name: String,
-  serviceKind: ServiceKind = ServiceKind.Typical,
+  Service: String,
   ID: Option[String] = None,
   Tags: Option[List[String]] = None,
   Address: Option[String] = None,

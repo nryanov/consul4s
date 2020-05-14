@@ -19,11 +19,13 @@ trait JsonDecoder {
 
   def asMapMultipleValuesUnsafe: ResponseAs[Map[String, List[String]], Nothing]
 
-  def asKVPairsOption: ResponseAs[Option[List[KVPair]], Nothing]
+  def asKVPairListOption: ResponseAs[Option[List[KVPair]], Nothing]
 
-  def asHealthChecksUnsafe: ResponseAs[List[HealthCheck], Nothing]
+  def asHealthCheckListUnsafe: ResponseAs[List[HealthCheck], Nothing]
 
-  def asServiceEntriesUnsafe: ResponseAs[List[ServiceEntry], Nothing]
+  def asServiceEntryListUnsafe: ResponseAs[List[ServiceEntry], Nothing]
 
-  def asNodesUnsafe: ResponseAs[List[Node], Nothing]
+  def asNodeListUnsafe: ResponseAs[List[Node], Nothing]
+
+  def asServiceInfoListUnsafe: ResponseAs[List[ServiceInfo], Nothing]
 }

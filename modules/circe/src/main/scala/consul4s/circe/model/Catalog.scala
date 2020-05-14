@@ -6,7 +6,9 @@ import io.circe.generic.semiauto._
 
 trait Catalog { this: Agent with Health with Common =>
   implicit val serviceEncoder: Encoder[Service] = deriveEncoder[Service]
-  implicit val ServiceDecoder: Decoder[Service] = deriveDecoder[Service]
+  implicit val serviceDecoder: Decoder[Service] = deriveDecoder[Service]
+
+  implicit val serviceInfoDecoder: Decoder[ServiceInfo] = deriveDecoder[ServiceInfo]
 
   implicit val nodeDecoder: Decoder[Node] = deriveDecoder[Node]
 
