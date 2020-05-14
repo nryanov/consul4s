@@ -1,15 +1,15 @@
 package consul4s.model.agent
 
 final case class AgentMember(
-  name: String,
-  addr: String,
-  port: Int,
-  tags: Map[String, String],
-  status: Int,
-  protocolMin: Int,
-  protocolMax: Int,
-  protocolCur: Int,
-  delegateMin: Int,
-  delegateMax: Int,
-  delegateCur: Int
+  Name: String,
+  Addr: String,
+  Port: Int,
+  Tags: Map[String, String],
+  Status: Int,
+  ProtocolMin: Int,
+  ProtocolMax: Int,
+  ProtocolCur: Int,
+  DelegateMin: Int,
+  DelegateMax: Int,
+  DelegateCur: Int
 )

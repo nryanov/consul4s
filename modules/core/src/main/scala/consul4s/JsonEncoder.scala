@@ -1,5 +1,6 @@
 package consul4s
 
+import consul4s.model.agent.MembersOpts
 import consul4s.model.catalog.{CatalogDeregistration, CatalogRegistration}
 
 trait JsonEncoder {
@@ -7,5 +8,5 @@ trait JsonEncoder {
 
   def catalogDeregistrationToJson(catalogDeregistration: CatalogDeregistration): String
 
-  def membersOptsToJson(): String
+  def membersOptsToJson(membersOpts: MembersOpts): String
 }

@@ -1,3 +1,3 @@
 package consul4s.model.agent
 
-final case class AgentAuthorizeParams(target: String, clientCertUri: String, clientCertSerial: String)
+final case class AgentAuthorizeParams(Target: String, ClientCertUri: String, ClientCertSerial: String)

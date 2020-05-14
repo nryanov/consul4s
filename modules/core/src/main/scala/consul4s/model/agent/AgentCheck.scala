@@ -4,15 +4,14 @@ import consul4s.model.Status
 import consul4s.model.health.HealthCheckDefinition
 
 final case class AgentCheck(
-  node: String,
-  checkID: String,
-  name: String,
-  status: Status,
-  notes: String,
-  output: String,
-  serviceID: String,
-  serviceName: String,
-  `type`: String,
-  definition: HealthCheckDefinition,
-  namespace: Option[String]
+  Node: String,
+  CheckID: String,
+  Name: String,
+  Status: Status,
+  Notes: String,
+  Output: String,
+  ServiceID: String,
+  ServiceName: String,
+  Type: String,
+  Definition: HealthCheckDefinition
 )

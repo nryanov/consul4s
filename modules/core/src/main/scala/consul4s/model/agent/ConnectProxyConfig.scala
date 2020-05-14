@@ -1,10 +1,10 @@
 package consul4s.model.agent
 
 final case class ConnectProxyConfig(
-  proxyServiceId: String,
-  targetServiceId: String,
-  targetServiceName: String,
-  contentHash: String,
-  config: Map[String, String],
-  upstreams: List[Upstream]
+  ProxyServiceId: String,
+  TargetServiceId: String,
+  TargetServiceName: String,
+  ContentHash: String,
+  Config: Map[String, String],
+  Upstreams: List[Upstream]
 )

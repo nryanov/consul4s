@@ -9,4 +9,4 @@ If node does not exist response will be:
     "Services": null
 }
  */
-final case class CatalogNode(node: Option[Node], services: Option[Map[String, AgentService]])
+final case class CatalogNode(Node: Option[Node], Services: Option[Map[String, AgentService]])

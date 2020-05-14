@@ -1,3 +1,3 @@
 package consul4s.model.agent
 
-final case class AgentAuthorize(authorized: Boolean, reason: String)
+final case class AgentAuthorize(Authorized: Boolean, Reason: String)

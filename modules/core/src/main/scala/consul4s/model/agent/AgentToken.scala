@@ -1,3 +1,3 @@
 package consul4s.model.agent
 
-final case class AgentToken(token: String)
+final case class AgentToken(Token: String)

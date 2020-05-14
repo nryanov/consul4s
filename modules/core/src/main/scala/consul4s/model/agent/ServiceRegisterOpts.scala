@@ -1,3 +1,3 @@
 package consul4s.model.agent
 
-final case class ServiceRegisterOpts(replaceExistingChecks: Boolean)
+final case class ServiceRegisterOpts(ReplaceExistingChecks: Boolean)
