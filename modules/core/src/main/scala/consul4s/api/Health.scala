@@ -14,21 +14,13 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     tag: Option[String] = None,
     nodeMeta: Option[String] = None,
     passing: Boolean = false,
-    filter: Option[String] = None,
-    ns: Option[String] = None
+    filter: Option[String] = None
   ): F[Response[List[ServiceEntry]]] = {
-    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-    val nearParam = near.map(v => s"near=$v").getOrElse("")
-    val tagParam = tag.map(v => s"tag=$v").getOrElse("")
-    val nodeMetaParam = nodeMeta.map(v => s"nodeMeta=$v").getOrElse("")
-    val passingParam = if (passing) "passing" else ""
-    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
-    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+    val passingParam = if (passing) "&passing" else ""
 
-    val params =
-      List(dcParam, nearParam, tagParam, nodeMetaParam, passingParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
-
-    val requestTemplate = basicRequest.get(uri"$url/health/service/$service?$params")
+    val requestTemplate = basicRequest.get(
+      uri"$url/health/service/$service?dc=$dc&near=$near&tag=$tag&node-meta=$nodeMeta&filter=$filter$passingParam"
+    )
     val request = requestTemplate.copy(response = jsonDecoder.asServiceEntryListUnsafe)
 
     val response = sttpBackend.send(request)
@@ -43,21 +35,12 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     tag: Option[String] = None,
     nodeMeta: Option[String] = None,
     passing: Boolean = false,
-    filter: Option[String] = None,
-    ns: Option[String] = None
+    filter: Option[String] = None
   ): F[Response[List[ServiceEntry]]] = {
-    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-    val nearParam = near.map(v => s"near=$v").getOrElse("")
-    val tagParam = tag.map(v => s"tag=$v").getOrElse("")
-    val nodeMetaParam = nodeMeta.map(v => s"nodeMeta=$v").getOrElse("")
-    val passingParam = if (passing) "passing" else ""
-    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
-    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
+    val passingParam = if (passing) "&passing" else ""
 
-    val params =
-      List(dcParam, nearParam, tagParam, nodeMetaParam, passingParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
-
-    val requestTemplate = basicRequest.get(uri"$url/health/connect/$service?$params")
+    val requestTemplate =
+      basicRequest.get(uri"$url/health/connect/$service?dc=$dc&near=$near&tag=$tag&node-meta=$nodeMeta&filter=$filter$passingParam")
     val request = requestTemplate.copy(response = jsonDecoder.asServiceEntryListUnsafe)
 
     val response = sttpBackend.send(request)
@@ -68,15 +51,9 @@ trait Health[F[_]] { this: ConsulApi[F] =>
   def nodeChecks(
     node: String,
     dc: Option[String] = None,
-    filter: Option[String] = None,
-    ns: Option[String] = None
+    filter: Option[String] = None
   ): F[Response[List[HealthCheck]]] = {
-    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
-    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
-    val params = List(dcParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
-
-    val requestTemplate = basicRequest.get(uri"$url/health/node/$node?$params")
+    val requestTemplate = basicRequest.get(uri"$url/health/node/$node?dc=$dc&filter=$filter")
     val request = requestTemplate.copy(response = jsonDecoder.asHealthCheckListUnsafe)
 
     val response = sttpBackend.send(request)
@@ -89,17 +66,9 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     dc: Option[String] = None,
     near: Option[String] = None,
     nodeMeta: Option[String] = None,
-    filter: Option[String] = None,
-    ns: Option[String] = None
+    filter: Option[String] = None
   ): F[Response[List[HealthCheck]]] = {
-    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-    val nearParam = near.map(v => s"near=$v").getOrElse("")
-    val nodeMetaParam = nodeMeta.map(v => s"node-meta=$v").getOrElse("")
-    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
-    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
-    val params = List(dcParam, nearParam, nodeMetaParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
-
-    val requestTemplate = basicRequest.get(uri"$url/health/checks/$service?$params")
+    val requestTemplate = basicRequest.get(uri"$url/health/checks/$service?dc=$dc&near=$near&node-meta=$nodeMeta&filter=$filter")
     val request = requestTemplate.copy(response = jsonDecoder.asHealthCheckListUnsafe)
 
     val response = sttpBackend.send(request)
@@ -112,17 +81,9 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     dc: Option[String] = None,
     near: Option[String] = None,
     nodeMeta: Option[String] = None,
-    filter: Option[String] = None,
-    ns: Option[String] = None
+    filter: Option[String] = None
   ): F[Response[List[HealthCheck]]] = {
-    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-    val nearParam = near.map(v => s"near=$v").getOrElse("")
-    val nodeMetaParam = nodeMeta.map(v => s"node-meta=$v").getOrElse("")
-    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
-    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
-    val params = List(dcParam, nearParam, nodeMetaParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
-
-    val requestTemplate = basicRequest.get(uri"$url/health/state/${state.value}?$params")
+    val requestTemplate = basicRequest.get(uri"$url/health/state/${state.value}?dc=$dc&near=$near&node-meta=$nodeMeta&filter=$filter")
     val request = requestTemplate.copy(response = jsonDecoder.asHealthCheckListUnsafe)
 
     val response = sttpBackend.send(request)

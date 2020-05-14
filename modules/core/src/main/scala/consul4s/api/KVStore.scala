@@ -8,13 +8,8 @@ import eu.timepit.refined.numeric._
 trait KVStore[F[_]] { this: ConsulApi[F] =>
 
   // GET /kv/:key
-  def get(key: String, dc: Option[String] = None, ns: Option[String] = None): F[Response[Option[KVPair]]] = {
-    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
-
-    val params = List(dcParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
-
-    val requestTemplate = basicRequest.get(uri"$url/kv/$key?$params")
+  def get(key: String, dc: Option[String] = None): F[Response[Option[KVPair]]] = {
+    val requestTemplate = basicRequest.get(uri"$url/kv/$key?dc=$dc")
     val request = requestTemplate.copy(response = jsonDecoder.asKVPairListOption.map(_.flatMap(_.headOption)))
 
     val response = sttpBackend.send(request)
@@ -22,13 +17,8 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
   }
 
   // GET /kv/:key?recurse
-  def getRecurse(key: String, dc: Option[String] = None, ns: Option[String] = None): F[Response[Option[List[KVPair]]]] = {
-    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
-
-    val params = List("recurse", dcParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
-
-    val requestTemplate = basicRequest.get(uri"$url/kv/$key?$params")
+  def getRecurse(key: String, dc: Option[String] = None): F[Response[Option[List[KVPair]]]] = {
+    val requestTemplate = basicRequest.get(uri"$url/kv/$key?recurse&dc=$dc")
     val request = requestTemplate.copy(response = jsonDecoder.asKVPairListOption)
 
     val response = sttpBackend.send(request)
@@ -39,16 +29,9 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
   def getKeys(
     key: String,
     dc: Option[String] = None,
-    separator: Option[String] = None,
-    ns: Option[String] = None
+    separator: Option[String] = None
   ): F[Response[Option[List[String]]]] = {
-    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-    val separatorParam = separator.map(v => s"separator=$v").getOrElse("")
-    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
-
-    val params = List("keys", dcParam, separatorParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
-
-    val requestTemplate = basicRequest.get(uri"$url/kv/$key?$params")
+    val requestTemplate = basicRequest.get(uri"$url/kv/$key?keys&dc=$dc&separator=$separator")
     val request = requestTemplate.copy(response = jsonDecoder.asStringListOption)
 
     val response = sttpBackend.send(request)
@@ -56,13 +39,8 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
   }
 
   // GET /kv/:key?raw
-  def getRaw(key: String, dc: Option[String] = None, ns: Option[String] = None): F[Response[Option[String]]] = {
-    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
-
-    val params = List("raw", dcParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
-
-    val requestTemplate = basicRequest.get(uri"$url/kv/$key?$params")
+  def getRaw(key: String, dc: Option[String] = None): F[Response[Option[String]]] = {
+    val requestTemplate = basicRequest.get(uri"$url/kv/$key?raw&dc=$dc")
     val request = requestTemplate.copy(response = asString.map(_.toOption))
 
     val response = sttpBackend.send(request)
@@ -77,19 +55,13 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
     flags: Option[Refined[Int, NonNegative]] = None,
     cas: Option[Refined[Int, NonNegative]] = None,
     acquire: Option[String] = None,
-    release: Option[String] = None,
-    ns: Option[String] = None
+    release: Option[String] = None
   ): F[Response[Boolean]] = {
-    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-    val flagsParam = flags.map(v => s"flags=$v").getOrElse("")
-    val casParam = cas.map(v => s"cas=$v").getOrElse("")
-    val acquireParam = acquire.map(v => s"acquire=$v").getOrElse("")
-    val releaseParam = release.map(v => s"release=$v").getOrElse("")
-    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
-
-    val params = List(dcParam, flagsParam, casParam, acquireParam, releaseParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
-
-    val requestTemplate = basicRequest.put(uri"$url/kv/$key?$params").body(value)
+    val requestTemplate = basicRequest
+      .put(
+        uri"$url/kv/$key?dc=$dc&flags=${flags.map(_.toString())}&cas=${cas.map(_.toString())}&acquire=$acquire&release=$release"
+      )
+      .body(value)
     val request = requestTemplate.copy(response = jsonDecoder.asBooleanUnsafe)
 
     val response = sttpBackend.send(request)
@@ -97,13 +69,8 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
   }
 
   // DELETE /kv/:key
-  def delete(key: String, cas: Option[Refined[Int, NonNegative]] = None, ns: Option[String] = None): F[Response[Boolean]] = {
-    val casParam = cas.map(v => s"cas=$v").getOrElse("")
-    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
-
-    val params = List(casParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
-
-    val requestTemplate = basicRequest.delete(uri"$url/kv/$key?$params")
+  def delete(key: String, cas: Option[Refined[Int, NonNegative]] = None): F[Response[Boolean]] = {
+    val requestTemplate = basicRequest.delete(uri"$url/kv/$key?cas=${cas.map(_.toString())}")
     val request = requestTemplate.copy(response = jsonDecoder.asBooleanUnsafe)
 
     val response = sttpBackend.send(request)
@@ -111,13 +78,8 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
   }
 
   // DELETE /kv/:key?recurse
-  def deleteRecurse(key: String, cas: Option[Refined[Int, NonNegative]] = None, ns: Option[String] = None): F[Response[Boolean]] = {
-    val casParam = cas.map(v => s"cas=$v").getOrElse("")
-    val nsParam = ns.map(v => s"ns=$v").getOrElse("")
-
-    val params = List("recurse", casParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
-
-    val requestTemplate = basicRequest.delete(uri"$url/kv/$key?$params")
+  def deleteRecurse(key: String, cas: Option[Refined[Int, NonNegative]] = None): F[Response[Boolean]] = {
+    val requestTemplate = basicRequest.delete(uri"$url/kv/$key?recurse&cas=${cas.map(_.toString())}")
     val request = requestTemplate.copy(response = jsonDecoder.asBooleanUnsafe)
 
     val response = sttpBackend.send(request)
