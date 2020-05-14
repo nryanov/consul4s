@@ -114,38 +114,38 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     val response = sttpBackend.send(request)
     response
   }
-//
-//  // GET	/catalog/node/:node
-//  def mapOfServicesForNode(
-//    node: String,
-//    dc: Option[String] = None,
-//    filter: Option[String] = None
-//  ): F[Response[Option[CatalogNode]]] = {
-//    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-//    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
-//    val params = List(dcParam, filterParam).filterNot(_.isBlank).mkString("", "&", "")
-//
-//    val requestTemplate = basicRequest.get(uri"$url/catalog/node/$node?$params")
-//    val request = requestTemplate.copy(response = jsonDecoder.asCatalogNodeOption)
-//
-//    val response = sttpBackend.send(request)
-//    response
-//  }
-//
-//  // GET	/catalog/node-services/:node
-//  def listServicesForNode(
-//    node: String,
-//    dc: Option[String] = None,
-//    filter: Option[String] = None
-//  ): F[Response[Option[CatalogNodeServiceList]]] = {
-//    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
-//    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
-//    val params = List(dcParam, filterParam).filterNot(_.isBlank).mkString("", "&", "")
-//
-//    val requestTemplate = basicRequest.get(uri"$url/catalog/node-services/$node?$params")
-//    val request = requestTemplate.copy(response = jsonDecoder.asCatalogNodeServiceListOption)
-//
-//    val response = sttpBackend.send(request)
-//    response
-//  }
+
+  // GET	/catalog/node/:node
+  def mapOfServicesForNode(
+    node: String,
+    dc: Option[String] = None,
+    filter: Option[String] = None
+  ): F[Response[Option[NodeServiceMap]]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
+    val params = List(dcParam, filterParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/catalog/node/$node?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asNodeServiceMap)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  // GET	/catalog/node-services/:node
+  def listOfServicesForNode(
+    node: String,
+    dc: Option[String] = None,
+    filter: Option[String] = None
+  ): F[Response[NodeServiceList]] = {
+    val dcParam = dc.map(v => s"dc=$v").getOrElse("")
+    val filterParam = filter.map(v => s"filter=$v").getOrElse("")
+    val params = List(dcParam, filterParam).filterNot(_.isBlank).mkString("", "&", "")
+
+    val requestTemplate = basicRequest.get(uri"$url/catalog/node-services/$node?$params")
+    val request = requestTemplate.copy(response = jsonDecoder.asNodeServiceListUnsafe)
+
+    val response = sttpBackend.send(request)
+    response
+  }
 }

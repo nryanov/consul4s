@@ -17,4 +17,7 @@ trait Catalog { this: Agent with Health with Common =>
 
   implicit val entityRegistrationDecoder: Decoder[EntityRegistration] = deriveDecoder[EntityRegistration]
   implicit val entityRegistrationEncoder: Encoder[EntityRegistration] = deriveEncoder[EntityRegistration]
+
+  implicit val nodeServiceListDecoder: Decoder[NodeServiceList] = deriveDecoder[NodeServiceList]
+  implicit val nodeServiceMapDecoder: Decoder[NodeServiceMap] = deriveDecoder[NodeServiceMap]
 }

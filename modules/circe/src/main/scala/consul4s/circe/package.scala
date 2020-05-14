@@ -33,6 +33,10 @@ package object circe extends Agent with Catalog with Common with Event with Heal
     override def asNodeListUnsafe: ResponseAs[List[Node], Nothing] = asJsonAlwaysUnsafe[List[Node]]
 
     override def asServiceInfoListUnsafe: ResponseAs[List[ServiceInfo], Nothing] = asJsonAlwaysUnsafe[List[ServiceInfo]]
+
+    override def asNodeServiceListUnsafe: ResponseAs[NodeServiceList, Nothing] = asJsonAlwaysUnsafe[NodeServiceList]
+
+    override def asNodeServiceMap: ResponseAs[Option[NodeServiceMap], Nothing] = asJsonAlways[NodeServiceMap].map(_.toOption)
   }
 
   val printer: Printer = Printer.noSpaces.copy(dropNullValues = true)

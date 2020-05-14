@@ -1,7 +1,6 @@
 package consul4s.api
 
 import com.dimafeng.testcontainers.scalatest.TestContainerForAll
-import consul4s.model.agent._
 import consul4s.model.catalog._
 import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
 
@@ -62,6 +61,29 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
 
       val result2 = client.nodesInfoForService("testService").body
       assert(!result2.exists(_.ServiceName == "testService"))
+    }
+
+    "register, get info about node and deregister" in withContainers { consul =>
+      val client = createClient(consul)
+
+      val registerNode = EntityRegistration("node", "address", Service = Some(Service("testService")))
+      val deleteNode = EntityDeregistration("node")
+
+      client.registerEntity(registerNode)
+
+      val result1 = client.listOfServicesForNode("node").body
+      val result2 = client.mapOfServicesForNode("node").body
+
+      assert(result1.Node.exists(_.Node == "node") && result1.Services.exists(_.exists(_.Service == "testService")))
+      assert(result2.exists(_.Node.Node == "node") && result2.exists(_.Services.contains("testService")))
+
+      client.deregisterEntity(deleteNode)
+
+      val result3 = client.listOfServicesForNode("node").body
+      val result4 = client.mapOfServicesForNode("node").body
+
+      assert(result3.Node.isEmpty)
+      assert(result4.isEmpty)
     }
   }
 }
