@@ -6,12 +6,13 @@ import consul4s.model.catalog._
 import consul4s.model.event.UserEvent
 import consul4s.model.health.{HealthCheck, ServiceEntry}
 import consul4s.model.kv.KVPair
+import consul4s.model.session.{SessionId, SessionInfo}
 import sttp.client.ResponseAs
 import sttp.client.circe._
 import io.circe._
 import io.circe.syntax._
 
-package object circe extends Agent with Catalog with Common with Event with Health with KV with Transaction {
+package object circe extends Agent with Catalog with Common with Event with Health with KV with Transaction with Session {
   implicit val jsonDecoder: JsonDecoder = new JsonDecoder {
     override def asBooleanUnsafe: ResponseAs[Boolean, Nothing] = asJsonAlwaysUnsafe[Boolean]
 
@@ -42,6 +43,12 @@ package object circe extends Agent with Catalog with Common with Event with Heal
     override def asUserEventUnsafe: ResponseAs[UserEvent, Nothing] = asJsonAlwaysUnsafe[UserEvent]
 
     override def asUserEventListUnsafe: ResponseAs[List[UserEvent], Nothing] = asJsonAlwaysUnsafe[List[UserEvent]]
+
+    override def asSessionUnsafe: ResponseAs[SessionInfo, Nothing] = asJsonAlwaysUnsafe[SessionInfo]
+
+    override def asSessionListUnsafe: ResponseAs[List[SessionInfo], Nothing] = asJsonAlwaysUnsafe[List[SessionInfo]]
+
+    override def asSessionIdUnsafe: ResponseAs[SessionId, Nothing] = asJsonAlwaysUnsafe[SessionId]
   }
 
   val printer: Printer = Printer.noSpaces.copy(dropNullValues = true)
@@ -50,5 +57,7 @@ package object circe extends Agent with Catalog with Common with Event with Heal
     override def entityRegistrationToJson(value: EntityRegistration): String = printer.print(value.asJson)
 
     override def entityDeregistrationToJson(value: EntityDeregistration): String = printer.print(value.asJson)
+
+    override def sessionToJson(value: SessionInfo): String = printer.print(value.asJson)
   }
 }

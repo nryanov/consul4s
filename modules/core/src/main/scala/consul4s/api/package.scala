@@ -12,4 +12,5 @@ package object api {
       with Catalog[F]
       with Agent[F]
       with Event[F]
+      with Session[F]
 }

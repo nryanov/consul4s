@@ -1,6 +1,6 @@
 package consul4s.circe.model
 
-import consul4s.model.{CheckStatus, ServiceKind}
+import consul4s.model._
 import io.circe.Decoder.Result
 import io.circe.{Decoder, Encoder, HCursor, Json}
 
@@ -23,5 +23,15 @@ trait Common {
 
   implicit val serviceKindEncoder: Encoder[ServiceKind] = new Encoder[ServiceKind] {
     override def apply(a: ServiceKind): Json = Json.fromString(a.value)
+  }
+
+  implicit val sessionBehaviorDecoder: Decoder[SessionBehavior] = new Decoder[SessionBehavior] {
+    override def apply(c: HCursor): Result[SessionBehavior] = for {
+      value <- c.as[String]
+    } yield SessionBehavior.withValue(value)
+  }
+
+  implicit val sessionBehaviorEncoder: Encoder[SessionBehavior] = new Encoder[SessionBehavior] {
+    override def apply(a: SessionBehavior): Json = Json.fromString(a.value)
   }
 }

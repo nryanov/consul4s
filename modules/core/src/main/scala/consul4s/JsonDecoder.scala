@@ -5,6 +5,7 @@ import consul4s.model.catalog._
 import consul4s.model.event.UserEvent
 import consul4s.model.health.{HealthCheck, ServiceEntry}
 import consul4s.model.kv.KVPair
+import consul4s.model.session._
 import sttp.client._
 
 trait JsonDecoder {
@@ -37,4 +38,10 @@ trait JsonDecoder {
   def asUserEventUnsafe: ResponseAs[UserEvent, Nothing]
 
   def asUserEventListUnsafe: ResponseAs[List[UserEvent], Nothing]
+
+  def asSessionUnsafe: ResponseAs[SessionInfo, Nothing]
+
+  def asSessionListUnsafe: ResponseAs[List[SessionInfo], Nothing]
+
+  def asSessionIdUnsafe: ResponseAs[SessionId, Nothing]
 }
