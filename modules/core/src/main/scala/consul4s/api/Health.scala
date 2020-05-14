@@ -1,7 +1,7 @@
 package consul4s.api
 
 import consul4s.model.health.{HealthCheck, ServiceEntry}
-import consul4s.model.{Status => ConsulStatus}
+import consul4s.model.{CheckStatus => ConsulStatus}
 import sttp.client._
 
 trait Health[F[_]] { this: ConsulApi[F] =>
@@ -29,7 +29,7 @@ trait Health[F[_]] { this: ConsulApi[F] =>
       List(dcParam, nearParam, tagParam, nodeMetaParam, passingParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
 
     val requestTemplate = basicRequest.get(uri"$url/health/service/$service?$params")
-    val request = requestTemplate.copy(response = jsonDecoder.asServiceEntriesUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asServiceEntryListUnsafe)
 
     val response = sttpBackend.send(request)
     response
@@ -58,7 +58,7 @@ trait Health[F[_]] { this: ConsulApi[F] =>
       List(dcParam, nearParam, tagParam, nodeMetaParam, passingParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
 
     val requestTemplate = basicRequest.get(uri"$url/health/connect/$service?$params")
-    val request = requestTemplate.copy(response = jsonDecoder.asServiceEntriesUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asServiceEntryListUnsafe)
 
     val response = sttpBackend.send(request)
     response
@@ -77,7 +77,7 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     val params = List(dcParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
 
     val requestTemplate = basicRequest.get(uri"$url/health/node/$node?$params")
-    val request = requestTemplate.copy(response = jsonDecoder.asHealthChecksUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asHealthCheckListUnsafe)
 
     val response = sttpBackend.send(request)
     response
@@ -100,7 +100,7 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     val params = List(dcParam, nearParam, nodeMetaParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
 
     val requestTemplate = basicRequest.get(uri"$url/health/checks/$service?$params")
-    val request = requestTemplate.copy(response = jsonDecoder.asHealthChecksUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asHealthCheckListUnsafe)
 
     val response = sttpBackend.send(request)
     response
@@ -123,7 +123,7 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     val params = List(dcParam, nearParam, nodeMetaParam, filterParam, nsParam).filterNot(_.isBlank).mkString("", "&", "")
 
     val requestTemplate = basicRequest.get(uri"$url/health/state/${state.value}?$params")
-    val request = requestTemplate.copy(response = jsonDecoder.asHealthChecksUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asHealthCheckListUnsafe)
 
     val response = sttpBackend.send(request)
     response

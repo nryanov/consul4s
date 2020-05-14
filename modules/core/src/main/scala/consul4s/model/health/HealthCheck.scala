@@ -1,20 +1,19 @@
 package consul4s.model.health
 
-import consul4s.model.Status
+import consul4s.model.CheckStatus
 
 final case class HealthCheck(
-  node: String,
-  checkId: String,
-  name: String,
-  status: Status,
-  notes: String,
-  output: String,
-  serviceId: String,
-  serviceName: String,
-  serviceTags: List[String],
-  `type`: String,
-  namespace: Option[String],
-  definition: Option[HealthCheckDefinition],
-  createIndex: Long,
-  modifyIndex: Long
+  Node: String,
+  CheckId: String,
+  Name: String,
+  Status: CheckStatus,
+  Notes: String,
+  Output: String,
+  ServiceId: String,
+  ServiceName: String,
+  ServiceTags: List[String],
+  Type: String,
+  Definition: Option[HealthCheckDefinition],
+  CreateIndex: Long,
+  ModifyIndex: Long
 )

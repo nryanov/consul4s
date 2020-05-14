@@ -2,9 +2,9 @@ package consul4s.api
 
 import com.dimafeng.testcontainers.scalatest.TestContainerForEach
 import consul4s.model.kv.KVPair
-import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder}
+import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
 
-abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder) extends ConsulSpec with TestContainerForEach {
+abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) extends ConsulSpec with TestContainerForEach {
   override val containerDef: ConsulContainer.Def = ConsulContainer.Def()
 
   "kv store" should {
@@ -18,7 +18,7 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder) extends Consul
       assert(create)
       assert(getRaw.contains("value"))
       assert(get.isDefined)
-      assertResult("value")(get.get.value)
+      assertResult("value")(get.get.decodedValue)
     }
 
     "put and get keys" in withContainers { consul =>
@@ -38,7 +38,7 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder) extends Consul
       client.createOrUpdate("key2", "value2").body
       val getRecurse: Option[List[KVPair]] = client.getRecurse("key").body
 
-      assert(getRecurse.map(_.map(_.value)).contains(List("value1", "value2")))
+      assert(getRecurse.map(_.map(_.decodedValue)).contains(List("value1", "value2")))
     }
 
     "get not existing key" in withContainers { consul =>
@@ -74,7 +74,7 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder) extends Consul
       client.deleteRecurse("key").body
       val getAfterDelete = client.get("key").body
 
-      assert(getBeforeDelete.map(_.map(_.value)).contains(List("value1", "value2", "value3")))
+      assert(getBeforeDelete.map(_.map(_.decodedValue)).contains(List("value1", "value2", "value3")))
       assert(getAfterDelete.isEmpty)
     }
   }

@@ -1,12 +1,10 @@
 package consul4s.model.catalog
 
 final case class Node(
-  id: String,
-  node: String,
-  address: String,
-  datacenter: String,
-  taggedAddresses: Map[String, String],
-  meta: Map[String, String],
-  createIndex: Long,
-  modifyIndex: Long
+  Node: String,
+  Address: String,
+  ID: Option[String],
+  Datacenter: Option[String],
+  TaggedAddresses: Option[Map[String, String]],
+  Meta: Option[Map[String, String]]
 )

@@ -65,7 +65,8 @@ lazy val circe = project
   .settings(
     name := "consul4s-circe",
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client" %% "circe" % sttpClientVersion
+      "com.softwaremill.sttp.client" %% "circe" % sttpClientVersion,
+      "io.circe" %% "circe-generic" % circeVersion
     )
   )
 
