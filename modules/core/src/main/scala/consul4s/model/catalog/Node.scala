@@ -1,12 +1,12 @@
 package consul4s.model.catalog
 
+import consul4s.model.agent.TaggedAddress
+
 final case class Node(
-  ID: String,
   Node: String,
   Address: String,
-  Datacenter: String,
-  TaggedAddresses: Map[String, String],
-  Meta: Map[String, String],
-  CreateIndex: Long,
-  ModifyIndex: Long
+  ID: Option[String],
+  Datacenter: Option[String],
+  TaggedAddresses: Option[Map[String, TaggedAddress]],
+  Meta: Option[Map[String, String]]
 )

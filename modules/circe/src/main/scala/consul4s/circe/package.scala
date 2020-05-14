@@ -1,8 +1,8 @@
 package consul4s
 
 import consul4s.circe.model._
-import consul4s.model.agent.{AgentMember, MembersOpts}
-import consul4s.model.catalog.{CatalogDeregistration, CatalogNode, CatalogNodeServiceList, CatalogRegistration, CatalogService, Node}
+import consul4s.model.agent._
+import consul4s.model.catalog._
 import consul4s.model.health.{HealthCheck, ServiceEntry}
 import consul4s.model.kv.KVPair
 import sttp.client.ResponseAs
@@ -31,25 +31,13 @@ package object circe extends Agent with Catalog with Common with Event with Heal
     override def asServiceEntriesUnsafe: ResponseAs[List[ServiceEntry], Nothing] = asJsonAlwaysUnsafe[List[ServiceEntry]]
 
     override def asNodesUnsafe: ResponseAs[List[Node], Nothing] = asJsonAlwaysUnsafe[List[Node]]
-
-    override def asCatalogServicesUnsafe: ResponseAs[List[CatalogService], Nothing] = asJsonAlwaysUnsafe[List[CatalogService]]
-
-    override def asCatalogNodeOption: ResponseAs[Option[CatalogNode], Nothing] = asJsonAlways[CatalogNode].map(_.toOption)
-
-    override def asCatalogNodeServiceListOption: ResponseAs[Option[CatalogNodeServiceList], Nothing] =
-      asJsonAlways[CatalogNodeServiceList].map(_.toOption)
-
-    override def asAgentMembersUnsafe: ResponseAs[List[AgentMember], Nothing] = asJsonAlwaysUnsafe[List[AgentMember]]
   }
 
   val printer: Printer = Printer.noSpaces.copy(dropNullValues = true)
 
   implicit val jsonEncoder: JsonEncoder = new JsonEncoder {
-    override def catalogRegistrationToJson(catalogRegistration: CatalogRegistration): String = printer.print(catalogRegistration.asJson)
+    override def entityRegistrationToJson(value: EntityRegistration): String = printer.print(value.asJson)
 
-    override def catalogDeregistrationToJson(catalogDeregistration: CatalogDeregistration): String =
-      printer.print(catalogDeregistration.asJson)
-
-    override def membersOptsToJson(membersOpts: MembersOpts): String = printer.print(membersOpts.asJson)
+    override def entityDeregistrationToJson(value: EntityDeregistration): String = printer.print(value.asJson)
   }
 }

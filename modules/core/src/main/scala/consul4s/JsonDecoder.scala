@@ -26,12 +26,4 @@ trait JsonDecoder {
   def asServiceEntriesUnsafe: ResponseAs[List[ServiceEntry], Nothing]
 
   def asNodesUnsafe: ResponseAs[List[Node], Nothing]
-
-  def asCatalogServicesUnsafe: ResponseAs[List[CatalogService], Nothing]
-
-  def asCatalogNodeOption: ResponseAs[Option[CatalogNode], Nothing]
-
-  def asCatalogNodeServiceListOption: ResponseAs[Option[CatalogNodeServiceList], Nothing]
-
-  def asAgentMembersUnsafe: ResponseAs[List[AgentMember], Nothing]
 }
