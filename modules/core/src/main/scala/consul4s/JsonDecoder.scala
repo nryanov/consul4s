@@ -1,5 +1,6 @@
 package consul4s
 
+import consul4s.model.CheckStatus
 import consul4s.model.agent._
 import consul4s.model.catalog._
 import consul4s.model.event.UserEvent
@@ -29,7 +30,7 @@ trait JsonDecoder {
 
   def asNodeList: ResponseAs[Either[ResponseError[Exception], List[Node]], Nothing]
 
-  def asServiceInfoList: ResponseAs[Either[ResponseError[Exception], List[ServiceInfo]], Nothing]
+  def asCatalogServiceList: ResponseAs[Either[ResponseError[Exception], List[CatalogService]], Nothing]
 
   def asNodeServiceList: ResponseAs[Either[ResponseError[Exception], NodeServiceList], Nothing]
 
@@ -48,4 +49,10 @@ trait JsonDecoder {
   def asMemberInfoList: ResponseAs[Either[ResponseError[Exception], List[MemberInfo]], Nothing]
 
   def asCheckInfoMap: ResponseAs[Either[ResponseError[Exception], Map[String, CheckInfo]], Nothing]
+
+  def asServiceMap: ResponseAs[Either[ResponseError[Exception], Map[String, Service]], Nothing]
+
+  def asServiceOption: ResponseAs[Either[ResponseError[Exception], Option[Service]], Nothing]
+
+  def asCheckStatusServiceMapOption: ResponseAs[Either[ResponseError[Exception], Option[Map[CheckStatus, List[Service]]]], Nothing]
 }

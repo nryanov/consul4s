@@ -1,6 +1,7 @@
 package consul4s
 
 import consul4s.circe.model._
+import consul4s.model.CheckStatus
 import consul4s.model.agent._
 import consul4s.model.catalog._
 import consul4s.model.event.UserEvent
@@ -13,9 +14,31 @@ import io.circe._
 import io.circe.syntax._
 
 package object circe extends Agent with Catalog with Common with Event with Health with KV with Transaction with Session {
+
+  /**
+   * Used only for /agent/health/service/name/:serviceName
+   * 200	All healthchecks of every matching service instance are passing
+   * 400	Bad parameter (missing service name of id)
+   * 404	No such service id or name
+   * 429	Some healthchecks are passing, at least one is warning
+   * 503	At least one of the healthchecks is critical
+   */
+  private val allowedCodes = Set(200, 429, 503)
+
   private def asJsonOption404[A: Decoder]: ResponseAs[Either[ResponseError[Exception], Option[A]], Nothing] =
     asStringAlways.mapWithMetadata { (str, meta) =>
       if (meta.isSuccess) {
+        deserializeJson[Option[A]].apply(str).fold(err => Left(DeserializationError(str, err)), res => Right(res))
+      } else if (meta.code.code == 404) {
+        Right(None)
+      } else {
+        Left[ResponseError[Exception], Option[A]](HttpError(str))
+      }
+    }
+
+  private def asJsonOption404Extended[A: Decoder]: ResponseAs[Either[ResponseError[Exception], Option[A]], Nothing] =
+    asStringAlways.mapWithMetadata { (str, meta) =>
+      if (allowedCodes.contains(meta.code.code)) {
         deserializeJson[Option[A]].apply(str).fold(err => Left(DeserializationError(str, err)), res => Right(res))
       } else if (meta.code.code == 404) {
         Right(None)
@@ -48,7 +71,8 @@ package object circe extends Agent with Catalog with Common with Event with Heal
 
     override def asNodeList: ResponseAs[Either[ResponseError[Exception], List[Node]], Nothing] = asJson[List[Node]]
 
-    override def asServiceInfoList: ResponseAs[Either[ResponseError[Exception], List[ServiceInfo]], Nothing] = asJson[List[ServiceInfo]]
+    override def asCatalogServiceList: ResponseAs[Either[ResponseError[Exception], List[CatalogService]], Nothing] =
+      asJson[List[CatalogService]]
 
     override def asNodeServiceList: ResponseAs[Either[ResponseError[Exception], NodeServiceList], Nothing] = asJson[NodeServiceList]
 
@@ -69,6 +93,14 @@ package object circe extends Agent with Catalog with Common with Event with Heal
 
     override def asCheckInfoMap: ResponseAs[Either[ResponseError[Exception], Map[String, CheckInfo]], Nothing] =
       asJson[Map[String, CheckInfo]]
+
+    override def asServiceMap: ResponseAs[Either[ResponseError[Exception], Map[String, Service]], Nothing] = asJson[Map[String, Service]]
+
+    override def asServiceOption: ResponseAs[Either[ResponseError[Exception], Option[Service]], Nothing] = asJsonOption404[Service]
+
+    override def asCheckStatusServiceMapOption
+      : ResponseAs[Either[ResponseError[Exception], Option[Map[CheckStatus, List[Service]]]], Nothing] =
+      asJsonOption404Extended[Map[CheckStatus, List[Service]]]
   }
 
   val printer: Printer = Printer.noSpaces.copy(dropNullValues = true)
@@ -83,5 +115,7 @@ package object circe extends Agent with Catalog with Common with Event with Heal
     override def checkToJson(check: Check): String = printer.print(check.asJson)
 
     override def checkUpdateToJson(checkUpdate: CheckUpdate): String = printer.print(checkUpdate.asJson)
+
+    override def serviceToJson(service: Service): String = printer.print(service.asJson)
   }
 }

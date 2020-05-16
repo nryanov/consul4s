@@ -1,6 +1,7 @@
 package consul4s.api
 
 import com.dimafeng.testcontainers.scalatest.TestContainerForAll
+import consul4s.model.agent.Service
 import consul4s.model.catalog._
 import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
 

@@ -66,9 +66,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     near: Option[String] = None,
     nodeMeta: Option[String] = None,
     filter: Option[String] = None
-  ): F[Result[List[ServiceInfo]]] = {
+  ): F[Result[List[CatalogService]]] = {
     val requestTemplate = basicRequest.get(uri"$url/catalog/service/$service?dc=$dc&tag=$tag&near=$near&node-meta=$nodeMeta&filter=$filter")
-    val request = requestTemplate.copy(response = jsonDecoder.asServiceInfoList)
+    val request = requestTemplate.copy(response = jsonDecoder.asCatalogServiceList)
 
     val response = sttpBackend.send(request)
     response
@@ -82,9 +82,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     near: Option[String] = None,
     nodeMeta: Option[String] = None,
     filter: Option[String] = None
-  ): F[Result[List[ServiceInfo]]] = {
+  ): F[Result[List[CatalogService]]] = {
     val requestTemplate = basicRequest.get(uri"$url/catalog/connect/$service?dc=$dc&tag=$tag&near=$near&node-meta=$nodeMeta&filter=$filter")
-    val request = requestTemplate.copy(response = jsonDecoder.asServiceInfoList)
+    val request = requestTemplate.copy(response = jsonDecoder.asCatalogServiceList)
 
     val response = sttpBackend.send(request)
     response

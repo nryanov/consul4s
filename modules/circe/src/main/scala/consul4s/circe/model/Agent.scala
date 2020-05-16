@@ -64,4 +64,7 @@ trait Agent { this: Common =>
   implicit val memberInfoDecoder: Decoder[MemberInfo] = deriveDecoder[MemberInfo]
   implicit val checkInfoDecoder: Decoder[CheckInfo] = deriveDecoder[CheckInfo]
   implicit val checkUpdateEncoder: Encoder[CheckUpdate] = deriveEncoder[CheckUpdate]
+
+  implicit val serviceEncoder: Encoder[Service] = deriveEncoder[Service]
+  implicit val serviceDecoder: Decoder[Service] = deriveDecoder[Service]
 }

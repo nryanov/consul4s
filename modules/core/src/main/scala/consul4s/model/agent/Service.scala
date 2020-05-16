@@ -1,6 +1,4 @@
-package consul4s.model.catalog
-
-import consul4s.model.agent._
+package consul4s.model.agent
 
 /**
  *

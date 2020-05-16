@@ -1,5 +1,7 @@
 package consul4s.model.catalog
 
+import consul4s.model.agent.Service
+
 /**
  *
  * @param Node - Specifies the node ID to register.
