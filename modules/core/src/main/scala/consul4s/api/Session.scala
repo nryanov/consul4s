@@ -6,54 +6,54 @@ import sttp.client._
 trait Session[F[_]] { this: ConsulApi[F] =>
 
   // PUT	/session/create
-  def createSession(sessionInfo: SessionInfo, dc: Option[String] = None): F[Response[SessionId]] = {
+  def createSession(sessionInfo: SessionInfo, dc: Option[String] = None): F[Result[SessionId]] = {
     val requestTemplate = basicRequest.put(uri"$url/session/create?dc=$dc").body(jsonEncoder.sessionToJson(sessionInfo))
-    val request = requestTemplate.copy(response = jsonDecoder.asSessionIdUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asSessionId)
 
     val response = sttpBackend.send(request)
     response
   }
 
   // PUT	/session/destroy/:uuid
-  def deleteSession(sessionId: SessionId, dc: Option[String] = None): F[Response[Boolean]] = {
+  def deleteSession(sessionId: SessionId, dc: Option[String] = None): F[Result[Boolean]] = {
     val requestTemplate = basicRequest.put(uri"$url/session/destroy/${sessionId.ID}?dc=$dc")
-    val request = requestTemplate.copy(response = jsonDecoder.asBooleanUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asBoolean)
 
     val response = sttpBackend.send(request)
     response
   }
 
   // GET	/session/info/:uuid
-  def readSession(sessionId: SessionId, dc: Option[String] = None): F[Response[List[SessionInfo]]] = {
+  def readSession(sessionId: SessionId, dc: Option[String] = None): F[Result[List[SessionInfo]]] = {
     val requestTemplate = basicRequest.get(uri"$url/session/info/${sessionId.ID}?dc=$dc")
-    val request = requestTemplate.copy(response = jsonDecoder.asSessionListUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asSessionInfoList)
 
     val response = sttpBackend.send(request)
     response
   }
 
   // GET	/session/node/:node
-  def listNodeSession(node: String, dc: Option[String] = None): F[Response[List[SessionInfo]]] = {
+  def listNodeSession(node: String, dc: Option[String] = None): F[Result[List[SessionInfo]]] = {
     val requestTemplate = basicRequest.get(uri"$url/session/node/$node?dc=$dc")
-    val request = requestTemplate.copy(response = jsonDecoder.asSessionListUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asSessionInfoList)
 
     val response = sttpBackend.send(request)
     response
   }
 
   // GET	/session/list
-  def listSession(dc: Option[String] = None): F[Response[List[SessionInfo]]] = {
+  def listSession(dc: Option[String] = None): F[Result[List[SessionInfo]]] = {
     val requestTemplate = basicRequest.get(uri"$url/session/list/?dc=$dc")
-    val request = requestTemplate.copy(response = jsonDecoder.asSessionListUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asSessionInfoList)
 
     val response = sttpBackend.send(request)
     response
   }
 
   // PUT	/session/renew/:uuid
-  def renewSession(sessionId: SessionId, dc: Option[String] = None): F[Response[List[SessionInfo]]] = {
+  def renewSession(sessionId: SessionId, dc: Option[String] = None): F[Result[List[SessionInfo]]] = {
     val requestTemplate = basicRequest.put(uri"$url/session/renew/${sessionId.ID}?dc=$dc")
-    val request = requestTemplate.copy(response = jsonDecoder.asSessionListUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asSessionInfoList)
 
     val response = sttpBackend.send(request)
     response

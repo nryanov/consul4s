@@ -10,19 +10,26 @@ class EventBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder)
     "fire event" in withContainers { consul =>
       val client = createClient(consul)
 
-      val result1 = client.fireEvent("test", "payload").body
-      val result2 = client.listEvents().body
-
-      assert(result2.exists(_.Name == result1.Name))
-
+      runEither {
+        for {
+          result1 <- client.fireEvent("test", "payload").body
+          result2 <- client.listEvents().body
+        } yield {
+          assert(result2.exists(_.Name == result1.Name))
+        }
+      }
     }
 
     "return empty list of events because (filtered by name)" in withContainers { consul =>
       val client = createClient(consul)
 
-      val result = client.listEvents(name = Some("notExistingEvent")).body
-
-      assert(result.isEmpty)
+      runEither {
+        for {
+          result <- client.listEvents(name = Some("notExistingEvent")).body
+        } yield {
+          assert(result.isEmpty)
+        }
+      }
     }
   }
 }

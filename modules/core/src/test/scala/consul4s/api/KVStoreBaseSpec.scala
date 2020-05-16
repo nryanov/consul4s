@@ -11,71 +11,94 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
     "put and get key" in withContainers { consul =>
       val client = createClient(consul)
 
-      val create = client.createOrUpdate("key", "value").body
-      val getRaw = client.getRaw("key").body
-      val get = client.get("key").body
-
-      assert(create)
-      assert(getRaw.contains("value"))
-      assert(get.isDefined)
-      assertResult("value")(get.get.decodedValue)
+      runEither {
+        for {
+          create <- client.createOrUpdate("key", "value").body
+          getRaw <- client.getRaw("key").body
+          get <- client.get("key").body
+        } yield {
+          assert(create)
+          assert(getRaw.contains("value"))
+          assert(get.isDefined)
+          assertResult("value")(get.get.decodedValue)
+        }
+      }
     }
 
     "put and get keys" in withContainers { consul =>
       val client = createClient(consul)
 
-      client.createOrUpdate("key1", "value1").body
-      client.createOrUpdate("key2", "value2").body
-      val getKeys: Option[List[String]] = client.getKeys("key").body
-
-      assert(getKeys.contains(List("key1", "key2")))
+      runEither {
+        for {
+          _ <- client.createOrUpdate("key1", "value1").body
+          _ <- client.createOrUpdate("key2", "value2").body
+          getKeys <- client.getKeys("key").body
+        } yield {
+          assert(getKeys.contains(List("key1", "key2")))
+        }
+      }
     }
 
     "put and get multiple values" in withContainers { consul =>
       val client = createClient(consul)
 
-      client.createOrUpdate("key1", "value1").body
-      client.createOrUpdate("key2", "value2").body
-      val getRecurse: Option[List[KVPair]] = client.getRecurse("key").body
-
-      assert(getRecurse.map(_.map(_.decodedValue)).contains(List("value1", "value2")))
+      runEither {
+        for {
+          _ <- client.createOrUpdate("key1", "value1").body
+          _ <- client.createOrUpdate("key2", "value2").body
+          getRecurse <- client.getRecurse("key").body
+        } yield {
+          assert(getRecurse.map(_.map(_.decodedValue)).contains(List("value1", "value2")))
+        }
+      }
     }
 
     "get not existing key" in withContainers { consul =>
       val client = createClient(consul)
 
-      val getRaw = client.getRaw("notExistingKey").body
-      val get = client.get("notExistingKey").body
-
-      assert(get.isEmpty)
-      assert(getRaw.isEmpty)
+      runEither {
+        for {
+          getRaw <- client.getRaw("notExistingKey").body
+          get <- client.get("notExistingKey").body
+        } yield {
+          assert(get.isEmpty)
+          assert(getRaw.isEmpty)
+        }
+      }
     }
 
     "put and delete key" in withContainers { consul =>
       val client = createClient(consul)
 
-      val create = client.createOrUpdate("forDeleting", "value").body
-      val delete = client.delete("forDeleting").body
-      val get = client.get("forDeleting").body
-
-      assert(create)
-      assert(delete)
-      assert(get.isEmpty)
+      runEither {
+        for {
+          create <- client.createOrUpdate("forDeleting", "value").body
+          delete <- client.delete("forDeleting").body
+          get <- client.get("forDeleting").body
+        } yield {
+          assert(create)
+          assert(delete)
+          assert(get.isEmpty)
+        }
+      }
     }
 
     "put and delete recurse" in withContainers { consul =>
       val client = createClient(consul)
 
-      client.createOrUpdate("key1", "value1").body
-      client.createOrUpdate("key2", "value2").body
-      client.createOrUpdate("key3", "value3").body
-      val getBeforeDelete = client.getRecurse("key").body
-
-      client.deleteRecurse("key").body
-      val getAfterDelete = client.get("key").body
-
-      assert(getBeforeDelete.map(_.map(_.decodedValue)).contains(List("value1", "value2", "value3")))
-      assert(getAfterDelete.isEmpty)
+      runEither {
+        for {
+          _ <- client.createOrUpdate("key1", "value1").body
+          _ <- client.createOrUpdate("key2", "value2").body
+          _ <- client.createOrUpdate("key3", "value3").body
+          getBeforeDelete <- client.getRecurse("key").body
+          _ <- client.deleteRecurse("key").body
+          getAfterDelete <- client.get("key").body
+        } yield {
+          assert(getBeforeDelete.map(_.map(_.decodedValue)).contains(List("value1", "value2", "value3")))
+          assert(getAfterDelete.isEmpty)
+        }
+      }
     }
   }
 }

@@ -10,17 +10,25 @@ abstract class StatusBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
     "return leader" in withContainers { consul =>
       val client = createClient(consul)
 
-      val leader = client.raftLeader().body
-
-      assertResult("127.0.0.1:8300")(leader)
+      runEither {
+        for {
+          leader <- client.raftLeader().body
+        } yield {
+          assertResult("127.0.0.1:8300")(leader)
+        }
+      }
     }
 
     "return peers" in withContainers { consul =>
       val client = createClient(consul)
 
-      val peers = client.raftPeers().body
-
-      assertResult(List("127.0.0.1:8300"))(peers)
+      runEither {
+        for {
+          peers <- client.raftPeers().body
+        } yield {
+          assertResult(List("127.0.0.1:8300"))(peers)
+        }
+      }
     }
   }
 }

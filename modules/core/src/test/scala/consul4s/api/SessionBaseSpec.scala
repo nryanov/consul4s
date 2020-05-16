@@ -12,94 +12,94 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
   "session api" should {
     "create session" in withContainers { consul =>
       val client = createClient(consul)
-
-      // node should exist
-      client.registerEntity(EntityRegistration("node", "address"))
       val session = SessionInfo("node", "15s")
 
-      val sessionId = client.createSession(session).body
-
-      val sessionList = client.listSession().body
-
-      assert(sessionList.exists(_.ID.contains(sessionId.ID)))
-
-      client.deregisterEntity(EntityDeregistration("node"))
+      runEither {
+        for {
+          // node should exist
+          _ <- client.registerEntity(EntityRegistration("node", "address")).body
+          sessionId <- client.createSession(session).body
+          sessionList <- client.listSession().body
+          _ <- client.deregisterEntity(EntityDeregistration("node")).body
+        } yield {
+          assert(sessionList.exists(_.ID.contains(sessionId.ID)))
+        }
+      }
     }
 
     "create session and list sessions for specific node" in withContainers { consul =>
       val client = createClient(consul)
-
-      // node should exist
-      client.registerEntity(EntityRegistration("node", "address"))
       val session = SessionInfo("node", "15s")
 
-      assert(client.listNodeSession("node").body.isEmpty)
-
-      val sessionId = client.createSession(session).body
-
-      val sessionList = client.listNodeSession("node").body
-
-      assert(sessionList.exists(_.ID.contains(sessionId.ID)))
-
-      client.deregisterEntity(EntityDeregistration("node"))
+      runEither {
+        for {
+          // node should exist
+          _ <- client.registerEntity(EntityRegistration("node", "address")).body
+          r <- client.listNodeSession("node").body
+          sessionId <- client.createSession(session).body
+          sessionList <- client.listNodeSession("node").body
+          _ <- client.deregisterEntity(EntityDeregistration("node")).body
+        } yield {
+          assert(r.isEmpty)
+          assert(sessionList.exists(_.ID.contains(sessionId.ID)))
+        }
+      }
     }
 
     "create session and get session info" in withContainers { consul =>
       val client = createClient(consul)
-
-      // node should exist
-      client.registerEntity(EntityRegistration("node", "address"))
       val session = SessionInfo("node", "15s")
 
-      val sessionId = client.createSession(session).body
-
-      val sessionInfo = client.readSession(sessionId).body
-
-      assert(sessionInfo.exists(_.ID.contains(sessionId.ID)))
-
-      client.deregisterEntity(EntityDeregistration("node"))
+      runEither {
+        for {
+          // node should exist
+          _ <- client.registerEntity(EntityRegistration("node", "address")).body
+          sessionId <- client.createSession(session).body
+          sessionInfo <- client.readSession(sessionId).body
+          _ <- client.deregisterEntity(EntityDeregistration("node")).body
+        } yield {
+          assert(sessionInfo.exists(_.ID.contains(sessionId.ID)))
+        }
+      }
     }
 
     "create session, get session info and delete" in withContainers { consul =>
       val client = createClient(consul)
-
-      // node should exist
-      client.registerEntity(EntityRegistration("node", "address"))
       val session = SessionInfo("node", "15s")
 
-      val sessionId = client.createSession(session).body
-
-      val sessionInfo = client.readSession(sessionId).body
-
-      assert(sessionInfo.exists(_.ID.contains(sessionId.ID)))
-
-      client.deleteSession(sessionId)
-
-      val sessionInfoAfterDeletion = client.readSession(sessionId).body
-
-      assert(sessionInfoAfterDeletion.isEmpty)
-
-      client.deregisterEntity(EntityDeregistration("node"))
+      runEither {
+        for {
+          // node should exist
+          _ <- client.registerEntity(EntityRegistration("node", "address")).body
+          sessionId <- client.createSession(session).body
+          sessionInfo <- client.readSession(sessionId).body
+          _ <- client.deleteSession(sessionId).body
+          sessionInfoAfterDeletion <- client.readSession(sessionId).body
+          _ <- client.deregisterEntity(EntityDeregistration("node")).body
+        } yield {
+          assert(sessionInfo.exists(_.ID.contains(sessionId.ID)))
+          assert(sessionInfoAfterDeletion.isEmpty)
+        }
+      }
     }
 
     "create and renew session" in withContainers { consul =>
       val client = createClient(consul)
-
-      // node should exist
-      client.registerEntity(EntityRegistration("node", "address"))
       val session = SessionInfo("node", "15s")
 
-      val sessionId = client.createSession(session).body
-
-      val sessionList = client.listSession().body
-
-      assert(sessionList.exists(_.ID.contains(sessionId.ID)))
-
-      val response = client.renewSession(sessionId).body
-
-      assert(response.exists(_.ID.contains(sessionId.ID)))
-
-      client.deregisterEntity(EntityDeregistration("node"))
+      runEither {
+        for {
+          // node should exist
+          _ <- client.registerEntity(EntityRegistration("node", "address")).body
+          sessionId <- client.createSession(session).body
+          sessionList <- client.listSession().body
+          response <- client.renewSession(sessionId).body
+          _ <- client.deregisterEntity(EntityDeregistration("node")).body
+        } yield {
+          assert(sessionList.exists(_.ID.contains(sessionId.ID)))
+          assert(response.exists(_.ID.contains(sessionId.ID)))
+        }
+      }
     }
   }
 }

@@ -12,9 +12,9 @@ trait Event[F[_]] { this: ConsulApi[F] =>
     node: Option[String] = None,
     service: Option[String] = None,
     tag: Option[String] = None
-  ): F[Response[UserEvent]] = {
+  ): F[Result[UserEvent]] = {
     val requestTemplate = basicRequest.put(uri"$url/event/fire/$name?dc=$dc&node=$node&service=$service&tag=$tag")
-    val request = requestTemplate.copy(response = jsonDecoder.asUserEventUnsafe).body(payload)
+    val request = requestTemplate.copy(response = jsonDecoder.asUserEvent).body(payload)
 
     val response = sttpBackend.send(request)
     response
@@ -26,9 +26,9 @@ trait Event[F[_]] { this: ConsulApi[F] =>
     node: Option[String] = None,
     service: Option[String] = None,
     tag: Option[String] = None
-  ): F[Response[List[UserEvent]]] = {
+  ): F[Result[List[UserEvent]]] = {
     val requestTemplate = basicRequest.get(uri"$url/event/list?&name=$name&node=$node&service=$service&tag=$tag")
-    val request = requestTemplate.copy(response = jsonDecoder.asUserEventListUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asUserEventList)
 
     val response = sttpBackend.send(request)
     response

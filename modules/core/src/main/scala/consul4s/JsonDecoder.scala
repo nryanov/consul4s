@@ -9,39 +9,39 @@ import consul4s.model.session._
 import sttp.client._
 
 trait JsonDecoder {
-  def asBooleanUnsafe: ResponseAs[Boolean, Nothing]
+  def asBoolean: ResponseAs[Either[ResponseError[Exception], Boolean], Nothing]
 
-  def asStringUnsafe: ResponseAs[String, Nothing]
+  def asStringValue: ResponseAs[Either[ResponseError[Exception], String], Nothing]
 
-  def asStringListUnsafe: ResponseAs[List[String], Nothing]
+  def asStringList: ResponseAs[Either[ResponseError[Exception], List[String]], Nothing]
 
-  def asStringListOption: ResponseAs[Option[List[String]], Nothing]
+  def asStringListOption: ResponseAs[Either[ResponseError[Exception], Option[List[String]]], Nothing]
 
-  def asMapUnsafe: ResponseAs[Map[String, String], Nothing]
+  def asMapSingleValue: ResponseAs[Either[ResponseError[Exception], Map[String, String]], Nothing]
 
-  def asMapMultipleValuesUnsafe: ResponseAs[Map[String, List[String]], Nothing]
+  def asMapMultipleValues: ResponseAs[Either[ResponseError[Exception], Map[String, List[String]]], Nothing]
 
-  def asKVPairListOption: ResponseAs[Option[List[KVPair]], Nothing]
+  def asKVPairListOption: ResponseAs[Either[ResponseError[Exception], Option[List[KVPair]]], Nothing]
 
-  def asHealthCheckListUnsafe: ResponseAs[List[HealthCheck], Nothing]
+  def asHealthCheckList: ResponseAs[Either[ResponseError[Exception], List[HealthCheck]], Nothing]
 
-  def asServiceEntryListUnsafe: ResponseAs[List[ServiceEntry], Nothing]
+  def asServiceEntryList: ResponseAs[Either[ResponseError[Exception], List[ServiceEntry]], Nothing]
 
-  def asNodeListUnsafe: ResponseAs[List[Node], Nothing]
+  def asNodeList: ResponseAs[Either[ResponseError[Exception], List[Node]], Nothing]
 
-  def asServiceInfoListUnsafe: ResponseAs[List[ServiceInfo], Nothing]
+  def asServiceInfoList: ResponseAs[Either[ResponseError[Exception], List[ServiceInfo]], Nothing]
 
-  def asNodeServiceListUnsafe: ResponseAs[NodeServiceList, Nothing]
+  def asNodeServiceList: ResponseAs[Either[ResponseError[Exception], NodeServiceList], Nothing]
 
-  def asNodeServiceMap: ResponseAs[Option[NodeServiceMap], Nothing]
+  def asNodeServiceMap: ResponseAs[Either[ResponseError[Exception], Option[NodeServiceMap]], Nothing]
 
-  def asUserEventUnsafe: ResponseAs[UserEvent, Nothing]
+  def asUserEvent: ResponseAs[Either[ResponseError[Exception], UserEvent], Nothing]
 
-  def asUserEventListUnsafe: ResponseAs[List[UserEvent], Nothing]
+  def asUserEventList: ResponseAs[Either[ResponseError[Exception], List[UserEvent]], Nothing]
 
-  def asSessionUnsafe: ResponseAs[SessionInfo, Nothing]
+  def asSessionInfo: ResponseAs[Either[ResponseError[Exception], SessionInfo], Nothing]
 
-  def asSessionListUnsafe: ResponseAs[List[SessionInfo], Nothing]
+  def asSessionInfoList: ResponseAs[Either[ResponseError[Exception], List[SessionInfo]], Nothing]
 
-  def asSessionIdUnsafe: ResponseAs[SessionId, Nothing]
+  def asSessionId: ResponseAs[Either[ResponseError[Exception], SessionId], Nothing]
 }

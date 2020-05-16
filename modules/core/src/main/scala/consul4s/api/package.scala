@@ -1,6 +1,6 @@
 package consul4s
 
-import sttp.client.{NothingT, SttpBackend}
+import sttp.client.{NothingT, Response, ResponseError, SttpBackend}
 
 package object api {
   abstract class ConsulApi[F[_]](protected val url: String, protected val sttpBackend: SttpBackend[F, Nothing, NothingT])(
@@ -12,5 +12,7 @@ package object api {
       with Catalog[F]
       with Agent[F]
       with Event[F]
-      with Session[F]
+      with Session[F] {
+    type Result[A] = Response[Either[ResponseError[Exception], A]]
+  }
 }

@@ -5,9 +5,9 @@ import sttp.client._
 
 trait Catalog[F[_]] { this: ConsulApi[F] =>
   // PUT /catalog/register
-  def registerEntity(value: EntityRegistration): F[Response[Unit]] = {
+  def registerEntity(value: EntityRegistration): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/catalog/register")
-    val request = requestTemplate.copy(response = ignore).body(jsonEncoder.entityRegistrationToJson(value))
+    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.entityRegistrationToJson(value))
 
     val response = sttpBackend.send(request)
     response
@@ -15,19 +15,19 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
 
   // PUT /catalog/deregister
   // CatalogDeregistration: namespace > ns
-  def deregisterEntity(value: EntityDeregistration): F[Response[Unit]] = {
+  def deregisterEntity(value: EntityDeregistration): F[Result[Unit]] = {
 
     val requestTemplate = basicRequest.put(uri"$url/catalog/deregister")
-    val request = requestTemplate.copy(response = ignore).body(jsonEncoder.entityDeregistrationToJson(value))
+    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.entityDeregistrationToJson(value))
 
     val response = sttpBackend.send(request)
     response
   }
 
   // GET	/catalog/datacenters
-  def datacenters(): F[Response[List[String]]] = {
+  def datacenters(): F[Result[List[String]]] = {
     val requestTemplate = basicRequest.get(uri"$url/catalog/datacenters")
-    val request = requestTemplate.copy(response = jsonDecoder.asStringListUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asStringList)
 
     val response = sttpBackend.send(request)
     response
@@ -39,9 +39,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     near: Option[String] = None,
     nodeMeta: Option[String] = None,
     filter: Option[String] = None
-  ): F[Response[List[Node]]] = {
+  ): F[Result[List[Node]]] = {
     val requestTemplate = basicRequest.get(uri"$url/catalog/nodes?dc=$dc&near=$near&node-meta=$nodeMeta&filter=$filter")
-    val request = requestTemplate.copy(response = jsonDecoder.asNodeListUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asNodeList)
 
     val response = sttpBackend.send(request)
     response
@@ -51,9 +51,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
   def services(
     dc: Option[String] = None,
     nodeMeta: Option[String] = None
-  ): F[Response[Map[String, List[String]]]] = {
+  ): F[Result[Map[String, List[String]]]] = {
     val requestTemplate = basicRequest.get(uri"$url/catalog/services?dc=$dc&node-meat=$nodeMeta")
-    val request = requestTemplate.copy(response = jsonDecoder.asMapMultipleValuesUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asMapMultipleValues)
 
     val response = sttpBackend.send(request)
     response
@@ -67,9 +67,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     near: Option[String] = None,
     nodeMeta: Option[String] = None,
     filter: Option[String] = None
-  ): F[Response[List[ServiceInfo]]] = {
+  ): F[Result[List[ServiceInfo]]] = {
     val requestTemplate = basicRequest.get(uri"$url/catalog/service/$service?dc=$dc&tag=$tag&near=$near&node-meta=$nodeMeta&filter=$filter")
-    val request = requestTemplate.copy(response = jsonDecoder.asServiceInfoListUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asServiceInfoList)
 
     val response = sttpBackend.send(request)
     response
@@ -83,9 +83,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     near: Option[String] = None,
     nodeMeta: Option[String] = None,
     filter: Option[String] = None
-  ): F[Response[List[ServiceInfo]]] = {
+  ): F[Result[List[ServiceInfo]]] = {
     val requestTemplate = basicRequest.get(uri"$url/catalog/connect/$service?dc=$dc&tag=$tag&near=$near&node-meta=$nodeMeta&filter=$filter")
-    val request = requestTemplate.copy(response = jsonDecoder.asServiceInfoListUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asServiceInfoList)
 
     val response = sttpBackend.send(request)
     response
@@ -96,7 +96,7 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     node: String,
     dc: Option[String] = None,
     filter: Option[String] = None
-  ): F[Response[Option[NodeServiceMap]]] = {
+  ): F[Result[Option[NodeServiceMap]]] = {
     val requestTemplate = basicRequest.get(uri"$url/catalog/node/$node?dc=$dc&filter=$filter")
     val request = requestTemplate.copy(response = jsonDecoder.asNodeServiceMap)
 
@@ -109,11 +109,19 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     node: String,
     dc: Option[String] = None,
     filter: Option[String] = None
-  ): F[Response[NodeServiceList]] = {
+  ): F[Result[NodeServiceList]] = {
     val requestTemplate = basicRequest.get(uri"$url/catalog/node-services/$node?dc=$dc&filter=$filter")
-    val request = requestTemplate.copy(response = jsonDecoder.asNodeServiceListUnsafe)
+    val request = requestTemplate.copy(response = jsonDecoder.asNodeServiceList)
 
     val response = sttpBackend.send(request)
     response
+  }
+
+  private def asResultUnit: ResponseAs[Either[ResponseError[Exception], Unit], Nothing] = asStringAlways.mapWithMetadata { (str, meta) =>
+    if (meta.isSuccess) {
+      Right(())
+    } else {
+      Left[ResponseError[Exception], Unit](HttpError(str))
+    }
   }
 }
