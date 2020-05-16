@@ -13,10 +13,10 @@ import io.circe._
 import io.circe.syntax._
 
 package object circe extends Agent with Catalog with Common with Event with Health with KV with Transaction with Session {
-  private def asJsonOption404[A: Decoder: IsOption]: ResponseAs[Either[ResponseError[Exception], Option[A]], Nothing] =
+  private def asJsonOption404[A: Decoder]: ResponseAs[Either[ResponseError[Exception], Option[A]], Nothing] =
     asStringAlways.mapWithMetadata { (str, meta) =>
       if (meta.isSuccess) {
-        str.asJson.as[Option[A]].fold(err => Left(DeserializationError(str, err)), res => Right(res))
+        deserializeJson[Option[A]].apply(str).fold(err => Left(DeserializationError(str, err)), res => Right(res))
       } else if (meta.code.code == 404) {
         Right(None)
       } else {
