@@ -60,4 +60,8 @@ trait Agent { this: Common =>
       gRPCCheckDecoder.widen,
       aliasCheckDecoder.widen
     ).reduceLeft(_.or(_))
+
+  implicit val memberInfoDecoder: Decoder[MemberInfo] = deriveDecoder[MemberInfo]
+  implicit val checkInfoDecoder: Decoder[CheckInfo] = deriveDecoder[CheckInfo]
+  implicit val checkUpdateEncoder: Encoder[CheckUpdate] = deriveEncoder[CheckUpdate]
 }

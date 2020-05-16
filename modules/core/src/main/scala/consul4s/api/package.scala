@@ -1,6 +1,6 @@
 package consul4s
 
-import sttp.client.{NothingT, Response, ResponseError, SttpBackend}
+import sttp.client.{HttpError, NothingT, Response, ResponseAs, ResponseError, SttpBackend, asStringAlways}
 
 package object api {
   abstract class ConsulApi[F[_]](protected val url: String, protected val sttpBackend: SttpBackend[F, Nothing, NothingT])(
@@ -14,5 +14,14 @@ package object api {
       with Event[F]
       with Session[F] {
     type Result[A] = Response[Either[ResponseError[Exception], A]]
+
+    protected def asResultUnit: ResponseAs[Either[ResponseError[Exception], Unit], Nothing] = asStringAlways.mapWithMetadata {
+      (str, meta) =>
+        if (meta.isSuccess) {
+          Right(())
+        } else {
+          Left[ResponseError[Exception], Unit](HttpError(str))
+        }
+    }
   }
 }

@@ -64,6 +64,11 @@ package object circe extends Agent with Catalog with Common with Event with Heal
     override def asSessionInfoList: ResponseAs[Either[ResponseError[Exception], List[SessionInfo]], Nothing] = asJson[List[SessionInfo]]
 
     override def asSessionId: ResponseAs[Either[ResponseError[Exception], SessionId], Nothing] = asJson[SessionId]
+
+    override def asMemberInfoList: ResponseAs[Either[ResponseError[Exception], List[MemberInfo]], Nothing] = asJson[List[MemberInfo]]
+
+    override def asCheckInfoMap: ResponseAs[Either[ResponseError[Exception], Map[String, CheckInfo]], Nothing] =
+      asJson[Map[String, CheckInfo]]
   }
 
   val printer: Printer = Printer.noSpaces.copy(dropNullValues = true)
@@ -74,5 +79,9 @@ package object circe extends Agent with Catalog with Common with Event with Heal
     override def entityDeregistrationToJson(value: EntityDeregistration): String = printer.print(value.asJson)
 
     override def sessionToJson(value: SessionInfo): String = printer.print(value.asJson)
+
+    override def checkToJson(check: Check): String = printer.print(check.asJson)
+
+    override def checkUpdateToJson(checkUpdate: CheckUpdate): String = printer.print(checkUpdate.asJson)
   }
 }

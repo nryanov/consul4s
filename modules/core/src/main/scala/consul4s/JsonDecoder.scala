@@ -44,4 +44,8 @@ trait JsonDecoder {
   def asSessionInfoList: ResponseAs[Either[ResponseError[Exception], List[SessionInfo]], Nothing]
 
   def asSessionId: ResponseAs[Either[ResponseError[Exception], SessionId], Nothing]
+
+  def asMemberInfoList: ResponseAs[Either[ResponseError[Exception], List[MemberInfo]], Nothing]
+
+  def asCheckInfoMap: ResponseAs[Either[ResponseError[Exception], Map[String, CheckInfo]], Nothing]
 }

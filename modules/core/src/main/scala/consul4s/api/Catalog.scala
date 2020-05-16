@@ -16,7 +16,6 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
   // PUT /catalog/deregister
   // CatalogDeregistration: namespace > ns
   def deregisterEntity(value: EntityDeregistration): F[Result[Unit]] = {
-
     val requestTemplate = basicRequest.put(uri"$url/catalog/deregister")
     val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.entityDeregistrationToJson(value))
 
@@ -115,13 +114,5 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
 
     val response = sttpBackend.send(request)
     response
-  }
-
-  private def asResultUnit: ResponseAs[Either[ResponseError[Exception], Unit], Nothing] = asStringAlways.mapWithMetadata { (str, meta) =>
-    if (meta.isSuccess) {
-      Right(())
-    } else {
-      Left[ResponseError[Exception], Unit](HttpError(str))
-    }
   }
 }
