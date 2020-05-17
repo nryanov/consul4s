@@ -4,7 +4,7 @@ import consul4s.model.ServiceKind
 import consul4s.model.agent.{TaggedAddress, Weights}
 
 // todo: Proxy & Connect
-final case class ServiceInfo(
+final case class CatalogService(
   ID: String,
   Node: String,
   Address: String,

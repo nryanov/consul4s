@@ -52,6 +52,7 @@ lazy val core = project
     libraryDependencies ++= Seq(
       "eu.timepit" %% "refined" % refinedVersion,
       "com.softwaremill.sttp.client" %% "core" % sttpClientVersion,
+      "com.softwaremill.sttp.client" %% "slf4j-backend" % sttpClientVersion,
       "com.beachape" %% "enumeratum" % enumeratumVersion,
       "com.dimafeng" %% "testcontainers-scala" % testContainersVersion % Test,
       "ch.qos.logback" % "logback-classic" % logbackVersion % Test

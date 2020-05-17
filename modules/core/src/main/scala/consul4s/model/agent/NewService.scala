@@ -1,10 +1,8 @@
-package consul4s.model.catalog
-
-import consul4s.model.agent._
+package consul4s.model.agent
 
 /**
- *
- * @param Service - Specifies the logical name of the service.
+ * The Check field is omitted in favor of Checks.
+ * @param Name - Specifies the logical name of the service.
  *             Many service instances may share the same logical service name.
  *             We recommend using valid DNS labels for compatibility with external DNS.
  * @param ID - Specifies a unique ID for this service. This must be unique per agent. This defaults to the Name parameter if not provided.
@@ -31,9 +29,8 @@ import consul4s.model.agent._
  * @param Weights - Specifies weights for the service. Please see the service documentation for more information about weights.
  *                If this field is not provided weights will default to {"Passing": 1, "Warning": 1}.
  */
-// todo: Proxy & Connect
-final case class Service(
-  Service: String,
+final case class NewService(
+  Name: String,
   ID: Option[String] = None,
   Tags: Option[List[String]] = None,
   Address: Option[String] = None,

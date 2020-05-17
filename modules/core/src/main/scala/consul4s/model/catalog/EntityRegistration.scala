@@ -23,7 +23,7 @@ package consul4s.model.catalog
 final case class EntityRegistration(
   Node: String,
   Address: String,
-  Service: Option[Service] = None,
+  Service: Option[NewCatalogService] = None,
   ID: Option[String] = None,
   Datacenter: Option[String] = None,
   TaggedAddresses: Option[Map[String, String]] = None,

@@ -2,17 +2,25 @@ package consul4s.circe.model
 
 import consul4s.model._
 import io.circe.Decoder.Result
-import io.circe.{Decoder, Encoder, HCursor, Json}
+import io.circe.{Decoder, Encoder, HCursor, Json, KeyDecoder, KeyEncoder}
 
 trait Common {
-  implicit val statusDecoder: Decoder[CheckStatus] = new Decoder[CheckStatus] {
+  implicit val checkStatusDecoder: Decoder[CheckStatus] = new Decoder[CheckStatus] {
     override def apply(c: HCursor): Result[CheckStatus] = for {
       value <- c.as[String]
     } yield CheckStatus.withValue(value)
   }
 
-  implicit val statusEncoder: Encoder[CheckStatus] = new Encoder[CheckStatus] {
+  implicit val checkStatusEncoder: Encoder[CheckStatus] = new Encoder[CheckStatus] {
     override def apply(a: CheckStatus): Json = Json.fromString(a.value)
+  }
+
+  implicit val checkStatusKeyDecoder: KeyDecoder[CheckStatus] = new KeyDecoder[CheckStatus] {
+    override def apply(key: String): Option[CheckStatus] = Some(CheckStatus.withValue(key))
+  }
+
+  implicit val checkStatusKeyEncoder: KeyEncoder[CheckStatus] = new KeyEncoder[CheckStatus] {
+    override def apply(status: CheckStatus): String = status.value
   }
 
   implicit val serviceKindDecoder: Decoder[ServiceKind] = new Decoder[ServiceKind] {
