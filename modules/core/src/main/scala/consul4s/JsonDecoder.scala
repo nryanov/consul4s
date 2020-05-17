@@ -54,5 +54,7 @@ trait JsonDecoder {
 
   def asServiceOption: ResponseAs[Either[ResponseError[Exception], Option[Service]], Nothing]
 
-  def asCheckStatusServiceMapOption: ResponseAs[Either[ResponseError[Exception], Option[Map[CheckStatus, List[Service]]]], Nothing]
+  def asAggregatedServiceStatusOption: ResponseAs[Either[ResponseError[Exception], Option[AggregatedServiceStatus]], Nothing]
+
+  def asAggregatedServiceStatusListOption: ResponseAs[Either[ResponseError[Exception], Option[List[AggregatedServiceStatus]]], Nothing]
 }

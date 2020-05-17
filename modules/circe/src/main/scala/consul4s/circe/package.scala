@@ -1,7 +1,6 @@
 package consul4s
 
 import consul4s.circe.model._
-import consul4s.model.CheckStatus
 import consul4s.model.agent._
 import consul4s.model.catalog._
 import consul4s.model.event.UserEvent
@@ -16,7 +15,7 @@ import io.circe.syntax._
 package object circe extends Agent with Catalog with Common with Event with Health with KV with Transaction with Session {
 
   /**
-   * Used only for /agent/health/service/name/:serviceName
+   * Used only for /agent/health/service/name/:serviceName and /agent/health/service/id/:serviceId
    * 200	All healthchecks of every matching service instance are passing
    * 400	Bad parameter (missing service name of id)
    * 404	No such service id or name
@@ -98,9 +97,12 @@ package object circe extends Agent with Catalog with Common with Event with Heal
 
     override def asServiceOption: ResponseAs[Either[ResponseError[Exception], Option[Service]], Nothing] = asJsonOption404[Service]
 
-    override def asCheckStatusServiceMapOption
-      : ResponseAs[Either[ResponseError[Exception], Option[Map[CheckStatus, List[Service]]]], Nothing] =
-      asJsonOption404Extended[Map[CheckStatus, List[Service]]]
+    override def asAggregatedServiceStatusOption: ResponseAs[Either[ResponseError[Exception], Option[AggregatedServiceStatus]], Nothing] =
+      asJsonOption404Extended[AggregatedServiceStatus]
+
+    override def asAggregatedServiceStatusListOption
+      : ResponseAs[Either[ResponseError[Exception], Option[List[AggregatedServiceStatus]]], Nothing] =
+      asJsonOption404Extended[List[AggregatedServiceStatus]]
   }
 
   val printer: Printer = Printer.noSpaces.copy(dropNullValues = true)
@@ -116,6 +118,8 @@ package object circe extends Agent with Catalog with Common with Event with Heal
 
     override def checkUpdateToJson(checkUpdate: CheckUpdate): String = printer.print(checkUpdate.asJson)
 
-    override def serviceToJson(service: Service): String = printer.print(service.asJson)
+    override def newServiceToJson(service: NewService): String = printer.print(service.asJson)
+
+    override def tokenAsJson(token: Token): String = printer.print(token.asJson)
   }
 }

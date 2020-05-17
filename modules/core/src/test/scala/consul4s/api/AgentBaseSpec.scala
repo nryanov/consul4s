@@ -134,5 +134,112 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
         }
       }
     }
+
+    "register service, return info and delete it" in withContainers { consul =>
+      val client = createClient(consul)
+      val newService = NewService("testService")
+
+      val expectedService = Service(
+        Service = "testService",
+        ID = "testService",
+        Tags = List(),
+        Address = "",
+        TaggedAddresses = None,
+        Meta = Map(),
+        Port = 0,
+        EnableTagOverride = false,
+        Weights = Weights(1, 1)
+      )
+
+      runEither {
+        for {
+          _ <- client.agentRegisterLocalService(newService).body
+          services <- client.agentServices().body
+          serviceInfo <- client.agentService("testService").body
+          _ <- client.agentDeregisterService("testService").body
+          servicesAfterDeletion <- client.agentServices().body
+        } yield {
+          assert(services.contains("testService"))
+          assert(!servicesAfterDeletion.contains("testService"))
+          assert(serviceInfo.contains(expectedService))
+        }
+      }
+    }
+
+    "register service with checks, return health info and delete it" in withContainers { consul =>
+      val client = createClient(consul)
+      val newService = NewService(
+        "testService",
+        Checks = Some(
+          List(
+            TTLCheck("testTTLCheck1", "15s"),
+            TTLCheck("testTTLCheck2", "30s")
+          )
+        )
+      )
+
+      val expectedService = Service(
+        Service = "testService",
+        ID = "testService",
+        Tags = List(),
+        Address = "",
+        TaggedAddresses = None,
+        Meta = Map(),
+        Port = 0,
+        EnableTagOverride = false,
+        Weights = Weights(1, 1)
+      )
+
+      runEither {
+        for {
+          _ <- client.agentRegisterLocalService(newService).body
+          services <- client.agentServices().body
+          aggregatedServiceInfoById <- client.agentLocalServiceHealthById("testService").body
+          aggregatedServiceInfoByName <- client.agentLocalServiceHealthByName("testService").body
+          _ <- client.agentDeregisterService("testService").body
+          servicesAfterDeletion <- client.agentServices().body
+        } yield {
+          assert(aggregatedServiceInfoById.exists(_.Service == expectedService))
+          assert(aggregatedServiceInfoByName.exists(_.exists(_.Service == expectedService)))
+
+          assert(services.contains("testService"))
+          assert(!servicesAfterDeletion.contains("testService"))
+        }
+      }
+    }
+
+    "register service and enable maintenance mode" in withContainers { consul =>
+      val client = createClient(consul)
+      val newService = NewService("testService")
+
+      val expectedService = Service(
+        Service = "testService",
+        ID = "testService",
+        Tags = List(),
+        Address = "",
+        TaggedAddresses = None,
+        Meta = Map(),
+        Port = 0,
+        EnableTagOverride = false,
+        Weights = Weights(1, 1)
+      )
+
+      runEither {
+        for {
+          _ <- client.agentRegisterLocalService(newService).body
+          services <- client.agentServices().body
+          _ <- client.agentEnableMaintenanceMode("testService", enable = true).body
+          aggregatedServiceInfoById <- client.agentLocalServiceHealthById("testService").body
+          _ <- client.agentDeregisterService("testService").body
+          servicesAfterDeletion <- client.agentServices().body
+        } yield {
+          assert(aggregatedServiceInfoById.exists(_.Service == expectedService))
+          assert(aggregatedServiceInfoById.exists(_.AggregatedStatus == CheckStatus.Maintenance))
+
+          assert(services.contains("testService"))
+          assert(!servicesAfterDeletion.contains("testService"))
+        }
+      }
+    }
   }
 }

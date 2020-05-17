@@ -1,7 +1,6 @@
 package consul4s.api
 
-import consul4s.model.CheckStatus
-import consul4s.model.agent.{Check, CheckInfo, CheckUpdate, MemberInfo, Service}
+import consul4s.model.agent.{AggregatedServiceStatus, Check, CheckInfo, CheckUpdate, MemberInfo, NewService, Service, Token}
 import sttp.client._
 
 trait Agent[F[_]] { this: ConsulApi[F] =>
@@ -11,6 +10,71 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
     val requestTemplate = basicRequest.get(uri"$url/agent/members?$wanParam")
     val request = requestTemplate.copy(response = jsonDecoder.asMemberInfoList)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  // PUT	/agent/reload
+  def agentReload(): F[Result[Unit]] = {
+    val requestTemplate = basicRequest.put(uri"$url/agent/reload")
+    val request = requestTemplate.copy(response = asResultUnit)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  // PUT	/agent/maintenance
+  def agentEnableMaintenance(enable: Boolean, reason: Option[String] = None): F[Result[Unit]] = {
+    val requestTemplate = basicRequest.put(uri"$url/agent/maintenance?enable=$enable&reason=$reason")
+    val request = requestTemplate.copy(response = asResultUnit)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  // PUT	/agent/join/:addres
+  def agentJoin(address: String, wan: Option[Boolean] = None): F[Result[Unit]] = {
+    val wanParam = if (wan.getOrElse(false)) "wan" else ""
+
+    val requestTemplate = basicRequest.get(uri"$url/agent/join/$address?$wanParam")
+    val request = requestTemplate.copy(response = asResultUnit)
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  // PUT	/agent/token/default
+  def agentUpdateACLTokenDefault(token: Token): F[Result[Unit]] = {
+    val requestTemplate = basicRequest.get(uri"$url/agent/token/default")
+    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.tokenAsJson(token))
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  // PUT	/agent/token/agent
+  def agentUpdateACLTokenAgent(token: Token): F[Result[Unit]] = {
+    val requestTemplate = basicRequest.get(uri"$url/agent/token/agent")
+    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.tokenAsJson(token))
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  // PUT	/agent/token/agent_master
+  def agentUpdateACLTokenMaster(token: Token): F[Result[Unit]] = {
+    val requestTemplate = basicRequest.get(uri"$url/agent/token/agent_master")
+    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.tokenAsJson(token))
+
+    val response = sttpBackend.send(request)
+    response
+  }
+
+  // PUT	/agent/token/replication
+  def agentUpdateACLTokenReplication(token: Token): F[Result[Unit]] = {
+    val requestTemplate = basicRequest.get(uri"$url/agent/token/replication")
+    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.tokenAsJson(token))
 
     val response = sttpBackend.send(request)
     response
@@ -81,7 +145,7 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   // GET	/agent/services
   def agentServices(filter: Option[String] = None): F[Result[Map[String, Service]]] = {
-    val requestTemplate = basicRequest.get(uri"$url/agent/check/services?filter=$filter")
+    val requestTemplate = basicRequest.get(uri"$url/agent/services?filter=$filter")
     val request = requestTemplate.copy(response = jsonDecoder.asServiceMap)
 
     val response = sttpBackend.send(request)
@@ -90,7 +154,7 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   // GET	/agent/service/:service_id
   def agentService(serviceId: String): F[Result[Option[Service]]] = {
-    val requestTemplate = basicRequest.get(uri"$url/agent/check/service/$serviceId")
+    val requestTemplate = basicRequest.get(uri"$url/agent/service/$serviceId")
     val request = requestTemplate.copy(response = jsonDecoder.asServiceOption)
 
     val response = sttpBackend.send(request)
@@ -98,27 +162,27 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
   }
 
   // GET	/agent/health/service/name/:service_name
-  def agentLocalServiceHealthByName(serviceName: String): F[Result[Option[Map[CheckStatus, List[Service]]]]] = {
+  def agentLocalServiceHealthByName(serviceName: String): F[Result[Option[List[AggregatedServiceStatus]]]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/health/service/name/$serviceName")
-    val request = requestTemplate.copy(response = jsonDecoder.asCheckStatusServiceMapOption)
+    val request = requestTemplate.copy(response = jsonDecoder.asAggregatedServiceStatusListOption)
 
     val response = sttpBackend.send(request)
     response
   }
 
   // GET	/agent/health/service/id/:service_id
-  def agentLocalServiceHealthById(serviceId: String): F[Result[Option[Map[CheckStatus, List[Service]]]]] = {
+  def agentLocalServiceHealthById(serviceId: String): F[Result[Option[AggregatedServiceStatus]]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/health/service/id/$serviceId")
-    val request = requestTemplate.copy(response = jsonDecoder.asCheckStatusServiceMapOption)
+    val request = requestTemplate.copy(response = jsonDecoder.asAggregatedServiceStatusOption)
 
     val response = sttpBackend.send(request)
     response
   }
 
   // PUT	/agent/service/register
-  def agentRegisterLocalService(service: Service, replaceExistingChecks: Boolean = false): F[Result[Unit]] = {
+  def agentRegisterLocalService(service: NewService, replaceExistingChecks: Boolean = false): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/agent/service/register?replace-existing-checks=$replaceExistingChecks")
-    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.serviceToJson(service))
+    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.newServiceToJson(service))
 
     val response = sttpBackend.send(request)
     response
@@ -135,7 +199,7 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   // PUT	/agent/service/maintenance/:service_id
   def agentEnableMaintenanceMode(serviceId: String, enable: Boolean, reason: Option[String] = None): F[Result[Unit]] = {
-    val requestTemplate = basicRequest.get(uri"$url/agent/service/maintenance/$serviceId?enable=$enable&reason=$reason")
+    val requestTemplate = basicRequest.put(uri"$url/agent/service/maintenance/$serviceId?enable=$enable&reason=$reason")
     val request = requestTemplate.copy(response = asResultUnit)
 
     val response = sttpBackend.send(request)

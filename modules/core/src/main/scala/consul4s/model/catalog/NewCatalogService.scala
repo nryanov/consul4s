@@ -1,4 +1,6 @@
-package consul4s.model.agent
+package consul4s.model.catalog
+
+import consul4s.model.agent.{TaggedAddress, Weights}
 
 /**
  * @param Service - Specifies the logical name of the service.
@@ -22,14 +24,14 @@ package consul4s.model.agent
  * @param Weights - Specifies weights for the service. Please see the service documentation for more information about weights.
  *                If this field is not provided weights will default to {"Passing": 1, "Warning": 1}.
  */
-final case class Service(
+final case class NewCatalogService(
   Service: String,
-  ID: String,
-  Tags: List[String],
-  Address: String,
+  ID: Option[String] = None,
+  Tags: Option[List[String]] = None,
+  Address: Option[String] = None,
   TaggedAddresses: Option[Map[String, TaggedAddress]] = None,
-  Meta: Map[String, String],
-  Port: Int,
-  EnableTagOverride: Boolean,
-  Weights: Weights
+  Meta: Option[Map[String, String]] = None,
+  Port: Option[Int] = None,
+  EnableTagOverride: Boolean = false,
+  Weights: Option[Weights] = None
 )

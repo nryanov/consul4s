@@ -4,16 +4,14 @@ import consul4s.model.CheckStatus
 
 final case class HealthCheck(
   Node: String,
-  CheckId: String,
+  CheckID: String,
   Name: String,
   Status: CheckStatus,
   Notes: String,
   Output: String,
-  ServiceId: String,
+  ServiceID: String,
   ServiceName: String,
-  ServiceTags: List[String],
+  ServiceTags: Option[List[String]],
   Type: String,
-  Definition: Option[HealthCheckDefinition],
-  CreateIndex: Long,
-  ModifyIndex: Long
+  Definition: Option[HealthCheckDefinition]
 )

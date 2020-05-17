@@ -7,7 +7,7 @@ import io.circe.Decoder.Result
 import io.circe.generic.semiauto._
 import cats.syntax.functor._
 
-trait Agent { this: Common =>
+trait Agent { this: Common with Health =>
   implicit val upstreamDestTypeDecoder: Decoder[UpstreamDestType] = new Decoder[UpstreamDestType] {
     override def apply(c: HCursor): Result[UpstreamDestType] = for {
       value <- c.as[String]
@@ -67,4 +67,11 @@ trait Agent { this: Common =>
 
   implicit val serviceEncoder: Encoder[Service] = deriveEncoder[Service]
   implicit val serviceDecoder: Decoder[Service] = deriveDecoder[Service]
+
+  implicit val newServiceEncoder: Encoder[NewService] = deriveEncoder[NewService]
+  implicit val newServiceDecoder: Decoder[NewService] = deriveDecoder[NewService]
+
+  implicit val aggregatedServiceStatusDecoder: Decoder[AggregatedServiceStatus] = deriveDecoder[AggregatedServiceStatus]
+
+  implicit val tokenEncoder: Encoder[Token] = deriveEncoder[Token]
 }
