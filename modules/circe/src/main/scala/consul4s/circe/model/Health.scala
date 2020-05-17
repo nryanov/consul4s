@@ -11,6 +11,5 @@ trait Health { this: Common with Agent with Catalog =>
   implicit val healthCheckEncoder: Encoder[HealthCheck] = deriveEncoder[HealthCheck]
   implicit val healthCheckDecoder: Decoder[HealthCheck] = deriveDecoder[HealthCheck]
 
-  implicit val serviceEntryEncoder: Encoder[ServiceEntry] = deriveEncoder[ServiceEntry]
   implicit val serviceEntryDecoder: Decoder[ServiceEntry] = deriveDecoder[ServiceEntry]
 }
