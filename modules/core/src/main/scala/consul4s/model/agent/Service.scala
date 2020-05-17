@@ -27,8 +27,8 @@ final case class Service(
   ID: String,
   Tags: List[String],
   Address: String,
-  TaggedAddresses: Option[Map[String, TaggedAddress]] = None,
-  Meta: Map[String, String],
+  TaggedAddresses: Option[Map[String, TaggedAddress]],
+  Meta: Option[Map[String, String]],
   Port: Int,
   EnableTagOverride: Boolean,
   Weights: Weights

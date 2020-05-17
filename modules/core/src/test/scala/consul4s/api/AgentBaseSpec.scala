@@ -145,7 +145,7 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
         Tags = List(),
         Address = "",
         TaggedAddresses = None,
-        Meta = Map(),
+        Meta = Some(Map()),
         Port = 0,
         EnableTagOverride = false,
         Weights = Weights(1, 1)
@@ -184,7 +184,7 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
         Tags = List(),
         Address = "",
         TaggedAddresses = None,
-        Meta = Map(),
+        Meta = Some(Map()),
         Port = 0,
         EnableTagOverride = false,
         Weights = Weights(1, 1)
@@ -218,7 +218,7 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
         Tags = List(),
         Address = "",
         TaggedAddresses = None,
-        Meta = Map(),
+        Meta = Some(Map()),
         Port = 0,
         EnableTagOverride = false,
         Weights = Weights(1, 1)
