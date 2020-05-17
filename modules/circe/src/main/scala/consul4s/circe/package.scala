@@ -3,6 +3,7 @@ package consul4s
 import consul4s.circe.model._
 import consul4s.model.agent._
 import consul4s.model.catalog._
+import consul4s.model.coordinate.{DatacenterCoordinate, NodeCoordinate}
 import consul4s.model.event.UserEvent
 import consul4s.model.health.{HealthCheck, ServiceEntry}
 import consul4s.model.kv.KVPair
@@ -12,7 +13,7 @@ import sttp.client.circe._
 import io.circe._
 import io.circe.syntax._
 
-package object circe extends Agent with Catalog with Common with Event with Health with KV with Transaction with Session {
+package object circe extends Agent with Catalog with Common with Event with Health with KV with Transaction with Session with Coordinate {
 
   /**
    * Used only for /agent/health/service/name/:serviceName and /agent/health/service/id/:serviceId
@@ -103,6 +104,15 @@ package object circe extends Agent with Catalog with Common with Event with Heal
     override def asAggregatedServiceStatusListOption
       : ResponseAs[Either[ResponseError[Exception], Option[List[AggregatedServiceStatus]]], Nothing] =
       asJsonOption404Extended[List[AggregatedServiceStatus]]
+
+    override def asDatacenterCoordinateList: ResponseAs[Either[ResponseError[Exception], List[DatacenterCoordinate]], Nothing] =
+      asJson[List[DatacenterCoordinate]]
+
+    override def asNodeCoordinateList: ResponseAs[Either[ResponseError[Exception], List[NodeCoordinate]], Nothing] =
+      asJson[List[NodeCoordinate]]
+
+    override def asNodeCoordinateListOption: ResponseAs[Either[ResponseError[Exception], Option[List[NodeCoordinate]]], Nothing] =
+      asJsonOption404[List[NodeCoordinate]]
   }
 
   val printer: Printer = Printer.noSpaces.copy(dropNullValues = true)
@@ -121,5 +131,7 @@ package object circe extends Agent with Catalog with Common with Event with Heal
     override def newServiceToJson(service: NewService): String = printer.print(service.asJson)
 
     override def tokenAsJson(token: Token): String = printer.print(token.asJson)
+
+    override def nodeCoordinateToJson(nodeCoordinate: NodeCoordinate): String = printer.print(nodeCoordinate.asJson)
   }
 }

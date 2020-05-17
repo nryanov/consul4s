@@ -3,6 +3,7 @@ package consul4s
 import consul4s.model.CheckStatus
 import consul4s.model.agent._
 import consul4s.model.catalog._
+import consul4s.model.coordinate.{DatacenterCoordinate, NodeCoordinate}
 import consul4s.model.event.UserEvent
 import consul4s.model.health.{HealthCheck, ServiceEntry}
 import consul4s.model.kv.KVPair
@@ -57,4 +58,10 @@ trait JsonDecoder {
   def asAggregatedServiceStatusOption: ResponseAs[Either[ResponseError[Exception], Option[AggregatedServiceStatus]], Nothing]
 
   def asAggregatedServiceStatusListOption: ResponseAs[Either[ResponseError[Exception], Option[List[AggregatedServiceStatus]]], Nothing]
+
+  def asDatacenterCoordinateList: ResponseAs[Either[ResponseError[Exception], List[DatacenterCoordinate]], Nothing]
+
+  def asNodeCoordinateList: ResponseAs[Either[ResponseError[Exception], List[NodeCoordinate]], Nothing]
+
+  def asNodeCoordinateListOption: ResponseAs[Either[ResponseError[Exception], Option[List[NodeCoordinate]]], Nothing]
 }
