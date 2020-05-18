@@ -7,6 +7,7 @@ import consul4s.model.coordinate.{DatacenterCoordinate, NodeCoordinate}
 import consul4s.model.event.UserEvent
 import consul4s.model.health.{HealthCheck, ServiceEntry}
 import consul4s.model.kv.KVPair
+import consul4s.model.query.QueryResult
 import consul4s.model.session._
 import sttp.client._
 
@@ -64,4 +65,6 @@ trait JsonDecoder {
   def asNodeCoordinateList: ResponseAs[Either[ResponseError[Exception], List[NodeCoordinate]], Nothing]
 
   def asNodeCoordinateListOption: ResponseAs[Either[ResponseError[Exception], Option[List[NodeCoordinate]]], Nothing]
+
+  def asQueryResultOption: ResponseAs[Either[ResponseError[Exception], Option[QueryResult]], Nothing]
 }

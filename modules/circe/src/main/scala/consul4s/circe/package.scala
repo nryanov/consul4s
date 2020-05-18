@@ -7,13 +7,24 @@ import consul4s.model.coordinate.{DatacenterCoordinate, NodeCoordinate}
 import consul4s.model.event.UserEvent
 import consul4s.model.health.{HealthCheck, ServiceEntry}
 import consul4s.model.kv.KVPair
+import consul4s.model.query.QueryResult
 import consul4s.model.session.{SessionId, SessionInfo}
 import sttp.client._
 import sttp.client.circe._
 import io.circe._
 import io.circe.syntax._
 
-package object circe extends Agent with Catalog with Common with Event with Health with KV with Transaction with Session with Coordinate {
+package object circe
+    extends Agent
+    with Catalog
+    with Common
+    with Event
+    with Health
+    with KV
+    with Transaction
+    with Session
+    with Coordinate
+    with Query {
 
   /**
    * Used only for /agent/health/service/name/:serviceName and /agent/health/service/id/:serviceId
@@ -113,6 +124,9 @@ package object circe extends Agent with Catalog with Common with Event with Heal
 
     override def asNodeCoordinateListOption: ResponseAs[Either[ResponseError[Exception], Option[List[NodeCoordinate]]], Nothing] =
       asJsonOption404[List[NodeCoordinate]]
+
+    override def asQueryResultOption: ResponseAs[Either[ResponseError[Exception], Option[QueryResult]], Nothing] =
+      asJsonOption404[QueryResult]
   }
 
   val printer: Printer = Printer.noSpaces.copy(dropNullValues = true)

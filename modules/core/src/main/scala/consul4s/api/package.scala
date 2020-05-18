@@ -13,7 +13,8 @@ package object api {
       with Agent[F]
       with Event[F]
       with Session[F]
-      with Coordinate[F] {
+      with Coordinate[F]
+      with PreparedQuery[F] {
     type Result[A] = Response[Either[ResponseError[Exception], A]]
 
     protected def asResultUnit: ResponseAs[Either[ResponseError[Exception], Unit], Nothing] = asStringAlways.mapWithMetadata {
