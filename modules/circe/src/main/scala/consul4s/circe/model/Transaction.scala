@@ -48,7 +48,6 @@ trait Transaction { this: Common with Agent with Health with KV with Catalog =>
     override def apply(a: ServiceOp): Json = Json.fromString(a.value)
   }
 
-  implicit val kvTxResultDecoder: Decoder[KVPairTx] = deriveDecoder[KVPairTx]
   implicit val serviceTxResultDecoder: Decoder[Service] = deriveDecoder[Service]
   implicit val txErrorDecoder: Decoder[TxError] = deriveDecoder[TxError]
   implicit val txResultDecoder: Decoder[TxResult] = deriveDecoder[TxResult]

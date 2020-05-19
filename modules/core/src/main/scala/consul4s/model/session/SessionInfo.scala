@@ -17,7 +17,7 @@ import consul4s.model.SessionBehavior
  *           When locks are forcibly expired, such as when following the leader election pattern in an application,
  *           sessions may not be reaped for up to double this TTL, so long TTL values (> 1 hour) should be avoided.
  */
-// todo: LockDelay and TTL -> [value][s]
+// todo: LockDelay and TTL -> [value][s - seconds]
 final case class SessionInfo(
   Node: String,
   LockDelay: String,
