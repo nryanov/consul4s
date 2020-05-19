@@ -5,9 +5,9 @@ import sttp.client._
 
 trait Catalog[F[_]] { this: ConsulApi[F] =>
   // PUT /catalog/register
-  def registerEntity(value: EntityRegistration): F[Result[Unit]] = {
+  def registerEntity(value: NodeRegistration): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/catalog/register")
-    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.entityRegistrationToJson(value))
+    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.nodeRegistrationToJson(value))
 
     val response = sttpBackend.send(request)
     response
@@ -15,9 +15,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
 
   // PUT /catalog/deregister
   // CatalogDeregistration: namespace > ns
-  def deregisterEntity(value: EntityDeregistration): F[Result[Unit]] = {
+  def deregisterEntity(value: NodeDeregistration): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/catalog/deregister")
-    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.entityDeregistrationToJson(value))
+    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.nodeDeregistrationToJson(value))
 
     val response = sttpBackend.send(request)
     response

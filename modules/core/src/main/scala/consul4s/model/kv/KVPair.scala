@@ -9,7 +9,8 @@ final case class KVPair(
   ModifyIndex: Long,
   LockIndex: Long,
   Flags: Long,
-  Value: String
+  Value: String,
+  Session: Option[String]
 ) {
   lazy val decodedValue: String = new String(Base64.getDecoder.decode(Value.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8)
 }

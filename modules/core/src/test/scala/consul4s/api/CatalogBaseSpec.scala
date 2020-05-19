@@ -48,8 +48,8 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
     "register, get info and deregister node" in withContainers { consul =>
       val client = createClient(consul)
 
-      val registerNode = EntityRegistration("node", "address")
-      val deleteNode = EntityDeregistration("node")
+      val registerNode = NodeRegistration("node", "address")
+      val deleteNode = NodeDeregistration("node")
 
       runEither {
         for {
@@ -67,8 +67,8 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
     "register, get info and deregister service" in withContainers { consul =>
       val client = createClient(consul)
 
-      val registerNode = EntityRegistration("node", "address", Service = Some(NewCatalogService("testService")))
-      val deleteNode = EntityDeregistration("node")
+      val registerNode = NodeRegistration("node", "address", Service = Some(NewCatalogService("testService")))
+      val deleteNode = NodeDeregistration("node")
 
       runEither {
         for {
@@ -86,8 +86,8 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
     "register, get info about node and deregister" in withContainers { consul =>
       val client = createClient(consul)
 
-      val registerNode = EntityRegistration("node", "address", Service = Some(NewCatalogService("testService")))
-      val deleteNode = EntityDeregistration("node")
+      val registerNode = NodeRegistration("node", "address", Service = Some(NewCatalogService("testService")))
+      val deleteNode = NodeDeregistration("node")
 
       runEither {
         for {

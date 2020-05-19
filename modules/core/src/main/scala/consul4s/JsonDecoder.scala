@@ -9,6 +9,7 @@ import consul4s.model.health.{HealthCheck, ServiceEntry}
 import consul4s.model.kv.KVPair
 import consul4s.model.query.QueryResult
 import consul4s.model.session._
+import consul4s.model.transaction.TxResults
 import sttp.client._
 
 trait JsonDecoder {
@@ -67,4 +68,6 @@ trait JsonDecoder {
   def asNodeCoordinateListOption: ResponseAs[Either[ResponseError[Exception], Option[List[NodeCoordinate]]], Nothing]
 
   def asQueryResultOption: ResponseAs[Either[ResponseError[Exception], Option[QueryResult]], Nothing]
+
+  def asTxResults: ResponseAs[Either[ResponseError[Exception], TxResults], Nothing]
 }

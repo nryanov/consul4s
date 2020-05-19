@@ -7,7 +7,7 @@ package consul4s.model.catalog
  * @param CheckID - Specifies the ID of the check to remove.
  * @param ServiceID - Specifies the ID of the service to remove. The service and all associated checks will be removed.
  */
-final case class EntityDeregistration(
+final case class NodeDeregistration(
   Node: String,
   Datacenter: Option[String] = None,
   CheckID: Option[String] = None,

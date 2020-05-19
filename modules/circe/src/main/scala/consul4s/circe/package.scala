@@ -9,6 +9,7 @@ import consul4s.model.health.{HealthCheck, ServiceEntry}
 import consul4s.model.kv.KVPair
 import consul4s.model.query.QueryResult
 import consul4s.model.session.{SessionId, SessionInfo}
+import consul4s.model.transaction.{TxResults, TxTask}
 import sttp.client._
 import sttp.client.circe._
 import io.circe._
@@ -55,6 +56,15 @@ package object circe
         Right(None)
       } else {
         Left[ResponseError[Exception], Option[A]](HttpError(str))
+      }
+    }
+
+  private def asJson200or409[A: Decoder]: ResponseAs[Either[ResponseError[Exception], A], Nothing] =
+    asStringAlways.mapWithMetadata { (str, meta) =>
+      if (meta.code.code == 200 || meta.code.code == 409) {
+        deserializeJson[A].apply(str).fold(err => Left(DeserializationError(str, err)), res => Right(res))
+      } else {
+        Left[ResponseError[Exception], A](HttpError(str))
       }
     }
 
@@ -127,14 +137,16 @@ package object circe
 
     override def asQueryResultOption: ResponseAs[Either[ResponseError[Exception], Option[QueryResult]], Nothing] =
       asJsonOption404[QueryResult]
+
+    override def asTxResults: ResponseAs[Either[ResponseError[Exception], TxResults], Nothing] = asJson200or409[TxResults]
   }
 
   val printer: Printer = Printer.noSpaces.copy(dropNullValues = true)
 
   implicit val jsonEncoder: JsonEncoder = new JsonEncoder {
-    override def entityRegistrationToJson(value: EntityRegistration): String = printer.print(value.asJson)
+    override def nodeRegistrationToJson(value: NodeRegistration): String = printer.print(value.asJson)
 
-    override def entityDeregistrationToJson(value: EntityDeregistration): String = printer.print(value.asJson)
+    override def nodeDeregistrationToJson(value: NodeDeregistration): String = printer.print(value.asJson)
 
     override def sessionToJson(value: SessionInfo): String = printer.print(value.asJson)
 
@@ -147,5 +159,7 @@ package object circe
     override def tokenAsJson(token: Token): String = printer.print(token.asJson)
 
     override def nodeCoordinateToJson(nodeCoordinate: NodeCoordinate): String = printer.print(nodeCoordinate.asJson)
+
+    override def txTasksToJson(txTasks: List[TxTask]): String = printer.print(txTasks.asJson)
   }
 }

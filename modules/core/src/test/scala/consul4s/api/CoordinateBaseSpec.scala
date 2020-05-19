@@ -1,7 +1,7 @@
 package consul4s.api
 
 import com.dimafeng.testcontainers.scalatest.TestContainerForAll
-import consul4s.model.catalog.EntityRegistration
+import consul4s.model.catalog.NodeRegistration
 import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
 
 class CoordinateBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) extends ConsulSpec with TestContainerForAll {
@@ -22,7 +22,7 @@ class CoordinateBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEnc
 
     "return coordinate for nodes" in withContainers { consul =>
       val client = createClient(consul)
-      val entityRegistration = EntityRegistration("myNode", "someAddress")
+      val entityRegistration = NodeRegistration("myNode", "someAddress")
 
       runEither {
         for {

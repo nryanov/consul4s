@@ -20,8 +20,9 @@ package consul4s.model.catalog
  *                       if the node is already registered. Note, if the parameter is enabled for a node that doesn't exist,
  *                       it will still be created.
  */
-// todo: add Check field: https://www.consul.io/api-docs/catalog#parameters
-final case class EntityRegistration(
+// todo: add Check and Checks field: https://www.consul.io/api-docs/catalog#parameters.
+// Check/Checks - node level checks
+final case class NodeRegistration(
   Node: String,
   Address: String,
   Service: Option[NewCatalogService] = None,

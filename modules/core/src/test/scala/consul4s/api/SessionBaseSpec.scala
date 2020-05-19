@@ -1,7 +1,7 @@
 package consul4s.api
 
 import com.dimafeng.testcontainers.scalatest.TestContainerForAll
-import consul4s.model.catalog.{EntityDeregistration, EntityRegistration}
+import consul4s.model.catalog.{NodeDeregistration, NodeRegistration}
 import consul4s.model.session.SessionInfo
 import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
 
@@ -17,10 +17,10 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
       runEither {
         for {
           // node should exist
-          _ <- client.registerEntity(EntityRegistration("node", "address")).body
+          _ <- client.registerEntity(NodeRegistration("node", "address")).body
           sessionId <- client.createSession(session).body
           sessionList <- client.listSession().body
-          _ <- client.deregisterEntity(EntityDeregistration("node")).body
+          _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
           assert(sessionList.exists(_.ID.contains(sessionId.ID)))
         }
@@ -34,11 +34,11 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
       runEither {
         for {
           // node should exist
-          _ <- client.registerEntity(EntityRegistration("node", "address")).body
+          _ <- client.registerEntity(NodeRegistration("node", "address")).body
           r <- client.listNodeSession("node").body
           sessionId <- client.createSession(session).body
           sessionList <- client.listNodeSession("node").body
-          _ <- client.deregisterEntity(EntityDeregistration("node")).body
+          _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
           assert(r.isEmpty)
           assert(sessionList.exists(_.ID.contains(sessionId.ID)))
@@ -53,10 +53,10 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
       runEither {
         for {
           // node should exist
-          _ <- client.registerEntity(EntityRegistration("node", "address")).body
+          _ <- client.registerEntity(NodeRegistration("node", "address")).body
           sessionId <- client.createSession(session).body
           sessionInfo <- client.readSession(sessionId).body
-          _ <- client.deregisterEntity(EntityDeregistration("node")).body
+          _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
           assert(sessionInfo.exists(_.ID.contains(sessionId.ID)))
         }
@@ -70,12 +70,12 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
       runEither {
         for {
           // node should exist
-          _ <- client.registerEntity(EntityRegistration("node", "address")).body
+          _ <- client.registerEntity(NodeRegistration("node", "address")).body
           sessionId <- client.createSession(session).body
           sessionInfo <- client.readSession(sessionId).body
           _ <- client.deleteSession(sessionId).body
           sessionInfoAfterDeletion <- client.readSession(sessionId).body
-          _ <- client.deregisterEntity(EntityDeregistration("node")).body
+          _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
           assert(sessionInfo.exists(_.ID.contains(sessionId.ID)))
           assert(sessionInfoAfterDeletion.isEmpty)
@@ -90,11 +90,11 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
       runEither {
         for {
           // node should exist
-          _ <- client.registerEntity(EntityRegistration("node", "address")).body
+          _ <- client.registerEntity(NodeRegistration("node", "address")).body
           sessionId <- client.createSession(session).body
           sessionList <- client.listSession().body
           response <- client.renewSession(sessionId).body
-          _ <- client.deregisterEntity(EntityDeregistration("node")).body
+          _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
           assert(sessionList.exists(_.ID.contains(sessionId.ID)))
           assert(response.exists(_.ID.contains(sessionId.ID)))

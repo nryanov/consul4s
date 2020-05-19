@@ -1,14 +1,15 @@
 package consul4s
 
 import consul4s.model.agent.{Check, CheckUpdate, NewService, Token}
-import consul4s.model.catalog.{EntityDeregistration, EntityRegistration}
+import consul4s.model.catalog.{NodeDeregistration, NodeRegistration}
 import consul4s.model.coordinate.NodeCoordinate
 import consul4s.model.session.SessionInfo
+import consul4s.model.transaction.TxTask
 
 trait JsonEncoder {
-  def entityRegistrationToJson(value: EntityRegistration): String
+  def nodeRegistrationToJson(value: NodeRegistration): String
 
-  def entityDeregistrationToJson(value: EntityDeregistration): String
+  def nodeDeregistrationToJson(value: NodeDeregistration): String
 
   def sessionToJson(value: SessionInfo): String
 
@@ -21,4 +22,6 @@ trait JsonEncoder {
   def tokenAsJson(token: Token): String
 
   def nodeCoordinateToJson(nodeCoordinate: NodeCoordinate): String
+
+  def txTasksToJson(txTasks: List[TxTask]): String
 }

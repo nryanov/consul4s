@@ -11,7 +11,7 @@ package consul4s.model.agent
  * @param TaggedAddresses - Specifies a map of explicit LAN and WAN addresses for the service instance. Both the address and port can be specified within the map values.
  * @param Meta - Specifies arbitrary KV metadata linked to the service instance.
  * @param Port - Specifies the port of the service.
- * @param Checks - Specifies a list of checks. Please see the check documentation for more information about the accepted fields.
+ * @param Checks - Specifies a list of service level checks. Please see the check documentation for more information about the accepted fields.
  *               If you don't provide a name or id for the check then they will be generated.
  *               To provide a custom id and/or name set the CheckID and/or Name field.
  *               The automatically generated Name and CheckID depend on the position of the check within the array,
