@@ -3,6 +3,7 @@ package consul4s.api
 import com.dimafeng.testcontainers.scalatest.TestContainerForAll
 import consul4s.model.agent.Service
 import consul4s.model.catalog._
+import consul4s.model.health.NewHealthCheck
 import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
 
 abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) extends ConsulSpec with TestContainerForAll {
@@ -48,7 +49,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
     "register, get info and deregister node" in withContainers { consul =>
       val client = createClient(consul)
 
-      val registerNode = NodeRegistration("node", "address")
+      val registerNode = NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "nodeCheck")))
       val deleteNode = NodeDeregistration("node")
 
       runEither {
