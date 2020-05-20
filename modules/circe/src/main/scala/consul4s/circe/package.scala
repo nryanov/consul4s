@@ -112,8 +112,8 @@ package object circe
 
     override def asMemberInfoList: ResponseAs[Either[ResponseError[Exception], List[MemberInfo]], Nothing] = asJson[List[MemberInfo]]
 
-    override def asCheckInfoMap: ResponseAs[Either[ResponseError[Exception], Map[String, CheckInfo]], Nothing] =
-      asJson[Map[String, CheckInfo]]
+    override def asHealthCheckMap: ResponseAs[Either[ResponseError[Exception], Map[String, HealthCheck]], Nothing] =
+      asJson[Map[String, HealthCheck]]
 
     override def asServiceMap: ResponseAs[Either[ResponseError[Exception], Map[String, Service]], Nothing] = asJson[Map[String, Service]]
 

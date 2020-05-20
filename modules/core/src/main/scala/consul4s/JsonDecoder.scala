@@ -51,7 +51,7 @@ trait JsonDecoder {
 
   def asMemberInfoList: ResponseAs[Either[ResponseError[Exception], List[MemberInfo]], Nothing]
 
-  def asCheckInfoMap: ResponseAs[Either[ResponseError[Exception], Map[String, CheckInfo]], Nothing]
+  def asHealthCheckMap: ResponseAs[Either[ResponseError[Exception], Map[String, HealthCheck]], Nothing]
 
   def asServiceMap: ResponseAs[Either[ResponseError[Exception], Map[String, Service]], Nothing]
 
