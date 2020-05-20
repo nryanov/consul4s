@@ -142,7 +142,7 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
       val expectedService = Service(
         Service = "testService",
         ID = "testService",
-        Tags = List(),
+        Tags = Some(List()),
         Address = "",
         TaggedAddresses = None,
         Meta = Some(Map()),
@@ -170,10 +170,11 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
       val client = createClient(consul)
       val newService = NewService(
         "testService",
+        Check = Some(TTLCheck("testTTLCheck1", "5s")),
         Checks = Some(
           List(
-            TTLCheck("testTTLCheck1", "15s"),
-            TTLCheck("testTTLCheck2", "30s")
+            TTLCheck("testTTLCheck2", "15s"),
+            TTLCheck("testTTLCheck3", "30s")
           )
         )
       )
@@ -181,7 +182,7 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
       val expectedService = Service(
         Service = "testService",
         ID = "testService",
-        Tags = List(),
+        Tags = Some(List()),
         Address = "",
         TaggedAddresses = None,
         Meta = Some(Map()),
@@ -202,6 +203,9 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
           assert(aggregatedServiceInfoById.exists(_.Service == expectedService))
           assert(aggregatedServiceInfoByName.exists(_.exists(_.Service == expectedService)))
 
+          assert(aggregatedServiceInfoById.exists(_.Checks.length == 3))
+          assert(aggregatedServiceInfoByName.exists(_.exists(_.Checks.length == 3)))
+
           assert(services.contains("testService"))
           assert(!servicesAfterDeletion.contains("testService"))
         }
@@ -215,7 +219,7 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
       val expectedService = Service(
         Service = "testService",
         ID = "testService",
-        Tags = List(),
+        Tags = Some(List()),
         Address = "",
         TaggedAddresses = None,
         Meta = Some(Map()),

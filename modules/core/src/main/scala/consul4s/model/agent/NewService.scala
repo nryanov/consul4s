@@ -1,7 +1,6 @@
 package consul4s.model.agent
 
 /**
- * The Check field is omitted in favor of Checks.
  * @param Name - Specifies the logical name of the service.
  *             Many service instances may share the same logical service name.
  *             We recommend using valid DNS labels for compatibility with external DNS.
@@ -37,6 +36,7 @@ final case class NewService(
   TaggedAddresses: Option[Map[String, TaggedAddress]] = None,
   Meta: Option[Map[String, String]] = None,
   Port: Option[Int] = None,
+  Check: Option[Check] = None,
   Checks: Option[List[Check]] = None,
   EnableTagOverride: Boolean = false,
   Weights: Option[Weights] = None

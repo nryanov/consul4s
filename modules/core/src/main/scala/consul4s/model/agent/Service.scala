@@ -25,7 +25,7 @@ package consul4s.model.agent
 final case class Service(
   Service: String,
   ID: String,
-  Tags: List[String],
+  Tags: Option[List[String]],
   Address: String,
   TaggedAddresses: Option[Map[String, TaggedAddress]],
   Meta: Option[Map[String, String]],
