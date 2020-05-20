@@ -8,7 +8,7 @@ import consul4s.model.event.UserEvent
 import consul4s.model.health.{HealthCheck, ServiceEntry}
 import consul4s.model.kv.KVPair
 import consul4s.model.query.QueryResult
-import consul4s.model.session.{SessionId, SessionInfo}
+import consul4s.model.session.{NewSession, SessionId, SessionInfo}
 import consul4s.model.transaction.{TxResults, TxTask}
 import sttp.client._
 import sttp.client.circe._
@@ -148,7 +148,7 @@ package object circe
 
     override def nodeDeregistrationToJson(value: NodeDeregistration): String = printer.print(value.asJson)
 
-    override def sessionToJson(value: SessionInfo): String = printer.print(value.asJson)
+    override def newSessionToJson(value: NewSession): String = printer.print(value.asJson)
 
     override def checkToJson(check: Check): String = printer.print(check.asJson)
 
