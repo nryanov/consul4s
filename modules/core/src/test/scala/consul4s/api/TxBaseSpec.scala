@@ -33,7 +33,7 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
           result <- client.executeTx(List(txTask)).body
         } yield {
           assert(result.Errors.isEmpty)
-          assert(result.Results.flatMap(_.headOption).flatMap(_.KV).exists(_.Key == "key"))
+          assert(result.Results.flatMap(_.headOption).flatMap(_.KV).exists(_.key == "key"))
         }
       }
     }
