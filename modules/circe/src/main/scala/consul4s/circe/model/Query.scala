@@ -1,6 +1,7 @@
 package consul4s.circe.model
 
-import consul4s.model.query.{DNS, QueryResult}
+import consul4s.model.query.QueryResult
+import consul4s.model.query.QueryResult._
 import io.circe._
 import io.circe.generic.semiauto._
 

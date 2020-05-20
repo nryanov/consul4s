@@ -1,7 +1,8 @@
 package consul4s.api
 
 import com.dimafeng.testcontainers.scalatest.TestContainerForAll
-import consul4s.model.query.{DNS, QueryResult}
+import consul4s.model.query.QueryResult
+import consul4s.model.query.QueryResult._
 import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
 import sttp.client._
 
