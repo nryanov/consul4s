@@ -54,7 +54,6 @@ trait Transaction { this: Common with Agent with Health with KV with Catalog =>
   implicit val txResultsDecoder: Decoder[TxResults] = deriveDecoder[TxResults]
 
   implicit val kvTxEncoder: Encoder[KVTask] = deriveEncoder[KVTask]
-  implicit val checkDefinitionEncoder: Encoder[CheckDefinition] = deriveEncoder[CheckDefinition]
   implicit val checkTxEncoder: Encoder[CheckTask] = deriveEncoder[CheckTask]
   implicit val newNodeEncoder: Encoder[NodeDefinition] = deriveEncoder[NodeDefinition]
   implicit val nodeTxEncoder: Encoder[NodeTask] = deriveEncoder[NodeTask]

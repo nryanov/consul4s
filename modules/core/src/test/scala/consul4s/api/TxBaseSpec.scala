@@ -4,10 +4,10 @@ import java.nio.charset.StandardCharsets
 import java.util.Base64
 
 import com.dimafeng.testcontainers.scalatest.TestContainerForAll
-import consul4s.model.agent.TTLCheck
 import consul4s.model.catalog.{NewCatalogService, NodeRegistration}
+import consul4s.model.health.NewHealthCheck
+import consul4s.model.health.NewHealthCheck.NewHealthCheckDefinition
 import consul4s.model.transaction._
-import consul4s.model.transaction.TxResults._
 import consul4s.model.transaction.TxTask._
 import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
 
@@ -95,10 +95,14 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
         Check = Some(
           CheckTask(
             Verb = CheckOp.Set,
-            Check = CheckDefinition(
+            Check = NewHealthCheck(
               Node = "testCheckNode",
               Name = "checkName",
-              Definition = TTLCheck("testTTLCheck", TTL = "15s")
+              Definition = Some(
+                NewHealthCheckDefinition(
+                  TCP = Some("localhost:8888")
+                )
+              )
             )
           )
         )
@@ -111,7 +115,6 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
         } yield {
           assert(result.Results.flatMap(_.headOption).flatMap(_.Check).exists(_.CheckID == "checkName"))
           assert(result.Errors.isEmpty)
-          assert(true)
         }
       }
     }

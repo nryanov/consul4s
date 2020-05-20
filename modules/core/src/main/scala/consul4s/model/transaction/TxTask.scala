@@ -1,9 +1,8 @@
 package consul4s.model.transaction
 
 import TxTask._
-import consul4s.model.CheckStatus
-import consul4s.model.agent.Check
 import consul4s.model.catalog.NewCatalogService
+import consul4s.model.health.NewHealthCheck
 
 final case class TxTask(
   KV: Option[KVTask] = None,
@@ -44,22 +43,7 @@ object TxTask {
 
   final case class CheckTask(
     Verb: CheckOp,
-    Check: CheckDefinition
-  )
-
-  final case class CheckDefinition(
-    Node: String,
-    Name: String,
-    CheckID: Option[String] = None,
-    Status: Option[CheckStatus] = None,
-    Notes: Option[String] = None,
-    Output: Option[String] = None,
-    ServiceID: Option[String] = None,
-    ServiceName: Option[String] = None,
-    ServiceTags: Option[List[String]] = None,
-    Type: Option[String] = None,
-    // todo: restrict to TCP or HTTP health check.
-    Definition: Check
+    Check: NewHealthCheck
   )
 
 }
