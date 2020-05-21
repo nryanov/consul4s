@@ -33,7 +33,7 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
           r2 <- client.agentCheckList().body
         } yield {
           assert(r1.contains("testTTLCheck"))
-          assert(r1("testTTLCheck").Status == CheckStatus.Critical)
+          assert(r1("testTTLCheck").status == CheckStatus.Critical)
           assert(r2.isEmpty)
         }
       }
@@ -55,8 +55,8 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
           val checkInfo = r1("testTTLCheck")
 
-          assert(checkInfo.Status == CheckStatus.Passing)
-          assert(checkInfo.Output == "manual update to pass")
+          assert(checkInfo.status == CheckStatus.Passing)
+          assert(checkInfo.output == "manual update to pass")
 
           assert(r2.isEmpty)
         }
@@ -79,8 +79,8 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
           val checkInfo = r1("testTTLCheck")
 
-          assert(checkInfo.Status == CheckStatus.Warning)
-          assert(checkInfo.Output == "manual update to warn")
+          assert(checkInfo.status == CheckStatus.Warning)
+          assert(checkInfo.output == "manual update to warn")
 
           assert(r2.isEmpty)
         }
@@ -103,8 +103,8 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
           val checkInfo = r1("testTTLCheck")
 
-          assert(checkInfo.Status == CheckStatus.Critical)
-          assert(checkInfo.Output == "manual update to fail")
+          assert(checkInfo.status == CheckStatus.Critical)
+          assert(checkInfo.output == "manual update to fail")
 
           assert(r2.isEmpty)
         }
@@ -127,8 +127,8 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
           val checkInfo = r1("testTTLCheck")
 
-          assert(checkInfo.Status == CheckStatus.Passing)
-          assert(checkInfo.Output == "manual update to pass")
+          assert(checkInfo.status == CheckStatus.Passing)
+          assert(checkInfo.output == "manual update to pass")
 
           assert(r2.isEmpty)
         }

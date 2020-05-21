@@ -17,7 +17,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
           node <- client.nodes().body
           result <- client.nodeChecks(node.head.Node).body
         } yield {
-          assertResult(CheckStatus.Passing)(result.head.Status)
+          assertResult(CheckStatus.Passing)(result.head.status)
         }
       }
     }
@@ -31,7 +31,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
           _ <- client.agentRegisterLocalService(newService).body
           result <- client.serviceChecks("testService").body
         } yield {
-          assert(result.exists(_.ServiceID == "testService"))
+          assert(result.exists(_.serviceId == "testService"))
         }
       }
     }
@@ -43,7 +43,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
         for {
           result <- client.checksInState(CheckStatus.Passing).body
         } yield {
-          assertResult(CheckStatus.Passing)(result.head.Status)
+          assertResult(CheckStatus.Passing)(result.head.status)
         }
       }
     }

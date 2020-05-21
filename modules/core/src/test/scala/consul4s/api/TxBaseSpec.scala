@@ -96,11 +96,11 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
           CheckTask(
             Verb = CheckOp.Set,
             Check = NewHealthCheck(
-              Node = "testCheckNode",
-              Name = "checkName",
-              Definition = Some(
+              node = "testCheckNode",
+              name = "checkName",
+              definition = Some(
                 NewHealthCheckDefinition(
-                  TCP = Some("localhost:8888")
+                  tcp = Some("localhost:8888")
                 )
               )
             )
@@ -113,7 +113,7 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
           _ <- client.registerEntity(newNode).body
           result <- client.executeTx(List(txTask)).body
         } yield {
-          assert(result.Results.flatMap(_.headOption).flatMap(_.Check).exists(_.CheckID == "checkName"))
+          assert(result.Results.flatMap(_.headOption).flatMap(_.Check).exists(_.checkId == "checkName"))
           assert(result.Errors.isEmpty)
         }
       }
