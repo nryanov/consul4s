@@ -140,15 +140,15 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
       val newService = NewService("testService")
 
       val expectedService = Service(
-        Service = "testService",
-        ID = "testService",
-        Tags = Some(List()),
-        Address = "",
-        TaggedAddresses = None,
-        Meta = Some(Map()),
-        Port = 0,
-        EnableTagOverride = false,
-        Weights = Weights(1, 1)
+        service = "testService",
+        id = "testService",
+        tags = Some(List()),
+        address = "",
+        taggedAddresses = None,
+        meta = Some(Map()),
+        port = 0,
+        enableTagOverride = false,
+        weights = Weights(1, 1)
       )
 
       runEither {
@@ -170,8 +170,8 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
       val client = createClient(consul)
       val newService = NewService(
         "testService",
-        Check = Some(TTLCheck("testTTLCheck1", "5s")),
-        Checks = Some(
+        check = Some(TTLCheck("testTTLCheck1", "5s")),
+        checks = Some(
           List(
             TTLCheck("testTTLCheck2", "15s"),
             TTLCheck("testTTLCheck3", "30s")
@@ -180,15 +180,15 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
       )
 
       val expectedService = Service(
-        Service = "testService",
-        ID = "testService",
-        Tags = Some(List()),
-        Address = "",
-        TaggedAddresses = None,
-        Meta = Some(Map()),
-        Port = 0,
-        EnableTagOverride = false,
-        Weights = Weights(1, 1)
+        service = "testService",
+        id = "testService",
+        tags = Some(List()),
+        address = "",
+        taggedAddresses = None,
+        meta = Some(Map()),
+        port = 0,
+        enableTagOverride = false,
+        weights = Weights(1, 1)
       )
 
       runEither {
@@ -200,11 +200,11 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
           _ <- client.agentDeregisterService("testService").body
           servicesAfterDeletion <- client.agentServices().body
         } yield {
-          assert(aggregatedServiceInfoById.exists(_.Service == expectedService))
-          assert(aggregatedServiceInfoByName.exists(_.exists(_.Service == expectedService)))
+          assert(aggregatedServiceInfoById.exists(_.service == expectedService))
+          assert(aggregatedServiceInfoByName.exists(_.exists(_.service == expectedService)))
 
-          assert(aggregatedServiceInfoById.exists(_.Checks.length == 3))
-          assert(aggregatedServiceInfoByName.exists(_.exists(_.Checks.length == 3)))
+          assert(aggregatedServiceInfoById.exists(_.checks.length == 3))
+          assert(aggregatedServiceInfoByName.exists(_.exists(_.checks.length == 3)))
 
           assert(services.contains("testService"))
           assert(!servicesAfterDeletion.contains("testService"))
@@ -217,15 +217,15 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
       val newService = NewService("testService")
 
       val expectedService = Service(
-        Service = "testService",
-        ID = "testService",
-        Tags = Some(List()),
-        Address = "",
-        TaggedAddresses = None,
-        Meta = Some(Map()),
-        Port = 0,
-        EnableTagOverride = false,
-        Weights = Weights(1, 1)
+        service = "testService",
+        id = "testService",
+        tags = Some(List()),
+        address = "",
+        taggedAddresses = None,
+        meta = Some(Map()),
+        port = 0,
+        enableTagOverride = false,
+        weights = Weights(1, 1)
       )
 
       runEither {
@@ -237,8 +237,8 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
           _ <- client.agentDeregisterService("testService").body
           servicesAfterDeletion <- client.agentServices().body
         } yield {
-          assert(aggregatedServiceInfoById.exists(_.Service == expectedService))
-          assert(aggregatedServiceInfoById.exists(_.AggregatedStatus == CheckStatus.Maintenance))
+          assert(aggregatedServiceInfoById.exists(_.service == expectedService))
+          assert(aggregatedServiceInfoById.exists(_.aggregatedStatus == CheckStatus.Maintenance))
 
           assert(services.contains("testService"))
           assert(!servicesAfterDeletion.contains("testService"))

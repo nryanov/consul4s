@@ -24,7 +24,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
 
     "return service checks" in withContainers { consul =>
       val client = createClient(consul)
-      val newService = NewService("testService", Checks = Some(List(TTLCheck("ttlCheck", "15s"))))
+      val newService = NewService("testService", checks = Some(List(TTLCheck("ttlCheck", "15s"))))
 
       runEither {
         for {

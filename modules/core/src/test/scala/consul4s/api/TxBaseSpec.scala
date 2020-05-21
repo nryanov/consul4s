@@ -82,7 +82,7 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
           _ <- client.registerEntity(newNode).body
           result <- client.executeTx(List(txTask)).body
         } yield {
-          assert(result.results.flatMap(_.headOption).flatMap(_.service).exists(_.Service == "testService"))
+          assert(result.results.flatMap(_.headOption).flatMap(_.service).exists(_.service == "testService"))
           assert(result.errors.isEmpty)
         }
       }

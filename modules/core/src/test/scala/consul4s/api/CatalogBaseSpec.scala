@@ -99,7 +99,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
           result3 <- client.listOfServicesForNode("node").body
           result4 <- client.mapOfServicesForNode("node").body
         } yield {
-          assert(result1.node.exists(_.node == "node") && result1.services.exists(_.exists(_.Service == "testService")))
+          assert(result1.node.exists(_.node == "node") && result1.services.exists(_.exists(_.service == "testService")))
           assert(result2.exists(_.node.node == "node") && result2.exists(_.services.contains("testService")))
           assert(result3.node.isEmpty)
           assert(result4.isEmpty)
