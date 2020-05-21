@@ -1,5 +1,6 @@
 package consul4s
 
+import consul4s.v1.ConsulClient
 import sttp.client.{HttpURLConnectionBackend, Identity}
 
 abstract class ConsulSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) extends BaseSpec {
