@@ -19,11 +19,11 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
       val client = createClient(consul)
       val value = new String(Base64.getEncoder.encode("value".getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8)
       val txTask = TxTask(
-        KV = Some(
+        kv = Some(
           KVTask(
-            Verb = KVOp.Set,
-            Key = "key",
-            Value = Some(value)
+            verb = KVOp.Set,
+            key = "key",
+            value = Some(value)
           )
         )
       )
@@ -32,8 +32,8 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
         for {
           result <- client.executeTx(List(txTask)).body
         } yield {
-          assert(result.Errors.isEmpty)
-          assert(result.Results.flatMap(_.headOption).flatMap(_.KV).exists(_.key == "key"))
+          assert(result.errors.isEmpty)
+          assert(result.results.flatMap(_.headOption).flatMap(_.kv).exists(_.key == "key"))
         }
       }
     }
@@ -41,12 +41,12 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
     "create Node" in withContainers { consul =>
       val client = createClient(consul)
       val txTask = TxTask(
-        Node = Some(
+        node = Some(
           NodeTask(
-            Verb = NodeOp.Set,
-            Node = NodeDefinition(
-              Node = "testNode",
-              Address = "localhost"
+            verb = NodeOp.Set,
+            node = NodeDefinition(
+              node = "testNode",
+              address = "localhost"
             )
           )
         )
@@ -56,8 +56,8 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
         for {
           result <- client.executeTx(List(txTask)).body
         } yield {
-          assert(result.Results.flatMap(_.headOption).flatMap(_.Node).exists(_.Node == "testNode"))
-          assert(result.Errors.isEmpty)
+          assert(result.results.flatMap(_.headOption).flatMap(_.node).exists(_.Node == "testNode"))
+          assert(result.errors.isEmpty)
         }
       }
     }
@@ -66,11 +66,11 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
       val client = createClient(consul)
       val newNode = NodeRegistration("testNodeForService", "address")
       val txTask = TxTask(
-        Service = Some(
+        service = Some(
           ServiceTask(
-            Verb = ServiceOp.Set,
-            Node = "testNodeForService",
-            Service = NewCatalogService(
+            verb = ServiceOp.Set,
+            node = "testNodeForService",
+            service = NewCatalogService(
               Service = "testService"
             )
           )
@@ -82,8 +82,8 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
           _ <- client.registerEntity(newNode).body
           result <- client.executeTx(List(txTask)).body
         } yield {
-          assert(result.Results.flatMap(_.headOption).flatMap(_.Service).exists(_.Service == "testService"))
-          assert(result.Errors.isEmpty)
+          assert(result.results.flatMap(_.headOption).flatMap(_.service).exists(_.Service == "testService"))
+          assert(result.errors.isEmpty)
         }
       }
     }
@@ -92,10 +92,10 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
       val client = createClient(consul)
       val newNode = NodeRegistration("testCheckNode", "address")
       val txTask = TxTask(
-        Check = Some(
+        check = Some(
           CheckTask(
-            Verb = CheckOp.Set,
-            Check = NewHealthCheck(
+            verb = CheckOp.Set,
+            check = NewHealthCheck(
               node = "testCheckNode",
               name = "checkName",
               definition = Some(
@@ -113,8 +113,8 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
           _ <- client.registerEntity(newNode).body
           result <- client.executeTx(List(txTask)).body
         } yield {
-          assert(result.Results.flatMap(_.headOption).flatMap(_.Check).exists(_.checkId == "checkName"))
-          assert(result.Errors.isEmpty)
+          assert(result.results.flatMap(_.headOption).flatMap(_.check).exists(_.checkId == "checkName"))
+          assert(result.errors.isEmpty)
         }
       }
     }
