@@ -1,6 +1,7 @@
 package consul4s.v1.api
 
 import consul4s.model.kv.KVPair
+import consul4s.v1.ConsistencyMode
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.numeric._
 import sttp.client._
@@ -8,16 +9,26 @@ import sttp.client._
 trait KVStore[F[_]] { this: ConsulApi[F] =>
 
   // GET /kv/:key
-  def get(key: String, dc: Option[String] = None, token: Option[String] = None): F[Result[Option[KVPair]]] = {
-    val requestTemplate = basicRequest.get(uri"$url/kv/$key?dc=$dc")
+  def get(
+    key: String,
+    dc: Option[String] = None,
+    consistencyMode: ConsistencyMode = ConsistencyMode.Default,
+    token: Option[String] = None
+  ): F[Result[Option[KVPair]]] = {
+    val requestTemplate = basicRequest.get(addConsistencyMode(uri"$url/kv/$key?dc=$dc", consistencyMode))
     val request = requestTemplate.copy(response = jsonDecoder.asKVPairListOption.mapRight(_.flatMap(_.headOption)))
 
     sendRequest(request, token)
   }
 
   // GET /kv/:key?recurse
-  def getRecurse(key: String, dc: Option[String] = None, token: Option[String] = None): F[Result[Option[List[KVPair]]]] = {
-    val requestTemplate = basicRequest.get(uri"$url/kv/$key?recurse&dc=$dc")
+  def getRecurse(
+    key: String,
+    dc: Option[String] = None,
+    consistencyMode: ConsistencyMode = ConsistencyMode.Default,
+    token: Option[String] = None
+  ): F[Result[Option[List[KVPair]]]] = {
+    val requestTemplate = basicRequest.get(addConsistencyMode(uri"$url/kv/$key?recurse&dc=$dc", consistencyMode))
     val request = requestTemplate.copy(response = jsonDecoder.asKVPairListOption)
 
     sendRequest(request, token)
@@ -28,17 +39,23 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
     key: String,
     dc: Option[String] = None,
     separator: Option[String] = None,
+    consistencyMode: ConsistencyMode = ConsistencyMode.Default,
     token: Option[String] = None
   ): F[Result[Option[List[String]]]] = {
-    val requestTemplate = basicRequest.get(uri"$url/kv/$key?keys&dc=$dc&separator=$separator")
+    val requestTemplate = basicRequest.get(addConsistencyMode(uri"$url/kv/$key?keys&dc=$dc&separator=$separator", consistencyMode))
     val request = requestTemplate.copy(response = jsonDecoder.asStringListOption)
 
     sendRequest(request, token)
   }
 
   // GET /kv/:key?raw
-  def getRaw(key: String, dc: Option[String] = None, token: Option[String] = None): F[Result[Option[String]]] = {
-    val requestTemplate = basicRequest.get(uri"$url/kv/$key?raw&dc=$dc")
+  def getRaw(
+    key: String,
+    dc: Option[String] = None,
+    consistencyMode: ConsistencyMode = ConsistencyMode.Default,
+    token: Option[String] = None
+  ): F[Result[Option[String]]] = {
+    val requestTemplate = basicRequest.get(addConsistencyMode(uri"$url/kv/$key?raw&dc=$dc", consistencyMode))
     val request = requestTemplate.copy(response = asStringAlways.mapWithMetadata { (str, meta) =>
       if (meta.code.isSuccess) {
         Right(Some(str))

@@ -1,6 +1,7 @@
 package consul4s.v1.api
 
 import consul4s.model.session.{NewSession, SessionId, SessionInfo}
+import consul4s.v1.ConsistencyMode
 import sttp.client._
 
 trait Session[F[_]] { this: ConsulApi[F] =>
@@ -22,24 +23,38 @@ trait Session[F[_]] { this: ConsulApi[F] =>
   }
 
   // GET	/session/info/:uuid
-  def readSession(sessionId: SessionId, dc: Option[String] = None, token: Option[String] = None): F[Result[List[SessionInfo]]] = {
-    val requestTemplate = basicRequest.get(uri"$url/session/info/${sessionId.id}?dc=$dc")
+  def readSession(
+    sessionId: SessionId,
+    dc: Option[String] = None,
+    consistencyMode: ConsistencyMode = ConsistencyMode.Default,
+    token: Option[String] = None
+  ): F[Result[List[SessionInfo]]] = {
+    val requestTemplate = basicRequest.get(addConsistencyMode(uri"$url/session/info/${sessionId.id}?dc=$dc", consistencyMode))
     val request = requestTemplate.copy(response = jsonDecoder.asSessionInfoList)
 
     sendRequest(request, token)
   }
 
   // GET	/session/node/:node
-  def listNodeSession(node: String, dc: Option[String] = None, token: Option[String] = None): F[Result[List[SessionInfo]]] = {
-    val requestTemplate = basicRequest.get(uri"$url/session/node/$node?dc=$dc")
+  def listNodeSession(
+    node: String,
+    dc: Option[String] = None,
+    consistencyMode: ConsistencyMode = ConsistencyMode.Default,
+    token: Option[String] = None
+  ): F[Result[List[SessionInfo]]] = {
+    val requestTemplate = basicRequest.get(addConsistencyMode(uri"$url/session/node/$node?dc=$dc", consistencyMode))
     val request = requestTemplate.copy(response = jsonDecoder.asSessionInfoList)
 
     sendRequest(request, token)
   }
 
   // GET	/session/list
-  def listSession(dc: Option[String] = None, token: Option[String] = None): F[Result[List[SessionInfo]]] = {
-    val requestTemplate = basicRequest.get(uri"$url/session/list?dc=$dc")
+  def listSession(
+    dc: Option[String] = None,
+    consistencyMode: ConsistencyMode = ConsistencyMode.Default,
+    token: Option[String] = None
+  ): F[Result[List[SessionInfo]]] = {
+    val requestTemplate = basicRequest.get(addConsistencyMode(uri"$url/session/list?dc=$dc", consistencyMode))
     val request = requestTemplate.copy(response = jsonDecoder.asSessionInfoList)
 
     sendRequest(request, token)

@@ -2,7 +2,8 @@ package consul4s.v1
 
 import consul4s.{JsonDecoder, JsonEncoder}
 import sttp.client.{HttpError, Identity, NothingT, RequestT, Response, ResponseAs, ResponseError, SttpBackend, asStringAlways}
-import sttp.model.Header
+import sttp.model.{Header, Uri}
+import sttp.model.Uri.QuerySegment.Value
 
 package object api {
   abstract class ConsulApi[F[_]](protected val url: String, protected val sttpBackend: SttpBackend[F, Nothing, NothingT])(
@@ -36,6 +37,16 @@ package object api {
       token match {
         case Some(value) => sttpBackend.send(addTokenHeader(request, value))
         case None        => sttpBackend.send(request)
+      }
+
+    protected final def addConsistencyMode(
+      uri: Uri,
+      consistencyMode: ConsistencyMode
+    ): Uri =
+      consistencyMode match {
+        case ConsistencyMode.Default    => uri
+        case ConsistencyMode.Consistent => uri.querySegment(Value(consistencyMode.value))
+        case ConsistencyMode.Stale      => uri.querySegment(Value(consistencyMode.value))
       }
 
     private def addTokenHeader[A](

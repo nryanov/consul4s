@@ -2,6 +2,7 @@ package consul4s.v1.api
 
 import consul4s.model.health.{HealthCheck, ServiceEntry}
 import consul4s.model.{CheckStatus => ConsulStatus}
+import consul4s.v1.ConsistencyMode
 import sttp.client._
 
 trait Health[F[_]] { this: ConsulApi[F] =>
@@ -15,12 +16,16 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     nodeMeta: Option[String] = None,
     passing: Boolean = false,
     filter: Option[String] = None,
+    consistencyMode: ConsistencyMode = ConsistencyMode.Default,
     token: Option[String] = None
   ): F[Result[List[ServiceEntry]]] = {
     val passingParam = if (passing) "&passing" else ""
 
     val requestTemplate = basicRequest.get(
-      uri"$url/health/service/$service?dc=$dc&near=$near&tag=$tag&node-meta=$nodeMeta&filter=$filter$passingParam"
+      addConsistencyMode(
+        uri"$url/health/service/$service?dc=$dc&near=$near&tag=$tag&node-meta=$nodeMeta&filter=$filter$passingParam",
+        consistencyMode
+      )
     )
     val request = requestTemplate.copy(response = jsonDecoder.asServiceEntryList)
 
@@ -52,9 +57,10 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     node: String,
     dc: Option[String] = None,
     filter: Option[String] = None,
+    consistencyMode: ConsistencyMode = ConsistencyMode.Default,
     token: Option[String] = None
   ): F[Result[List[HealthCheck]]] = {
-    val requestTemplate = basicRequest.get(uri"$url/health/node/$node?dc=$dc&filter=$filter")
+    val requestTemplate = basicRequest.get(addConsistencyMode(uri"$url/health/node/$node?dc=$dc&filter=$filter", consistencyMode))
     val request = requestTemplate.copy(response = jsonDecoder.asHealthCheckList)
 
     val response = sttpBackend.send(request)
@@ -68,9 +74,12 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     near: Option[String] = None,
     nodeMeta: Option[String] = None,
     filter: Option[String] = None,
+    consistencyMode: ConsistencyMode = ConsistencyMode.Default,
     token: Option[String] = None
   ): F[Result[List[HealthCheck]]] = {
-    val requestTemplate = basicRequest.get(uri"$url/health/checks/$service?dc=$dc&near=$near&node-meta=$nodeMeta&filter=$filter")
+    val requestTemplate = basicRequest.get(
+      addConsistencyMode(uri"$url/health/checks/$service?dc=$dc&near=$near&node-meta=$nodeMeta&filter=$filter", consistencyMode)
+    )
     val request = requestTemplate.copy(response = jsonDecoder.asHealthCheckList)
 
     sendRequest(request, token)
@@ -83,9 +92,12 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     near: Option[String] = None,
     nodeMeta: Option[String] = None,
     filter: Option[String] = None,
+    consistencyMode: ConsistencyMode = ConsistencyMode.Default,
     token: Option[String] = None
   ): F[Result[List[HealthCheck]]] = {
-    val requestTemplate = basicRequest.get(uri"$url/health/state/${state.value}?dc=$dc&near=$near&node-meta=$nodeMeta&filter=$filter")
+    val requestTemplate = basicRequest.get(
+      addConsistencyMode(uri"$url/health/state/${state.value}?dc=$dc&near=$near&node-meta=$nodeMeta&filter=$filter", consistencyMode)
+    )
     val request = requestTemplate.copy(response = jsonDecoder.asHealthCheckList)
 
     sendRequest(request, token)
