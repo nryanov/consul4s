@@ -20,7 +20,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           // node should exist
           _ <- client
             .registerEntity(
-              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
+              NodeRegistration("node", "address", check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
             )
             .body
           sessionId <- client.createSession(session).body
@@ -41,7 +41,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           // node should exist
           _ <- client
             .registerEntity(
-              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
+              NodeRegistration("node", "address", check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
             )
             .body
           r <- client.listNodeSession("node").body
@@ -64,7 +64,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           // node should exist
           _ <- client
             .registerEntity(
-              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
+              NodeRegistration("node", "address", check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
             )
             .body
           sessionId <- client.createSession(session).body
@@ -85,7 +85,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           // node should exist
           _ <- client
             .registerEntity(
-              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
+              NodeRegistration("node", "address", check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
             )
             .body
           sessionId <- client.createSession(session).body
@@ -109,7 +109,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           // node should exist
           _ <- client
             .registerEntity(
-              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
+              NodeRegistration("node", "address", check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
             )
             .body
           sessionId <- client.createSession(session).body

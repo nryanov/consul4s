@@ -15,7 +15,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
       runEither {
         for {
           node <- client.nodes().body
-          result <- client.nodeChecks(node.head.Node).body
+          result <- client.nodeChecks(node.head.node).body
         } yield {
           assertResult(CheckStatus.Passing)(result.head.status)
         }

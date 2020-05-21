@@ -56,7 +56,7 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
         for {
           result <- client.executeTx(List(txTask)).body
         } yield {
-          assert(result.results.flatMap(_.headOption).flatMap(_.node).exists(_.Node == "testNode"))
+          assert(result.results.flatMap(_.headOption).flatMap(_.node).exists(_.node == "testNode"))
           assert(result.errors.isEmpty)
         }
       }
@@ -71,7 +71,7 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
             verb = ServiceOp.Set,
             node = "testNodeForService",
             service = NewCatalogService(
-              Service = "testService"
+              service = "testService"
             )
           )
         )

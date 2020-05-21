@@ -40,7 +40,7 @@ class CoordinateBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEnc
       runEither {
         for {
           node <- client.nodes().body
-          r <- client.coordinateLANNode(node.head.Node).body
+          r <- client.coordinateLANNode(node.head.node).body
         } yield {
           assert(true)
         }
