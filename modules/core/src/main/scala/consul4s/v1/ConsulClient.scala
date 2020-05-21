@@ -8,7 +8,7 @@ import sttp.client.{SttpBackend, _}
 final class ConsulClient[F[_]](url: String, sttpBackend: SttpBackend[F, Nothing, NothingT])(
   implicit jsonDecoder: JsonDecoder,
   jsonEncoder: JsonEncoder
-) extends ConsulApi[F](url, Slf4jCurlBackend[F, Nothing, NothingT](sttpBackend))
+) extends ConsulApi[F](url + "/v1", Slf4jCurlBackend[F, Nothing, NothingT](sttpBackend))
 
 object ConsulClient {
   def apply[F[_]](

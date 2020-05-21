@@ -1,7 +1,8 @@
 package consul4s.v1
 
 import consul4s.{JsonDecoder, JsonEncoder}
-import sttp.client.{HttpError, NothingT, Response, ResponseAs, ResponseError, SttpBackend, asStringAlways}
+import sttp.client.{HttpError, Identity, NothingT, RequestT, Response, ResponseAs, ResponseError, SttpBackend, asStringAlways}
+import sttp.model.Header
 
 package object api {
   abstract class ConsulApi[F[_]](protected val url: String, protected val sttpBackend: SttpBackend[F, Nothing, NothingT])(
@@ -19,7 +20,7 @@ package object api {
       with Transaction[F] {
     type Result[A] = Response[Either[ResponseError[Exception], A]]
 
-    protected def asResultUnit: ResponseAs[Either[ResponseError[Exception], Unit], Nothing] = asStringAlways.mapWithMetadata {
+    protected final def asResultUnit: ResponseAs[Either[ResponseError[Exception], Unit], Nothing] = asStringAlways.mapWithMetadata {
       (str, meta) =>
         if (meta.isSuccess) {
           Right(())
@@ -27,5 +28,20 @@ package object api {
           Left[ResponseError[Exception], Unit](HttpError(str))
         }
     }
+
+    protected final def sendRequest[A](
+      request: RequestT[Identity, Either[ResponseError[Exception], A], Nothing],
+      token: Option[String]
+    ): F[Result[A]] =
+      token match {
+        case Some(value) => sttpBackend.send(addTokenHeader(request, value))
+        case None        => sttpBackend.send(request)
+      }
+
+    private def addTokenHeader[A](
+      request: RequestT[Identity, Either[ResponseError[Exception], A], Nothing],
+      token: String
+    ): RequestT[Identity, Either[ResponseError[Exception], A], Nothing] =
+      request.copy(headers = request.headers ++ Seq(Header("X-Consul-Token", token)))
   }
 }

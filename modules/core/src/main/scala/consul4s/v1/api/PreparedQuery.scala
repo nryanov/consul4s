@@ -10,13 +10,13 @@ trait PreparedQuery[F[_]] { this: ConsulApi[F] =>
     dc: Option[String] = None,
     near: Option[String] = None,
     limit: Option[Int] = None,
-    connect: Boolean = false
+    connect: Boolean = false,
+    token: Option[String] = None
   ): F[Result[Option[QueryResult]]] = {
     val requestTemplate = basicRequest.get(uri"$url/query/$queryUUID/execute?dc=$dc&near=$near&limit=$limit&connect=$connect")
     val request = requestTemplate.copy(response = jsonDecoder.asQueryResultOption)
 
-    val response = sttpBackend.send(request)
-    response
+    sendRequest(request, token)
   }
 
 }

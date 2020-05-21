@@ -14,7 +14,8 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     tag: Option[String] = None,
     nodeMeta: Option[String] = None,
     passing: Boolean = false,
-    filter: Option[String] = None
+    filter: Option[String] = None,
+    token: Option[String] = None
   ): F[Result[List[ServiceEntry]]] = {
     val passingParam = if (passing) "&passing" else ""
 
@@ -23,8 +24,7 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     )
     val request = requestTemplate.copy(response = jsonDecoder.asServiceEntryList)
 
-    val response = sttpBackend.send(request)
-    response
+    sendRequest(request, token)
   }
 
   // GET	/health/connect/:service
@@ -35,7 +35,8 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     tag: Option[String] = None,
     nodeMeta: Option[String] = None,
     passing: Boolean = false,
-    filter: Option[String] = None
+    filter: Option[String] = None,
+    token: Option[String] = None
   ): F[Result[List[ServiceEntry]]] = {
     val passingParam = if (passing) "&passing" else ""
 
@@ -43,15 +44,15 @@ trait Health[F[_]] { this: ConsulApi[F] =>
       basicRequest.get(uri"$url/health/connect/$service?dc=$dc&near=$near&tag=$tag&node-meta=$nodeMeta&filter=$filter$passingParam")
     val request = requestTemplate.copy(response = jsonDecoder.asServiceEntryList)
 
-    val response = sttpBackend.send(request)
-    response
+    sendRequest(request, token)
   }
 
   // GET	/health/node/:node
   def nodeChecks(
     node: String,
     dc: Option[String] = None,
-    filter: Option[String] = None
+    filter: Option[String] = None,
+    token: Option[String] = None
   ): F[Result[List[HealthCheck]]] = {
     val requestTemplate = basicRequest.get(uri"$url/health/node/$node?dc=$dc&filter=$filter")
     val request = requestTemplate.copy(response = jsonDecoder.asHealthCheckList)
@@ -66,13 +67,13 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     dc: Option[String] = None,
     near: Option[String] = None,
     nodeMeta: Option[String] = None,
-    filter: Option[String] = None
+    filter: Option[String] = None,
+    token: Option[String] = None
   ): F[Result[List[HealthCheck]]] = {
     val requestTemplate = basicRequest.get(uri"$url/health/checks/$service?dc=$dc&near=$near&node-meta=$nodeMeta&filter=$filter")
     val request = requestTemplate.copy(response = jsonDecoder.asHealthCheckList)
 
-    val response = sttpBackend.send(request)
-    response
+    sendRequest(request, token)
   }
 
   // GET	/health/state/:state
@@ -81,12 +82,12 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     dc: Option[String] = None,
     near: Option[String] = None,
     nodeMeta: Option[String] = None,
-    filter: Option[String] = None
+    filter: Option[String] = None,
+    token: Option[String] = None
   ): F[Result[List[HealthCheck]]] = {
     val requestTemplate = basicRequest.get(uri"$url/health/state/${state.value}?dc=$dc&near=$near&node-meta=$nodeMeta&filter=$filter")
     val request = requestTemplate.copy(response = jsonDecoder.asHealthCheckList)
 
-    val response = sttpBackend.send(request)
-    response
+    sendRequest(request, token)
   }
 }
