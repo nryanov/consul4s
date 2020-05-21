@@ -3,6 +3,7 @@ package consul4s.api
 import com.dimafeng.testcontainers.scalatest.TestContainerForAll
 import consul4s.model.agent.Service
 import consul4s.model.catalog._
+import consul4s.model.health.NewHealthCheck
 import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
 
 abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) extends ConsulSpec with TestContainerForAll {
@@ -28,7 +29,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
         for {
           result <- client.nodes().body
         } yield {
-          assert(result.head.Datacenter.contains("dc1"))
+          assert(result.head.datacenter.contains("dc1"))
         }
       }
     }
@@ -48,7 +49,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
     "register, get info and deregister node" in withContainers { consul =>
       val client = createClient(consul)
 
-      val registerNode = NodeRegistration("node", "address")
+      val registerNode = NodeRegistration("node", "address", check = Some(NewHealthCheck("node", "nodeCheck")))
       val deleteNode = NodeDeregistration("node")
 
       runEither {
@@ -58,8 +59,8 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
           _ <- client.deregisterEntity(deleteNode).body
           afterDeregistration <- client.nodes().body
         } yield {
-          assert(result.exists(_.Node == "node"))
-          assert(!afterDeregistration.exists(_.Node == "node"))
+          assert(result.exists(_.node == "node"))
+          assert(!afterDeregistration.exists(_.node == "node"))
         }
       }
     }
@@ -67,7 +68,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
     "register, get info and deregister service" in withContainers { consul =>
       val client = createClient(consul)
 
-      val registerNode = NodeRegistration("node", "address", Service = Some(NewCatalogService("testService")))
+      val registerNode = NodeRegistration("node", "address", service = Some(NewCatalogService("testService")))
       val deleteNode = NodeDeregistration("node")
 
       runEither {
@@ -77,8 +78,8 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
           _ <- client.deregisterEntity(deleteNode).body
           result2 <- client.nodesInfoForService("testService").body
         } yield {
-          assert(result1.exists(_.ServiceName == "testService"))
-          assert(!result2.exists(_.ServiceName == "testService"))
+          assert(result1.exists(_.serviceName == "testService"))
+          assert(!result2.exists(_.serviceName == "testService"))
         }
       }
     }
@@ -86,7 +87,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
     "register, get info about node and deregister" in withContainers { consul =>
       val client = createClient(consul)
 
-      val registerNode = NodeRegistration("node", "address", Service = Some(NewCatalogService("testService")))
+      val registerNode = NodeRegistration("node", "address", service = Some(NewCatalogService("testService")))
       val deleteNode = NodeDeregistration("node")
 
       runEither {
@@ -98,9 +99,9 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
           result3 <- client.listOfServicesForNode("node").body
           result4 <- client.mapOfServicesForNode("node").body
         } yield {
-          assert(result1.Node.exists(_.Node == "node") && result1.Services.exists(_.exists(_.Service == "testService")))
-          assert(result2.exists(_.Node.Node == "node") && result2.exists(_.Services.contains("testService")))
-          assert(result3.Node.isEmpty)
+          assert(result1.node.exists(_.node == "node") && result1.services.exists(_.exists(_.service == "testService")))
+          assert(result2.exists(_.node.node == "node") && result2.exists(_.services.contains("testService")))
+          assert(result3.node.isEmpty)
           assert(result4.isEmpty)
         }
       }

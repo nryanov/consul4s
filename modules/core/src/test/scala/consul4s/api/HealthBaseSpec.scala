@@ -15,23 +15,23 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
       runEither {
         for {
           node <- client.nodes().body
-          result <- client.nodeChecks(node.head.Node).body
+          result <- client.nodeChecks(node.head.node).body
         } yield {
-          assertResult(CheckStatus.Passing)(result.head.Status)
+          assertResult(CheckStatus.Passing)(result.head.status)
         }
       }
     }
 
     "return service checks" in withContainers { consul =>
       val client = createClient(consul)
-      val newService = NewService("testService", Checks = Some(List(TTLCheck("ttlCheck", "15s"))))
+      val newService = NewService("testService", checks = Some(List(TTLCheck("ttlCheck", "15s"))))
 
       runEither {
         for {
           _ <- client.agentRegisterLocalService(newService).body
           result <- client.serviceChecks("testService").body
         } yield {
-          assert(result.exists(_.ServiceID == "testService"))
+          assert(result.exists(_.serviceId == "testService"))
         }
       }
     }
@@ -43,7 +43,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
         for {
           result <- client.checksInState(CheckStatus.Passing).body
         } yield {
-          assertResult(CheckStatus.Passing)(result.head.Status)
+          assertResult(CheckStatus.Passing)(result.head.status)
         }
       }
     }

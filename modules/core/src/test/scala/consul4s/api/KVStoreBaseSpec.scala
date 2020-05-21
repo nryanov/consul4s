@@ -20,7 +20,7 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
           assert(create)
           assert(getRaw.contains("value"))
           assert(get.isDefined)
-          assertResult("value")(get.get.decodedValue)
+          assert(get.get.decodedValue.contains("value"))
         }
       }
     }
@@ -48,7 +48,7 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
           _ <- client.createOrUpdate("key2", "value2").body
           getRecurse <- client.getRecurse("key").body
         } yield {
-          assert(getRecurse.map(_.map(_.decodedValue)).contains(List("value1", "value2")))
+          assert(getRecurse.map(_.map(_.decodedValue.getOrElse(""))).contains(List("value1", "value2")))
         }
       }
     }
@@ -95,7 +95,7 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
           _ <- client.deleteRecurse("key").body
           getAfterDelete <- client.get("key").body
         } yield {
-          assert(getBeforeDelete.map(_.map(_.decodedValue)).contains(List("value1", "value2", "value3")))
+          assert(getBeforeDelete.map(_.map(_.decodedValue.getOrElse(""))).contains(List("value1", "value2", "value3")))
           assert(getAfterDelete.isEmpty)
         }
       }

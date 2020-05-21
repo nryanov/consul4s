@@ -3,7 +3,7 @@ package consul4s
 import consul4s.model.agent.{Check, CheckUpdate, NewService, Token}
 import consul4s.model.catalog.{NodeDeregistration, NodeRegistration}
 import consul4s.model.coordinate.NodeCoordinate
-import consul4s.model.session.SessionInfo
+import consul4s.model.session.NewSession
 import consul4s.model.transaction.TxTask
 
 trait JsonEncoder {
@@ -11,7 +11,7 @@ trait JsonEncoder {
 
   def nodeDeregistrationToJson(value: NodeDeregistration): String
 
-  def sessionToJson(value: SessionInfo): String
+  def newSessionToJson(value: NewSession): String
 
   def checkToJson(check: Check): String
 

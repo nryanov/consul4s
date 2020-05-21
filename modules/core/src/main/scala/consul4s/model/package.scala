@@ -1,6 +1,46 @@
 package consul4s
 
+import enumeratum.values._
+
 package object model {
-  val DEFAULT_VALUE: String = ""
-  val DEFAULT_PORT: Int = 0
+
+  sealed abstract class CheckStatus(val value: String) extends StringEnumEntry
+
+  object CheckStatus extends StringEnum[CheckStatus] {
+    override def values: IndexedSeq[CheckStatus] = findValues
+
+    case object Any extends CheckStatus("any")
+
+    case object Passing extends CheckStatus("passing")
+
+    case object Warning extends CheckStatus("warning")
+
+    case object Critical extends CheckStatus("critical")
+
+    case object Maintenance extends CheckStatus("maintenance")
+  }
+
+  sealed abstract class ServiceKind(val value: String) extends StringEnumEntry
+
+  object ServiceKind extends StringEnum[ServiceKind] {
+    override def values: IndexedSeq[ServiceKind] = findValues
+
+    case object Typical extends ServiceKind("")
+
+    case object ConnectProxy extends ServiceKind("connect-proxy")
+
+    case object MeshGateway extends ServiceKind("mesh-gateway")
+
+    case object IngressGateway extends ServiceKind("ingress-gateway")
+  }
+
+  sealed abstract class SessionBehavior(val value: String) extends StringEnumEntry
+
+  object SessionBehavior extends StringEnum[SessionBehavior] {
+    override def values: IndexedSeq[SessionBehavior] = findValues
+
+    case object Release extends SessionBehavior("release")
+
+    case object Delete extends SessionBehavior("delete")
+  }
 }

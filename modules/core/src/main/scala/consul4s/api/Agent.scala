@@ -1,6 +1,7 @@
 package consul4s.api
 
-import consul4s.model.agent.{AggregatedServiceStatus, Check, CheckInfo, CheckUpdate, MemberInfo, NewService, Service, Token}
+import consul4s.model.agent.{AggregatedServiceStatus, Check, CheckUpdate, MemberInfo, NewService, Service, Token}
+import consul4s.model.health.HealthCheck
 import sttp.client._
 
 trait Agent[F[_]] { this: ConsulApi[F] =>
@@ -81,9 +82,9 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
   }
 
   // GET	/agent/checks
-  def agentCheckList(filter: Option[String] = None): F[Result[Map[String, CheckInfo]]] = {
+  def agentCheckList(filter: Option[String] = None): F[Result[Map[String, HealthCheck]]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/checks?$filter=$filter")
-    val request = requestTemplate.copy(response = jsonDecoder.asCheckInfoMap)
+    val request = requestTemplate.copy(response = jsonDecoder.asHealthCheckMap)
 
     val response = sttpBackend.send(request)
     response
