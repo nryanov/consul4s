@@ -1,10 +1,21 @@
 package consul4s.json4s.model
 
-import consul4s.model.event.UserEvent
-import org.json4s.JsonAST.{JArray, JField, JInt, JLong, JString}
-import org.json4s.{CustomSerializer, JObject}
+import consul4s.model.event._
+import org.json4s.FieldSerializer
+import org.json4s.FieldSerializer._
 
 trait Event {
+  val userEventFormat = FieldSerializer[UserEvent](
+    Map(),
+    renameFrom("ID", "id")
+      .orElse(renameFrom("Name", "name"))
+      .orElse(renameFrom("Payload", "payload"))
+      .orElse(renameFrom("NodeFilter", "nodeFilter"))
+      .orElse(renameFrom("ServiceFilter", "serviceFilter"))
+      .orElse(renameFrom("TagFilter", "tagFilter"))
+      .orElse(renameFrom("Version", "version"))
+      .orElse(renameFrom("LTime", "lTime"))
+  )
 
-  val eventAllSerializers = List()
+  val eventAllFieldSerializers = List(userEventFormat)
 }
