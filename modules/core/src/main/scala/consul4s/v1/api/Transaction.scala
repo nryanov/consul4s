@@ -1,7 +1,7 @@
 package consul4s.v1.api
 
+import consul4s.ConsistencyMode
 import consul4s.model.transaction.{TxResults, TxTask}
-import consul4s.v1.ConsistencyMode
 import sttp.client._
 
 trait Transaction[F[_]] { this: ConsulApi[F] =>

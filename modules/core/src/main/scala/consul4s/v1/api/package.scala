@@ -1,6 +1,6 @@
 package consul4s.v1
 
-import consul4s.{JsonDecoder, JsonEncoder}
+import consul4s.{BackgroundRefreshCache, CacheMode, ConsistencyMode, JsonDecoder, JsonEncoder, NoCache, SimpleCache}
 import sttp.client.{HttpError, Identity, NothingT, RequestT, Response, ResponseAs, ResponseError, SttpBackend, asStringAlways}
 import sttp.model.{Header, Uri}
 import sttp.model.Uri.QuerySegment.Value
@@ -48,6 +48,26 @@ package object api {
         case ConsistencyMode.Consistent => uri.querySegment(Value(consistencyMode.value))
         case ConsistencyMode.Stale      => uri.querySegment(Value(consistencyMode.value))
       }
+
+    protected final def addCacheMode[A](
+      request: RequestT[Identity, Either[ResponseError[Exception], A], Nothing],
+      cacheMode: CacheMode
+    ): RequestT[Identity, Either[ResponseError[Exception], A], Nothing] = cacheMode match {
+      case NoCache => request
+      case SimpleCache(cacheControlHeader) =>
+        cacheControlHeader match {
+          case Some(value) =>
+            val newUri: Identity[Uri] = request.uri.querySegment(Value("cached"))
+            val newHeaders = request.headers ++ Seq(Header("Cache-Control", value))
+            request.copy(uri = newUri, headers = newHeaders)
+          case None =>
+            val newUri: Identity[Uri] = request.uri.querySegment(Value("cached"))
+            request.copy(uri = newUri)
+        }
+      case BackgroundRefreshCache =>
+        val newUri: Identity[Uri] = request.uri.querySegment(Value("cached"))
+        request.copy(uri = newUri)
+    }
 
     private def addTokenHeader[A](
       request: RequestT[Identity, Either[ResponseError[Exception], A], Nothing],

@@ -1,7 +1,7 @@
 package consul4s.v1.api
 
+import consul4s.{CacheMode, ConsistencyMode, NoCache}
 import consul4s.model.catalog._
-import consul4s.v1.ConsistencyMode
 import sttp.client._
 
 trait Catalog[F[_]] { this: ConsulApi[F] =>
@@ -68,12 +68,13 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     nodeMeta: Option[String] = None,
     filter: Option[String] = None,
     consistencyMode: ConsistencyMode = ConsistencyMode.Default,
-    token: Option[String] = None
+    token: Option[String] = None,
+    cacheMode: CacheMode = NoCache
   ): F[Result[List[CatalogService]]] = {
     val requestTemplate = basicRequest.get(
       addConsistencyMode(uri"$url/catalog/service/$service?dc=$dc&tag=$tag&near=$near&node-meta=$nodeMeta&filter=$filter", consistencyMode)
     )
-    val request = requestTemplate.copy(response = jsonDecoder.asCatalogServiceList)
+    val request = addCacheMode(requestTemplate.copy(response = jsonDecoder.asCatalogServiceList), cacheMode)
 
     sendRequest(request, token)
   }

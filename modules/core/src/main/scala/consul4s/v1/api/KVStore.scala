@@ -1,7 +1,7 @@
 package consul4s.v1.api
 
+import consul4s.ConsistencyMode
 import consul4s.model.kv.KVPair
-import consul4s.v1.ConsistencyMode
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.numeric._
 import sttp.client._

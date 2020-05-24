@@ -1,8 +1,8 @@
 package consul4s.v1.api
 
+import consul4s.{CacheMode, ConsistencyMode, NoCache}
 import consul4s.model.health.{HealthCheck, ServiceEntry}
 import consul4s.model.{CheckStatus => ConsulStatus}
-import consul4s.v1.ConsistencyMode
 import sttp.client._
 
 trait Health[F[_]] { this: ConsulApi[F] =>
@@ -17,7 +17,8 @@ trait Health[F[_]] { this: ConsulApi[F] =>
     passing: Boolean = false,
     filter: Option[String] = None,
     consistencyMode: ConsistencyMode = ConsistencyMode.Default,
-    token: Option[String] = None
+    token: Option[String] = None,
+    cacheMode: CacheMode = NoCache
   ): F[Result[List[ServiceEntry]]] = {
     val passingParam = if (passing) "&passing" else ""
 
@@ -27,7 +28,7 @@ trait Health[F[_]] { this: ConsulApi[F] =>
         consistencyMode
       )
     )
-    val request = requestTemplate.copy(response = jsonDecoder.asServiceEntryList)
+    val request = addCacheMode(requestTemplate.copy(response = jsonDecoder.asServiceEntryList), cacheMode)
 
     sendRequest(request, token)
   }

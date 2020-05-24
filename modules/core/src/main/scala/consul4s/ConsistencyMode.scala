@@ -1,4 +1,4 @@
-package consul4s.v1
+package consul4s
 
 import enumeratum.values._
 
