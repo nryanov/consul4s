@@ -32,7 +32,7 @@ trait Agent {
   val memberInfoFormat = FieldSerializer[MemberInfo](
     Map(),
     renameFrom("Name", "name")
-      .orElse(renameFrom("Addr", "addr"))
+      .orElse(renameFrom("Addr", "address"))
       .orElse(renameFrom("Port", "port"))
       .orElse(renameFrom("Tags", "tags"))
       .orElse(renameFrom("Status", "status"))
@@ -84,101 +84,113 @@ trait Agent {
     renameFrom("Passing", "passing").orElse(renameFrom("Warning", "warning"))
   )
 
-  val ScriptCheckFormat = FieldSerializer[ScriptCheck](
-    renameTo("name", "Name")
-      .orElse(renameTo("args", "Args"))
-      .orElse(renameTo("timeout", "Timeout"))
-      .orElse(renameTo("interval", "Interval"))
-      .orElse(renameTo("id", "ID"))
-      .orElse(renameTo("serviceId", "ServiceID"))
-      .orElse(renameTo("status", "Status"))
-      .orElse(renameTo("notes", "Notes"))
-      .orElse(renameTo("deregisterCriticalServiceAfter", "DeregisterCriticalServiceAfter")),
-    Map()
-  )
+  class CheckSerializer
+      extends CustomSerializer[Check](
+        implicit format =>
+          (
+            {
+              case _ => throw new UnsupportedOperationException("Not supported")
+            }, {
+              case x: ScriptCheck =>
+                JObject(
+                  JField("Name", JString(x.name)) ::
+                    JField("Args", JArray(x.args.map(v => JString(v)))) ::
+                    JField("Timeout", optionToValue(x.timeout)) ::
+                    JField("Interval", optionToValue(x.interval)) ::
+                    JField("ID", optionToValue(x.id)) ::
+                    JField("ServiceID", optionToValue(x.serviceId)) ::
+                    JField("Status", JString(x.status.value)) ::
+                    JField("Notes", optionToValue(x.notes)) ::
+                    JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
+                    :: Nil
+                )
+              case x: HttpCheck =>
+                JObject(
+                  JField("Name", JString(x.name)) ::
+                    JField("HTTP", JString(x.http)) ::
+                    JField("TLSSkipVerify", JBool(x.tlsSkipVerify)) ::
+                    JField("Interval", JString(x.interval)) ::
+                    JField("Timeout", JString(x.timeout)) ::
+                    JField("Header", Extraction.decompose(x.header)) ::
+                    JField("Method", optionToValue(x.method)) ::
+                    JField("Body", optionToValue(x.body)) ::
+                    JField("ID", optionToValue(x.id)) ::
+                    JField("ServiceID", optionToValue(x.serviceId)) ::
+                    JField("Status", JString(x.status.value)) ::
+                    JField("Notes", optionToValue(x.notes)) ::
+                    JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
+                    JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
+                    JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
+                    :: Nil
+                )
+              case x: TCPCheck =>
+                JObject(
+                  JField("Name", JString(x.name)) ::
+                    JField("TCP", JString(x.tcp)) ::
+                    JField("Interval", JString(x.interval)) ::
+                    JField("Timeout", JString(x.timeout)) ::
+                    JField("ID", optionToValue(x.id)) ::
+                    JField("ServiceID", optionToValue(x.serviceId)) ::
+                    JField("Status", JString(x.status.value)) ::
+                    JField("Notes", optionToValue(x.notes)) ::
+                    JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
+                    JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
+                    JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
+                    :: Nil
+                )
+              case x: TTLCheck =>
+                JObject(
+                  JField("Name", JString(x.name)) ::
+                    JField("TTL", JString(x.ttl)) ::
+                    JField("ID", optionToValue(x.id)) ::
+                    JField("ServiceID", optionToValue(x.serviceId)) ::
+                    JField("Status", JString(x.status.value)) ::
+                    JField("Notes", optionToValue(x.notes)) ::
+                    JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
+                    :: Nil
+                )
+              case x: DockerCheck =>
+                JObject(
+                  JField("Name", JString(x.name)) ::
+                    JField("DockerContainerId", JString(x.dockerContainerId)) ::
+                    JField("Shell", JString(x.shell)) ::
+                    JField("Args", JArray(x.args.map(v => JString(v)))) ::
+                    JField("Interval", optionToValue(x.interval)) ::
+                    JField("ID", optionToValue(x.id)) ::
+                    JField("ServiceID", optionToValue(x.serviceId)) ::
+                    JField("Status", JString(x.status.value)) ::
+                    JField("Notes", optionToValue(x.notes)) ::
+                    JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
+                    JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
+                    JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
+                    :: Nil
+                )
+              case x: GRpcCheck =>
+                JObject(
+                  JField("Name", JString(x.name)) ::
+                    JField("GRPC", JString(x.grpc)) ::
+                    JField("GRPCUseTLS", JBool(x.grpcUseTLS)) ::
+                    JField("Interval", optionToValue(x.interval)) ::
+                    JField("ID", optionToValue(x.id)) ::
+                    JField("ServiceID", optionToValue(x.serviceId)) ::
+                    JField("Status", JString(x.status.value)) ::
+                    JField("Notes", optionToValue(x.notes)) ::
+                    JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
+                    JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
+                    JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
+                    :: Nil
+                )
+              case x: AliasCheck =>
+                JObject(
+                  JField("ID", JString(x.id)) ::
+                    JField("AliasNode", optionToValue(x.aliasNode)) ::
+                    JField("AliasService", optionToValue(x.aliasService)) :: Nil
+                )
+            }
+          )
+      )
 
-  val HttpCheckFormat = FieldSerializer[HttpCheck](
-    renameTo("name", "Name")
-      .orElse(renameTo("http", "HTTP"))
-      .orElse(renameTo("tlsSkipVerify", "TLSSkipVerify"))
-      .orElse(renameTo("interval", "Interval"))
-      .orElse(renameTo("timeout", "Timeout"))
-      .orElse(renameTo("header", "Header"))
-      .orElse(renameTo("method", "Method"))
-      .orElse(renameTo("body", "Body"))
-      .orElse(renameTo("id", "ID"))
-      .orElse(renameTo("serviceId", "ServiceID"))
-      .orElse(renameTo("status", "Status"))
-      .orElse(renameTo("notes", "Notes"))
-      .orElse(renameTo("successBeforePassing", "SuccessBeforePassing"))
-      .orElse(renameTo("failuresBeforeCritical", "FailuresBeforeCritical"))
-      .orElse(renameTo("deregisterCriticalServiceAfter", "DeregisterCriticalServiceAfter")),
-    Map()
-  )
-
-  val TCPCheckFormat = FieldSerializer[TCPCheck](
-    renameTo("name", "Name")
-      .orElse(renameTo("tcp", "TCP"))
-      .orElse(renameTo("interval", "Interval"))
-      .orElse(renameTo("timeout", "Timeout"))
-      .orElse(renameTo("id", "ID"))
-      .orElse(renameTo("serviceId", "ServiceID"))
-      .orElse(renameTo("status", "Status"))
-      .orElse(renameTo("notes", "Notes"))
-      .orElse(renameTo("successBeforePassing", "SuccessBeforePassing"))
-      .orElse(renameTo("failuresBeforeCritical", "FailuresBeforeCritical"))
-      .orElse(renameTo("deregisterCriticalServiceAfter", "DeregisterCriticalServiceAfter")),
-    Map()
-  )
-
-  val TTLCheckFormat = FieldSerializer[TTLCheck](
-    renameTo("name", "Name")
-      .orElse(renameTo("ttl", "TTL"))
-      .orElse(renameTo("id", "ID"))
-      .orElse(renameTo("serviceId", "ServiceID"))
-      .orElse(renameTo("status", "Status"))
-      .orElse(renameTo("notes", "Notes"))
-      .orElse(renameTo("deregisterCriticalServiceAfter", "DeregisterCriticalServiceAfter")),
-    Map()
-  )
-
-  val DockerCheckFormat = FieldSerializer[DockerCheck](
-    renameTo("name", "Name")
-      .orElse(renameTo("dockerContainerId", "DockerContainerId"))
-      .orElse(renameTo("shell", "Shell"))
-      .orElse(renameTo("args", "Args"))
-      .orElse(renameTo("interval", "Interval"))
-      .orElse(renameTo("id", "ID"))
-      .orElse(renameTo("serviceId", "ServiceID"))
-      .orElse(renameTo("status", "Status"))
-      .orElse(renameTo("notes", "Notes"))
-      .orElse(renameTo("successBeforePassing", "SuccessBeforePassing"))
-      .orElse(renameTo("failuresBeforeCritical", "FailuresBeforeCritical"))
-      .orElse(renameTo("deregisterCriticalServiceAfter", "DeregisterCriticalServiceAfter")),
-    Map()
-  )
-
-  val GRpcCheckFormat = FieldSerializer[GRpcCheck](
-    renameTo("name", "Name")
-      .orElse(renameTo("grpc", "GRPC"))
-      .orElse(renameTo("grpcUseTLS", "GRPCUseTLS"))
-      .orElse(renameTo("interval", "Interval"))
-      .orElse(renameTo("id", "ID"))
-      .orElse(renameTo("serviceId", "ServiceID"))
-      .orElse(renameTo("status", "Status"))
-      .orElse(renameTo("notes", "Notes"))
-      .orElse(renameTo("successBeforePassing", "SuccessBeforePassing"))
-      .orElse(renameTo("failuresBeforeCritical", "FailuresBeforeCritical"))
-      .orElse(renameTo("deregisterCriticalServiceAfter", "DeregisterCriticalServiceAfter")),
-    Map()
-  )
-
-  val AliasCheckFormat = FieldSerializer[AliasCheck](
-    renameTo("id", "ID").orElse(renameTo("aliasNode", "AliasNode")).orElse(renameTo("aliasService", "AliasService")),
-    Map()
-  )
-
-  val agentAllSerializers = List(new UpstreamDestTypeSerializer)
+  val agentAllSerializers = List(new UpstreamDestTypeSerializer, new CheckSerializer)
   val agentAllFieldSerializers = List(
     aggregatedServiceStatusFormat,
     checkUpdateFormat,
@@ -187,13 +199,6 @@ trait Agent {
     serviceFormat,
     taggedAddressFormat,
     tokenFormat,
-    weightsFormat,
-    ScriptCheckFormat,
-    HttpCheckFormat,
-    TCPCheckFormat,
-    TTLCheckFormat,
-    DockerCheckFormat,
-    GRpcCheckFormat,
-    AliasCheckFormat
+    weightsFormat
   )
 }

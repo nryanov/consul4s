@@ -11,15 +11,15 @@ trait Health {
   val healthCheckFormat = FieldSerializer[HealthCheck](
     Map(),
     renameFrom("Node", "node")
-      .orElse(renameFrom("CheckID", "checkID"))
+      .orElse(renameFrom("CheckID", "checkId"))
       .orElse(renameFrom("Name", "name"))
       .orElse(renameFrom("Status", "status"))
       .orElse(renameFrom("Notes", "notes"))
       .orElse(renameFrom("Output", "output"))
-      .orElse(renameFrom("ServiceID", "serviceID"))
+      .orElse(renameFrom("ServiceID", "serviceId"))
       .orElse(renameFrom("ServiceName", "serviceName"))
       .orElse(renameFrom("ServiceTags", "serviceTags"))
-      .orElse(renameFrom("Type", "tType"))
+      .orElse(renameFrom("Type", "type"))
       .orElse(renameFrom("Definition", "definition"))
       .orElse(renameFrom("CreateIndex", "createIndex"))
       .orElse(renameFrom("ModifyIndex", "modifyIndex"))
