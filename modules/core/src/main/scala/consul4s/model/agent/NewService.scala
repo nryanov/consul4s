@@ -36,8 +36,8 @@ final case class NewService(
   taggedAddresses: Option[Map[String, TaggedAddress]] = None,
   meta: Option[Map[String, String]] = None,
   port: Option[Int] = None,
-  check: Option[Check] = None,
-  checks: Option[List[Check]] = None,
+  check: Option[ServiceCheck] = None,
+  checks: Option[List[ServiceCheck]] = None,
   enableTagOverride: Boolean = false,
   weights: Option[Weights] = None
 )

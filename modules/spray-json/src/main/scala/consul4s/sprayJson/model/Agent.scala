@@ -127,6 +127,107 @@ trait Agent extends DefaultJsonProtocol { this: Health with Catalog with Common 
     def read(json: JsValue): Check = throw new UnsupportedOperationException("Not supported")
   }
 
+  implicit val serviceScriptCheckFormat: RootJsonFormat[ServiceScriptCheck] = jsonFormat(
+    ServiceScriptCheck.apply,
+    "Name",
+    "Args",
+    "Timeout",
+    "Interval",
+    "CheckID",
+    "ServiceID",
+    "Status",
+    "Notes",
+    "DeregisterCriticalServiceAfter"
+  )
+
+  implicit val serviceHttpCheckFormat: RootJsonFormat[ServiceHttpCheck] = jsonFormat(
+    ServiceHttpCheck.apply,
+    "Name",
+    "HTTP",
+    "TLSSkipVerify",
+    "Interval",
+    "Timeout",
+    "Header",
+    "Method",
+    "Body",
+    "CheckID",
+    "ServiceID",
+    "Status",
+    "Notes",
+    "SuccessBeforePassing",
+    "FailuresBeforeCritical",
+    "DeregisterCriticalServiceAfter"
+  )
+
+  implicit val serviceTcpCheckFormat: RootJsonFormat[ServiceTCPCheck] = jsonFormat(
+    ServiceTCPCheck.apply,
+    "Name",
+    "TCP",
+    "Interval",
+    "Timeout",
+    "CheckID",
+    "ServiceID",
+    "Status",
+    "Notes",
+    "SuccessBeforePassing",
+    "FailuresBeforeCritical",
+    "DeregisterCriticalServiceAfter"
+  )
+
+  implicit val serviceTtlCheckFormat: RootJsonFormat[ServiceTTLCheck] =
+    jsonFormat(ServiceTTLCheck.apply, "Name", "TTL", "CheckID", "ServiceID", "Status", "Notes", "DeregisterCriticalServiceAfter")
+
+  implicit val serviceDockerCheckFormat: RootJsonFormat[ServiceDockerCheck] = jsonFormat(
+    ServiceDockerCheck.apply,
+    "Name",
+    "DockerContainerId",
+    "Shell",
+    "Args",
+    "Interval",
+    "CheckID",
+    "ServiceID",
+    "Status",
+    "Notes",
+    "SuccessBeforePassing",
+    "FailuresBeforeCritical",
+    "DeregisterCriticalServiceAfter"
+  )
+
+  implicit val serviceGRpcCheckFormat: RootJsonFormat[ServiceGRpcCheck] = jsonFormat(
+    ServiceGRpcCheck.apply,
+    "Name",
+    "GRPC",
+    "GRPCUseTLS",
+    "Interval",
+    "CheckID",
+    "ServiceID",
+    "Status",
+    "Notes",
+    "SuccessBeforePassing",
+    "FailuresBeforeCritical",
+    "DeregisterCriticalServiceAfter"
+  )
+
+  implicit val serviceAliasCheckFormat: RootJsonFormat[ServiceAliasCheck] =
+    jsonFormat(ServiceAliasCheck.apply, "CheckID", "AliasNode", "AliasService")
+
+  implicit val serviceCheckFormat: RootJsonFormat[ServiceCheck] = new RootJsonFormat[ServiceCheck] {
+    def write(obj: ServiceCheck): JsValue =
+      JsObject(
+        (obj match {
+          case v: ServiceScriptCheck => v.toJson
+          case v: ServiceHttpCheck   => v.toJson
+          case v: ServiceTCPCheck    => v.toJson
+          case v: ServiceTTLCheck    => v.toJson
+          case v: ServiceDockerCheck => v.toJson
+          case v: ServiceGRpcCheck   => v.toJson
+          case v: ServiceAliasCheck  => v.toJson
+        }).asJsObject.fields
+      )
+
+    def read(json: JsValue): ServiceCheck = throw new UnsupportedOperationException("Not supported")
+  }
+
   implicit val newServiceFormat: RootJsonFormat[NewService] = jsonFormat(
     NewService.apply,
     "Name",

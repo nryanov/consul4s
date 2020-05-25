@@ -170,11 +170,11 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
       val client = createClient(consul)
       val newService = NewService(
         "testService",
-        check = Some(TTLCheck("testTTLCheck1", "5s")),
+        check = Some(ServiceTTLCheck("testTTLCheck1", "5s")),
         checks = Some(
           List(
-            TTLCheck("testTTLCheck2", "15s"),
-            TTLCheck("testTTLCheck3", "30s")
+            ServiceTTLCheck("testTTLCheck2", "15s"),
+            ServiceTTLCheck("testTTLCheck3", "30s")
           )
         )
       )

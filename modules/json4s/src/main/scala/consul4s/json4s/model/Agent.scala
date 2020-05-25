@@ -190,7 +190,113 @@ trait Agent {
           )
       )
 
-  val agentAllSerializers = List(new UpstreamDestTypeSerializer, new CheckSerializer)
+  class ServiceCheckSerializer
+      extends CustomSerializer[ServiceCheck](
+        implicit format =>
+          (
+            {
+              case _ => throw new UnsupportedOperationException("Not supported")
+            }, {
+              case x: ServiceScriptCheck =>
+                JObject(
+                  JField("Name", JString(x.name)) ::
+                    JField("Args", JArray(x.args.map(v => JString(v)))) ::
+                    JField("Timeout", optionToValue(x.timeout)) ::
+                    JField("Interval", optionToValue(x.interval)) ::
+                    JField("CheckID", optionToValue(x.checkId)) ::
+                    JField("ServiceID", optionToValue(x.serviceId)) ::
+                    JField("Status", JString(x.status.value)) ::
+                    JField("Notes", optionToValue(x.notes)) ::
+                    JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
+                    :: Nil
+                )
+              case x: ServiceHttpCheck =>
+                JObject(
+                  JField("Name", JString(x.name)) ::
+                    JField("HTTP", JString(x.http)) ::
+                    JField("TLSSkipVerify", JBool(x.tlsSkipVerify)) ::
+                    JField("Interval", JString(x.interval)) ::
+                    JField("Timeout", JString(x.timeout)) ::
+                    JField("Header", Extraction.decompose(x.header)) ::
+                    JField("Method", optionToValue(x.method)) ::
+                    JField("Body", optionToValue(x.body)) ::
+                    JField("CheckID", optionToValue(x.checkId)) ::
+                    JField("ServiceID", optionToValue(x.serviceId)) ::
+                    JField("Status", JString(x.status.value)) ::
+                    JField("Notes", optionToValue(x.notes)) ::
+                    JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
+                    JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
+                    JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
+                    :: Nil
+                )
+              case x: ServiceTCPCheck =>
+                JObject(
+                  JField("Name", JString(x.name)) ::
+                    JField("TCP", JString(x.tcp)) ::
+                    JField("Interval", JString(x.interval)) ::
+                    JField("Timeout", JString(x.timeout)) ::
+                    JField("CheckID", optionToValue(x.checkId)) ::
+                    JField("ServiceID", optionToValue(x.serviceId)) ::
+                    JField("Status", JString(x.status.value)) ::
+                    JField("Notes", optionToValue(x.notes)) ::
+                    JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
+                    JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
+                    JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
+                    :: Nil
+                )
+              case x: ServiceTTLCheck =>
+                JObject(
+                  JField("Name", JString(x.name)) ::
+                    JField("TTL", JString(x.ttl)) ::
+                    JField("CheckID", optionToValue(x.checkId)) ::
+                    JField("ServiceID", optionToValue(x.serviceId)) ::
+                    JField("Status", JString(x.status.value)) ::
+                    JField("Notes", optionToValue(x.notes)) ::
+                    JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
+                    :: Nil
+                )
+              case x: ServiceDockerCheck =>
+                JObject(
+                  JField("Name", JString(x.name)) ::
+                    JField("DockerContainerId", JString(x.dockerContainerId)) ::
+                    JField("Shell", JString(x.shell)) ::
+                    JField("Args", JArray(x.args.map(v => JString(v)))) ::
+                    JField("Interval", optionToValue(x.interval)) ::
+                    JField("CheckID", optionToValue(x.checkId)) ::
+                    JField("ServiceID", optionToValue(x.serviceId)) ::
+                    JField("Status", JString(x.status.value)) ::
+                    JField("Notes", optionToValue(x.notes)) ::
+                    JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
+                    JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
+                    JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
+                    :: Nil
+                )
+              case x: ServiceGRpcCheck =>
+                JObject(
+                  JField("Name", JString(x.name)) ::
+                    JField("GRPC", JString(x.grpc)) ::
+                    JField("GRPCUseTLS", JBool(x.grpcUseTLS)) ::
+                    JField("Interval", optionToValue(x.interval)) ::
+                    JField("CheckID", optionToValue(x.checkId)) ::
+                    JField("ServiceID", optionToValue(x.serviceId)) ::
+                    JField("Status", JString(x.status.value)) ::
+                    JField("Notes", optionToValue(x.notes)) ::
+                    JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
+                    JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
+                    JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
+                    :: Nil
+                )
+              case x: ServiceAliasCheck =>
+                JObject(
+                  JField("CheckID", JString(x.checkId)) ::
+                    JField("AliasNode", optionToValue(x.aliasNode)) ::
+                    JField("AliasService", optionToValue(x.aliasService)) :: Nil
+                )
+            }
+          )
+      )
+
+  val agentAllSerializers = List(new UpstreamDestTypeSerializer, new CheckSerializer, new ServiceCheckSerializer)
   val agentAllFieldSerializers = List(
     aggregatedServiceStatusFormat,
     checkUpdateFormat,

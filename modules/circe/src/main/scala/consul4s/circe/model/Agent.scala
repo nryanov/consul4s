@@ -159,6 +159,119 @@ trait Agent { this: Common with Health =>
     case v: AliasCheck  => v.asJson
   }
 
+  implicit val serviceScriptCheckEncoder: Encoder[ServiceScriptCheck] = new Encoder[ServiceScriptCheck] {
+    override def apply(a: ServiceScriptCheck): Json = Json.obj(
+      ("Name", a.name.asJson),
+      ("Args", a.args.asJson),
+      ("Timeout", a.timeout.asJson),
+      ("Interval", a.interval.asJson),
+      ("CheckID", a.checkId.asJson),
+      ("ServiceID", a.serviceId.asJson),
+      ("Status", a.status.asJson),
+      ("Notes", a.notes.asJson),
+      ("DeregisterCriticalServiceAfter", a.deregisterCriticalServiceAfter.asJson)
+    )
+  }
+
+  implicit val serviceHttpCheckEncoder: Encoder[ServiceHttpCheck] = new Encoder[ServiceHttpCheck] {
+    override def apply(a: ServiceHttpCheck): Json = Json.obj(
+      ("Name", a.name.asJson),
+      ("HTTP", a.http.asJson),
+      ("TLSSkipVerify", a.tlsSkipVerify.asJson),
+      ("Interval", a.interval.asJson),
+      ("Timeout", a.timeout.asJson),
+      ("Header", a.header.asJson),
+      ("Method", a.method.asJson),
+      ("Body", a.body.asJson),
+      ("CheckID", a.checkId.asJson),
+      ("ServiceID", a.serviceId.asJson),
+      ("Status", a.status.asJson),
+      ("Notes", a.notes.asJson),
+      ("SuccessBeforePassing", a.successBeforePassing.asJson),
+      ("FailuresBeforeCritical", a.failuresBeforeCritical.asJson),
+      ("DeregisterCriticalServiceAfter", a.deregisterCriticalServiceAfter.asJson)
+    )
+  }
+
+  implicit val serviceTcpCheckEncoder: Encoder[ServiceTCPCheck] = new Encoder[ServiceTCPCheck] {
+    override def apply(a: ServiceTCPCheck): Json = Json.obj(
+      ("Name", a.name.asJson),
+      ("TCP", a.tcp.asJson),
+      ("Interval", a.interval.asJson),
+      ("Timeout", a.timeout.asJson),
+      ("CheckID", a.checkId.asJson),
+      ("ServiceID", a.serviceId.asJson),
+      ("Status", a.status.asJson),
+      ("Notes", a.notes.asJson),
+      ("SuccessBeforePassing", a.successBeforePassing.asJson),
+      ("FailuresBeforeCritical", a.failuresBeforeCritical.asJson),
+      ("DeregisterCriticalServiceAfter", a.deregisterCriticalServiceAfter.asJson)
+    )
+  }
+
+  implicit val serviceTtlCheckEncoder: Encoder[ServiceTTLCheck] = new Encoder[ServiceTTLCheck] {
+    override def apply(a: ServiceTTLCheck): Json = Json.obj(
+      ("Name", a.name.asJson),
+      ("TTL", a.ttl.asJson),
+      ("CheckID", a.checkId.asJson),
+      ("ServiceID", a.serviceId.asJson),
+      ("Status", a.status.asJson),
+      ("Notes", a.notes.asJson),
+      ("DeregisterCriticalServiceAfter", a.deregisterCriticalServiceAfter.asJson)
+    )
+  }
+
+  implicit val serviceDockerCheckEncoder: Encoder[ServiceDockerCheck] = new Encoder[ServiceDockerCheck] {
+    override def apply(a: ServiceDockerCheck): Json = Json.obj(
+      ("Name", a.name.asJson),
+      ("DockerContainerId", a.dockerContainerId.asJson),
+      ("Shell", a.shell.asJson),
+      ("Args", a.args.asJson),
+      ("Interval", a.interval.asJson),
+      ("CheckID", a.checkId.asJson),
+      ("ServiceID", a.serviceId.asJson),
+      ("Status", a.status.asJson),
+      ("Notes", a.notes.asJson),
+      ("SuccessBeforePassing", a.successBeforePassing.asJson),
+      ("FailuresBeforeCritical", a.failuresBeforeCritical.asJson),
+      ("DeregisterCriticalServiceAfter", a.deregisterCriticalServiceAfter.asJson)
+    )
+  }
+
+  implicit val serviceGRPCCheckEncoder: Encoder[ServiceGRpcCheck] = new Encoder[ServiceGRpcCheck] {
+    override def apply(a: ServiceGRpcCheck): Json = Json.obj(
+      ("Name", a.name.asJson),
+      ("GRPC", a.grpc.asJson),
+      ("GRPCUseTLS", a.grpcUseTLS.asJson),
+      ("Interval", a.interval.asJson),
+      ("CheckID", a.checkId.asJson),
+      ("ServiceID", a.serviceId.asJson),
+      ("Status", a.status.asJson),
+      ("Notes", a.notes.asJson),
+      ("SuccessBeforePassing", a.successBeforePassing.asJson),
+      ("FailuresBeforeCritical", a.failuresBeforeCritical.asJson),
+      ("DeregisterCriticalServiceAfter", a.deregisterCriticalServiceAfter.asJson)
+    )
+  }
+
+  implicit val serviceAliasCheckEncoder: Encoder[ServiceAliasCheck] = new Encoder[ServiceAliasCheck] {
+    override def apply(a: ServiceAliasCheck): Json = Json.obj(
+      ("CheckID", a.checkId.asJson),
+      ("AliasNode", a.aliasNode.asJson),
+      ("AliasService", a.aliasService.asJson)
+    )
+  }
+
+  implicit val serviceCheckEncoder: Encoder[ServiceCheck] = Encoder.instance {
+    case v: ServiceScriptCheck => v.asJson
+    case v: ServiceHttpCheck   => v.asJson
+    case v: ServiceTCPCheck    => v.asJson
+    case v: ServiceTTLCheck    => v.asJson
+    case v: ServiceDockerCheck => v.asJson
+    case v: ServiceGRpcCheck   => v.asJson
+    case v: ServiceAliasCheck  => v.asJson
+  }
+
   implicit val memberInfoDecoder: Decoder[MemberInfo] = new Decoder[MemberInfo] {
     override def apply(c: HCursor): Result[MemberInfo] = for {
       name <- c.downField("Name").as[String]

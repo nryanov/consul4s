@@ -2,7 +2,7 @@ package consul4s.v1.api
 
 import com.dimafeng.testcontainers.scalatest.TestContainerForAll
 import consul4s.model.CheckStatus
-import consul4s.model.agent.{NewService, TTLCheck}
+import consul4s.model.agent.{NewService, ServiceTTLCheck}
 import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
 
 abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) extends ConsulSpec with TestContainerForAll {
@@ -24,7 +24,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
 
     "return service checks" in withContainers { consul =>
       val client = createClient(consul)
-      val newService = NewService("testService", checks = Some(List(TTLCheck("ttlCheck", "15s"))))
+      val newService = NewService("testService", checks = Some(List(ServiceTTLCheck("ttlCheck", "15s"))))
 
       runEither {
         for {
