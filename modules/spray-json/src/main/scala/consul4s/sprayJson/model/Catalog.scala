@@ -42,18 +42,22 @@ trait Catalog extends DefaultJsonProtocol { this: Health with Agent with Common 
   implicit val nodeDeregistrationFormat: RootJsonFormat[NodeDeregistration] =
     jsonFormat(NodeDeregistration.apply, "Node", "Datacenter", "CheckID", "ServiceID")
 
-  implicit val nodeRegistrationFormat: RootJsonFormat[NodeRegistration] = jsonFormat(
-    NodeRegistration.apply,
-    "Node",
-    "Address",
-    "Service",
-    "Check",
-    "Checks",
-    "ID",
-    "Datacenter",
-    "TaggedAddresses",
-    "NodeMeta",
-    "SkipNodeUpdate"
+  implicit val nodeRegistrationFormat: RootJsonFormat[NodeRegistration] = rootFormat(
+    lazyFormat(
+      jsonFormat(
+        NodeRegistration.apply,
+        "Node",
+        "Address",
+        "Service",
+        "Check",
+        "Checks",
+        "ID",
+        "Datacenter",
+        "TaggedAddresses",
+        "NodeMeta",
+        "SkipNodeUpdate"
+      )
+    )
   )
 
   implicit val nodeServiceListFormat: RootJsonFormat[NodeServiceList] = jsonFormat(NodeServiceList.apply, "Node", "Services")
