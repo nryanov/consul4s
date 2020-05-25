@@ -38,14 +38,10 @@ package object sprayJson
    */
   private val allowedCodes = Set(200, 429, 503)
 
-  private def asJsonOption404[A: JsonReader]: ResponseAs[Either[ResponseError[Exception], Option[A]], Nothing] =
+  private def asJsonOption404[A](implicit reader: JsonReader[Option[A]]): ResponseAs[Either[ResponseError[Exception], Option[A]], Nothing] =
     asStringAlways.mapWithMetadata { (str, meta) =>
       if (meta.isSuccess) {
-        if (str != null && !str.isBlank) {
-          Try(deserializeJson[A].apply(str)).fold(err => Left(DeserializationError(str, new Exception(err))), res => Right(Some(res)))
-        } else {
-          Right(None)
-        }
+        Try(deserializeJson[Option[A]].apply(str)).fold(err => Left(DeserializationError(str, new Exception(err))), res => Right(res))
       } else if (meta.code.code == 404) {
         Right(None)
       } else {
@@ -53,14 +49,12 @@ package object sprayJson
       }
     }
 
-  private def asJsonOption404Extended[A: JsonReader]: ResponseAs[Either[ResponseError[Exception], Option[A]], Nothing] =
+  private def asJsonOption404Extended[A](
+    implicit reader: JsonReader[Option[A]]
+  ): ResponseAs[Either[ResponseError[Exception], Option[A]], Nothing] =
     asStringAlways.mapWithMetadata { (str, meta) =>
       if (allowedCodes.contains(meta.code.code)) {
-        if (str != null && !str.isBlank) {
-          Try(deserializeJson[A].apply(str)).fold(err => Left(DeserializationError(str, new Exception(err))), res => Right(Some(res)))
-        } else {
-          Right(None)
-        }
+        Try(deserializeJson[Option[A]].apply(str)).fold(err => Left(DeserializationError(str, new Exception(err))), res => Right(res))
       } else if (meta.code.code == 404) {
         Right(None)
       } else {
