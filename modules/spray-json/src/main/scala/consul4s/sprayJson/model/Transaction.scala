@@ -53,7 +53,7 @@ trait Transaction extends DefaultJsonProtocol { this: Health with KV with Catalo
   implicit val serviceTaskFormat: RootJsonFormat[ServiceTask] = jsonFormat(ServiceTask.apply, "Verb", "Node", "Service")
 
   implicit val nodeTaskFormat: RootJsonFormat[NodeTask] =
-    jsonFormat(NodeTask.apply, "Verb", "Node")
+    rootFormat(lazyFormat(jsonFormat(NodeTask.apply, "Verb", "Node")))
 
   implicit val nodeDefinitionFormat: RootJsonFormat[NodeDefinition] =
     jsonFormat(NodeDefinition.apply, "Node", "Address", "ID", "Datacenter", "TaggedAddresses", "NodeMeta")
