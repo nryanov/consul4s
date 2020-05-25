@@ -10,9 +10,6 @@ trait Agent extends DefaultJsonProtocol { this: Health with Catalog with Common 
 
   implicit val weightsFormat: RootJsonFormat[Weights] = jsonFormat(Weights.apply, "Passing", "Warning")
 
-  implicit val aggregatedServiceStatusFormat: RootJsonFormat[AggregatedServiceStatus] =
-    jsonFormat(AggregatedServiceStatus.apply, "AggregatedStatus", "Service", "Checks")
-
   implicit val checkUpdateFormat: RootJsonFormat[CheckUpdate] = jsonFormat(CheckUpdate.apply, "Status", "Output")
 
   implicit val memberInfoFormat: RootJsonFormat[MemberInfo] = jsonFormat(
@@ -113,7 +110,7 @@ trait Agent extends DefaultJsonProtocol { this: Health with Catalog with Common 
 
   implicit val aliasCheckFormat: RootJsonFormat[AliasCheck] = jsonFormat(AliasCheck.apply, "ID", "AliasNode", "AliasService")
 
-  implicit val checkFormat = new RootJsonFormat[Check] {
+  implicit val checkFormat: RootJsonFormat[Check] = new RootJsonFormat[Check] {
     def write(obj: Check): JsValue =
       JsObject(
         (obj match {
@@ -147,6 +144,9 @@ trait Agent extends DefaultJsonProtocol { this: Health with Catalog with Common 
 
   implicit val serviceFormat: RootJsonFormat[Service] =
     jsonFormat(Service.apply, "Service", "ID", "Tags", "Address", "TaggedAddresses", "Meta", "Port", "EnableTagOverride", "Weights")
+
+  implicit val aggregatedServiceStatusFormat: RootJsonFormat[AggregatedServiceStatus] =
+    rootFormat(lazyFormat(jsonFormat(AggregatedServiceStatus.apply, "AggregatedStatus", "Service", "Checks")))
 
   implicit object UpstreamDestTypeFormat extends RootJsonFormat[UpstreamDestType] {
     override def write(obj: UpstreamDestType): JsValue = JsString(obj.value)
