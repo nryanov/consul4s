@@ -13,8 +13,8 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
       runEither {
         for {
           create <- client.createOrUpdate("key", "value").body
-          getRaw <- client.getRaw("key").body
-          get <- client.get("key").body
+          getRaw <- client.getRawValueByKey("key").body
+          get <- client.getValueByKey("key").body
         } yield {
           assert(create)
           assert(getRaw.contains("value"))
@@ -31,7 +31,7 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
         for {
           _ <- client.createOrUpdate("key1", "value1").body
           _ <- client.createOrUpdate("key2", "value2").body
-          getKeys <- client.getKeys("key").body
+          getKeys <- client.getKeyListByPath("key").body
         } yield {
           assert(getKeys.contains(List("key1", "key2")))
         }
@@ -45,7 +45,7 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
         for {
           _ <- client.createOrUpdate("key1", "value1").body
           _ <- client.createOrUpdate("key2", "value2").body
-          getRecurse <- client.getRecurse("key").body
+          getRecurse <- client.getValuesByKeyPath("key").body
         } yield {
           assert(getRecurse.map(_.map(_.decodedValue.getOrElse(""))).contains(List("value1", "value2")))
         }
@@ -57,8 +57,8 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
 
       runEither {
         for {
-          getRaw <- client.getRaw("notExistingKey").body
-          get <- client.get("notExistingKey").body
+          getRaw <- client.getRawValueByKey("notExistingKey").body
+          get <- client.getValueByKey("notExistingKey").body
         } yield {
           assert(get.isEmpty)
           assert(getRaw.isEmpty)
@@ -72,8 +72,8 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
       runEither {
         for {
           create <- client.createOrUpdate("forDeleting", "value").body
-          delete <- client.delete("forDeleting").body
-          get <- client.get("forDeleting").body
+          delete <- client.deleteByKey("forDeleting").body
+          get <- client.getValueByKey("forDeleting").body
         } yield {
           assert(create)
           assert(delete)
@@ -90,9 +90,9 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
           _ <- client.createOrUpdate("key1", "value1").body
           _ <- client.createOrUpdate("key2", "value2").body
           _ <- client.createOrUpdate("key3", "value3").body
-          getBeforeDelete <- client.getRecurse("key").body
-          _ <- client.deleteRecurse("key").body
-          getAfterDelete <- client.get("key").body
+          getBeforeDelete <- client.getValuesByKeyPath("key").body
+          _ <- client.deleteByKeyPath("key").body
+          getAfterDelete <- client.getValueByKey("key").body
         } yield {
           assert(getBeforeDelete.map(_.map(_.decodedValue.getOrElse(""))).contains(List("value1", "value2", "value3")))
           assert(getAfterDelete.isEmpty)

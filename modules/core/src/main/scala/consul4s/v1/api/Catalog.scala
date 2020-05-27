@@ -5,7 +5,13 @@ import consul4s.model.catalog._
 import sttp.client._
 
 trait Catalog[F[_]] { this: ConsulApi[F] =>
-  // PUT /catalog/register
+
+  /**
+   * PUT /catalog/register
+   * @param value
+   * @param token - consul token
+   * @return
+   */
   def registerEntity(value: NodeRegistration, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/catalog/register")
     val request = requestTemplate.copy(response = asResultUnit)
@@ -13,8 +19,12 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     saveSendRequest(request, jsonEncoder.nodeRegistrationToJson(value), token)
   }
 
-  // PUT /catalog/deregister
-  // CatalogDeregistration: namespace > ns
+  /**
+   * PUT /catalog/deregister
+   * @param value
+   * @param token - consul token
+   * @return
+   */
   def deregisterEntity(value: NodeDeregistration, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/catalog/deregister")
     val request = requestTemplate.copy(response = asResultUnit)
@@ -22,7 +32,11 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     saveSendRequest(request, jsonEncoder.nodeDeregistrationToJson(value), token)
   }
 
-  // GET	/catalog/datacenters
+  /**
+   * GET	/catalog/datacenters
+   * @param token - consul token
+   * @return
+   */
   def datacenters(token: Option[String] = None): F[Result[List[String]]] = {
     val requestTemplate = basicRequest.get(uri"$url/catalog/datacenters")
     val request = requestTemplate.copy(response = jsonDecoder.asStringList)
@@ -30,7 +44,21 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     sendRequest(request, token)
   }
 
-  // GET	/catalog/nodes
+  /**
+   * GET	/catalog/nodes
+   * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
+   * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
+   * @param near - Specifies to sort the resulting list in ascending order based on the estimated round trip time
+   * from that node. Passing ?near=_agent will use the agent's node for the sort.
+   * Passing ?near=_ip will use the source IP of the request or the value of the X-Forwarded-For header
+   * to lookup the node to use for the sort. If this is not present,
+   * the default behavior will shuffle the nodes randomly each time the query is executed.
+   * @param nodeMeta
+   * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
+   * @param consistencyMode - see [[ConsistencyMode]]
+   * @param token - consul token
+   * @return
+   */
   def nodes(
     dc: Option[String] = None,
     near: Option[String] = None,
@@ -46,7 +74,15 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     sendRequest(request, token)
   }
 
-  // GET	/catalog/services
+  /**
+   * GET	/catalog/services
+   * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
+   * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
+   * @param nodeMeta
+   * @param consistencyMode - see [[ConsistencyMode]]
+   * @param token - consul token
+   * @return
+   */
   def services(
     dc: Option[String] = None,
     nodeMeta: Option[String] = None,
@@ -59,7 +95,24 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     sendRequest(request, token)
   }
 
-  // GET /catalog/service/ + service
+  /**
+   * GET /catalog/service/ + service
+   * @param service
+   * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
+   * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
+   * @param tag
+   * @param near - Specifies to sort the resulting list in ascending order based on the estimated round trip time
+   * from that node. Passing ?near=_agent will use the agent's node for the sort.
+   * Passing ?near=_ip will use the source IP of the request or the value of the X-Forwarded-For header
+   * to lookup the node to use for the sort. If this is not present,
+   * the default behavior will shuffle the nodes randomly each time the query is executed.
+   * @param nodeMeta
+   * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
+   * @param consistencyMode - see [[ConsistencyMode]]
+   * @param token - consul token
+   * @param cacheMode - see [[CacheMode]]
+   * @return
+   */
   def nodesInfoForService(
     service: String,
     dc: Option[String] = None,
@@ -79,7 +132,23 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     sendRequest(request, token)
   }
 
-  // GET /catalog/connect/ + service
+  /**
+   * GET /catalog/connect/ + service
+   * @param service
+   * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
+   * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
+   * @param tag
+   * @param near - Specifies to sort the resulting list in ascending order based on the estimated round trip time
+   * from that node. Passing ?near=_agent will use the agent's node for the sort.
+   * Passing ?near=_ip will use the source IP of the request or the value of the X-Forwarded-For header
+   * to lookup the node to use for the sort. If this is not present,
+   * the default behavior will shuffle the nodes randomly each time the query is executed.
+   * @param nodeMeta
+   * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
+   * @param consistencyMode - see [[ConsistencyMode]]
+   * @param token - consul token
+   * @return
+   */
   def nodesInfoForConnectCapableService(
     service: String,
     dc: Option[String] = None,
@@ -98,7 +167,16 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     sendRequest(request, token)
   }
 
-  // GET	/catalog/node/:node
+  /**
+   * GET	/catalog/node/:node
+   * @param node
+   * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
+   * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
+   * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
+   * @param consistencyMode - see [[ConsistencyMode]]
+   * @param token - consul token
+   * @return
+   */
   def mapOfServicesForNode(
     node: String,
     dc: Option[String] = None,
@@ -112,7 +190,15 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
     sendRequest(request, token)
   }
 
-  // GET	/catalog/node-services/:node
+  /**
+   * GET	/catalog/node-services/:node
+   * @param node
+   * @param dc
+   * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
+   * @param consistencyMode - see [[ConsistencyMode]]
+   * @param token - consul token
+   * @return
+   */
   def listOfServicesForNode(
     node: String,
     dc: Option[String] = None,

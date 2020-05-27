@@ -4,7 +4,19 @@ import consul4s.model.event.UserEvent
 import sttp.client._
 
 trait Event[F[_]] { this: ConsulApi[F] =>
-  // PUT	/event/fire/:name
+
+  /**
+   * PUT	/event/fire/:name
+   * @param name
+   * @param payload
+   * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
+   * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
+   * @param node
+   * @param service
+   * @param tag
+   * @param token - consul token
+   * @return
+   */
   def fireEvent(
     name: String,
     payload: String,
@@ -20,7 +32,15 @@ trait Event[F[_]] { this: ConsulApi[F] =>
     sendRequest(request, token)
   }
 
-  // GET	/event/list
+  /**
+   * GET	/event/list
+   * @param name
+   * @param node
+   * @param service
+   * @param tag
+   * @param token - consul token
+   * @return
+   */
   def listEvents(
     name: Option[String] = None,
     node: Option[String] = None,

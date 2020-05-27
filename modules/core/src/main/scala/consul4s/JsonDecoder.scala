@@ -1,6 +1,5 @@
 package consul4s
 
-import consul4s.model.CheckStatus
 import consul4s.model.agent._
 import consul4s.model.catalog._
 import consul4s.model.coordinate.{DatacenterCoordinate, NodeCoordinate}
