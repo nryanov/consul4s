@@ -41,8 +41,8 @@ trait Coordinate[F[_]] { this: ConsulApi[F] =>
   // PUT	/coordinate/update
   def coordinateUpdate(nodeCoordinate: NodeCoordinate, dc: Option[String] = None, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/coordinate/update?dc=$dc")
-    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.nodeCoordinateToJson(nodeCoordinate))
+    val request = requestTemplate.copy(response = asResultUnit)
 
-    sendRequest(request, token)
+    saveSendRequest(request, jsonEncoder.nodeCoordinateToJson(nodeCoordinate), token)
   }
 }

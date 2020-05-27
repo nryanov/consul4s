@@ -30,6 +30,13 @@ package object api {
         }
     }
 
+    protected final def saveSendRequest[A](
+      request: RequestT[Identity, Either[ResponseError[Exception], A], Nothing],
+      bodyF: => String,
+      token: Option[String]
+    ): F[Result[A]] =
+      sttpBackend.responseMonad.flatMap(makeBody(bodyF))(body => sendRequest(request.body(body), token))
+
     protected final def sendRequest[A](
       request: RequestT[Identity, Either[ResponseError[Exception], A], Nothing],
       token: Option[String]
@@ -74,5 +81,7 @@ package object api {
       token: String
     ): RequestT[Identity, Either[ResponseError[Exception], A], Nothing] =
       request.copy(headers = request.headers ++ Seq(Header("X-Consul-Token", token)))
+
+    private def makeBody(f: => String): F[String] = sttpBackend.responseMonad.eval(f)
   }
 }

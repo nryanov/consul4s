@@ -21,8 +21,8 @@ trait Transaction[F[_]] { this: ConsulApi[F] =>
     token: Option[String] = None
   ): F[Result[TxResults]] = {
     val requestTemplate = basicRequest.put(addConsistencyMode(uri"$url/txn?dc=$dc", consistencyMode))
-    val request = requestTemplate.copy(response = jsonDecoder.asTxResults).body(jsonEncoder.txTasksToJson(txTasks))
+    val request = requestTemplate.copy(response = jsonDecoder.asTxResults)
 
-    sendRequest(request, token)
+    saveSendRequest(request, jsonEncoder.txTasksToJson(txTasks), token)
   }
 }

@@ -44,36 +44,33 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
   // PUT	/agent/token/default
   def agentUpdateACLTokenDefault(newToken: Token, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/token/default")
-    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.tokenAsJson(newToken))
+    val request = requestTemplate.copy(response = asResultUnit)
 
-    sendRequest(request, token)
+    saveSendRequest(request, jsonEncoder.tokenAsJson(newToken), token)
   }
 
   // PUT	/agent/token/agent
   def agentUpdateACLTokenAgent(newToken: Token, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/token/agent")
-    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.tokenAsJson(newToken))
+    val request = requestTemplate.copy(response = asResultUnit)
 
-    val response = sttpBackend.send(request)
-    response
+    saveSendRequest(request, jsonEncoder.tokenAsJson(newToken), token)
   }
 
   // PUT	/agent/token/agent_master
   def agentUpdateACLTokenMaster(newToken: Token, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/token/agent_master")
-    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.tokenAsJson(newToken))
+    val request = requestTemplate.copy(response = asResultUnit)
 
-    val response = sttpBackend.send(request)
-    response
+    saveSendRequest(request, jsonEncoder.tokenAsJson(newToken), token)
   }
 
   // PUT	/agent/token/replication
   def agentUpdateACLTokenReplication(newToken: Token, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/token/replication")
-    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.tokenAsJson(newToken))
+    val request = requestTemplate.copy(response = asResultUnit)
 
-    val response = sttpBackend.send(request)
-    response
+    saveSendRequest(request, jsonEncoder.tokenAsJson(newToken), token)
   }
 
   // GET	/agent/checks
@@ -87,9 +84,9 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
   // PUT	/agent/check/register
   def agentRegisterCheck(check: Check, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/agent/check/register")
-    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.checkToJson(check))
+    val request = requestTemplate.copy(response = asResultUnit)
 
-    sendRequest(request, token)
+    saveSendRequest(request, jsonEncoder.checkToJson(check), token)
   }
 
   // PUT	/agent/check/deregister/:check_id
@@ -127,9 +124,9 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
   // PUT	/agent/check/update/:check_id
   def agentTTLCheckUpdate(checkId: String, checkUpdate: CheckUpdate, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/agent/check/update/$checkId")
-    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.checkUpdateToJson(checkUpdate))
+    val request = requestTemplate.copy(response = asResultUnit)
 
-    sendRequest(request, token)
+    saveSendRequest(request, jsonEncoder.checkUpdateToJson(checkUpdate), token)
   }
 
   // GET	/agent/services
@@ -171,9 +168,9 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
     token: Option[String] = None
   ): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/agent/service/register?replace-existing-checks=$replaceExistingChecks")
-    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.newServiceToJson(service))
+    val request = requestTemplate.copy(response = asResultUnit)
 
-    sendRequest(request, token)
+    saveSendRequest(request, jsonEncoder.newServiceToJson(service), token)
   }
 
   // PUT	/agent/service/deregister/:service_id

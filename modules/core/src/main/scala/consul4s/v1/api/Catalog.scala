@@ -8,18 +8,18 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
   // PUT /catalog/register
   def registerEntity(value: NodeRegistration, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/catalog/register")
-    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.nodeRegistrationToJson(value))
+    val request = requestTemplate.copy(response = asResultUnit)
 
-    sendRequest(request, token)
+    saveSendRequest(request, jsonEncoder.nodeRegistrationToJson(value), token)
   }
 
   // PUT /catalog/deregister
   // CatalogDeregistration: namespace > ns
   def deregisterEntity(value: NodeDeregistration, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/catalog/deregister")
-    val request = requestTemplate.copy(response = asResultUnit).body(jsonEncoder.nodeDeregistrationToJson(value))
+    val request = requestTemplate.copy(response = asResultUnit)
 
-    sendRequest(request, token)
+    saveSendRequest(request, jsonEncoder.nodeDeregistrationToJson(value), token)
   }
 
   // GET	/catalog/datacenters
