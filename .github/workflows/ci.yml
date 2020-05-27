@@ -10,8 +10,8 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - uses: actions/checkout@v2
@@ -19,5 +19,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Run tests
-        run: sbt test
+      - name: Run circe-tests
+        run: sbt circe/test
+      - name: Run json4s-tests
+        run: sbt json4s/test
+      - name: Run sprayJson-tests
+        run: sbt sprayJson/test
