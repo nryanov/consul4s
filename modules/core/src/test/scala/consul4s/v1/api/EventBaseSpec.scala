@@ -13,7 +13,7 @@ class EventBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder)
       runEither {
         for {
           result1 <- client.fireEvent("test", "payload").body
-          result2 <- client.listEvents().body
+          result2 <- client.getEvents().body
         } yield {
           assert(result2.exists(_.name == result1.name))
         }
@@ -25,7 +25,7 @@ class EventBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder)
 
       runEither {
         for {
-          result <- client.listEvents(name = Some("notExistingEvent")).body
+          result <- client.getEvents(name = Some("notExistingEvent")).body
         } yield {
           assert(result.isEmpty)
         }

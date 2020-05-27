@@ -7,15 +7,19 @@ trait Event[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/event/fire/:name
-   * @param name
+   * This endpoint triggers a new user event.
+   * @param name - Specifies the name of the event to fire. This is specified as part of the URL.
+   * This name must not start with an underscore, since those are reserved for Consul internally.
    * @param payload
    * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
    * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
-   * @param node
-   * @param service
-   * @param tag
+   * @param node - Specifies a regular expression to filter by node name.
+   * This is specified as part of the URL as a query parameter.
+   * @param service - Specifies a regular expression to filter by service name.
+   * This is specified as part of the URL as a query parameter.
+   * @param tag - Specifies a regular expression to filter by tag. This is specified as part of the URL as a query parameter.
    * @param token - consul token
-   * @return
+   * @return - event info
    */
   def fireEvent(
     name: String,
@@ -34,14 +38,17 @@ trait Event[F[_]] { this: ConsulApi[F] =>
 
   /**
    * GET	/event/list
-   * @param name
-   * @param node
-   * @param service
-   * @param tag
+   * This endpoint returns the most recent events (up to 256) known by the agent.
+   * @param name - filter events by name
+   * @param node - Specifies a regular expression to filter by node name.
+   * This is specified as part of the URL as a query parameter.
+   * @param service - Specifies a regular expression to filter by service name.
+   * This is specified as part of the URL as a query parameter.
+   * @param tag - Specifies a regular expression to filter by tag. This is specified as part of the URL as a query parameter.
    * @param token - consul token
-   * @return
+   * @return - list of events
    */
-  def listEvents(
+  def getEvents(
     name: Option[String] = None,
     node: Option[String] = None,
     service: Option[String] = None,

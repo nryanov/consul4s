@@ -53,7 +53,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
    * Passing ?near=_ip will use the source IP of the request or the value of the X-Forwarded-For header
    * to lookup the node to use for the sort. If this is not present,
    * the default behavior will shuffle the nodes randomly each time the query is executed.
-   * @param nodeMeta
+   * @param nodeMeta - Specifies a desired node metadata key/value pair of the form key:value.
+   * This parameter can be specified multiple times, and will filter the results to nodes
+   * with the specified key/value pairs. This is specified as part of the URL as a query parameter.
    * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
    * @param consistencyMode - see [[ConsistencyMode]]
    * @param token - consul token
@@ -78,7 +80,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
    * GET	/catalog/services
    * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
    * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
-   * @param nodeMeta
+   * @param nodeMeta - Specifies a desired node metadata key/value pair of the form key:value.
+   * This parameter can be specified multiple times, and will filter the results to nodes
+   * with the specified key/value pairs. This is specified as part of the URL as a query parameter.
    * @param consistencyMode - see [[ConsistencyMode]]
    * @param token - consul token
    * @return
@@ -106,7 +110,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
    * Passing ?near=_ip will use the source IP of the request or the value of the X-Forwarded-For header
    * to lookup the node to use for the sort. If this is not present,
    * the default behavior will shuffle the nodes randomly each time the query is executed.
-   * @param nodeMeta
+   * @param nodeMeta - Specifies a desired node metadata key/value pair of the form key:value.
+   * This parameter can be specified multiple times, and will filter the results to nodes
+   * with the specified key/value pairs. This is specified as part of the URL as a query parameter.
    * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
    * @param consistencyMode - see [[ConsistencyMode]]
    * @param token - consul token
@@ -143,7 +149,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
    * Passing ?near=_ip will use the source IP of the request or the value of the X-Forwarded-For header
    * to lookup the node to use for the sort. If this is not present,
    * the default behavior will shuffle the nodes randomly each time the query is executed.
-   * @param nodeMeta
+   * @param nodeMeta - Specifies a desired node metadata key/value pair of the form key:value.
+   * This parameter can be specified multiple times, and will filter the results to nodes
+   * with the specified key/value pairs. This is specified as part of the URL as a query parameter.
    * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
    * @param consistencyMode - see [[ConsistencyMode]]
    * @param token - consul token
@@ -169,7 +177,7 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
 
   /**
    * GET	/catalog/node/:node
-   * @param node
+   * @param node - Specifies the name or ID of the node to query. This is specified as part of the URL
    * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
    * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
    * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
@@ -192,8 +200,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
 
   /**
    * GET	/catalog/node-services/:node
-   * @param node
-   * @param dc
+   * @param node - Specifies the name or ID of the node to query. This is specified as part of the URL
+   * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
+   * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
    * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
    * @param consistencyMode - see [[ConsistencyMode]]
    * @param token - consul token

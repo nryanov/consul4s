@@ -9,7 +9,6 @@ trait Health[F[_]] { this: ConsulApi[F] =>
 
   /**
    * GET	/health/service/:service
-   * This endpoint returns the nodes providing the service indicated on the path.
    * @param service - Specifies the service to list services for. This is provided as part of the URL.
    * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
    * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
@@ -31,9 +30,8 @@ trait Health[F[_]] { this: ConsulApi[F] =>
    * @param consistencyMode - see [[ConsistencyMode]]
    * @param token - consul token
    * @param cacheMode - see [[CacheMode]]
-   * @return
    */
-  def nodesForService(
+  def getAllServiceInstances(
     service: String,
     dc: Option[String] = None,
     near: Option[String] = None,
@@ -59,7 +57,24 @@ trait Health[F[_]] { this: ConsulApi[F] =>
   }
 
   /**
-   * /health/connect/:service
+   * Get healthy service instances. For additional info see [[Health.getAllServiceInstances]]
+   */
+  def getHealthyServiceInstances(
+    service: String,
+    dc: Option[String] = None,
+    near: Option[String] = None,
+    tag: Option[String] = None,
+    nodeMeta: Option[String] = None,
+    filter: Option[String] = None,
+    consistencyMode: ConsistencyMode = ConsistencyMode.Default,
+    token: Option[String] = None,
+    cacheMode: CacheMode = NoCache
+  ): F[Result[List[ServiceEntry]]] =
+    getAllServiceInstances(service, dc, near, tag, nodeMeta, passing = true, filter, consistencyMode, token, cacheMode)
+
+  /**
+   * GET  /health/connect/:service
+   * This endpoint returns the nodes providing a Connect-capable service in a given datacenter. This will include both proxies and native integrations.
    * @param service
    * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
    * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
@@ -81,7 +96,7 @@ trait Health[F[_]] { this: ConsulApi[F] =>
    * @param token - consul token
    * @return
    */
-  def nodesForConnectCapableService(
+  def getNodesForConnectCapableService(
     service: String,
     dc: Option[String] = None,
     near: Option[String] = None,
@@ -101,16 +116,17 @@ trait Health[F[_]] { this: ConsulApi[F] =>
   }
 
   /**
-   * /health/node/:node
-   * @param node
+   * GET  /health/node/:node
+   * This endpoint returns the checks specific to the node provided on the path.
+   * @param node - Specifies the name or ID of the node to query. This is specified as part of the URL
    * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
    * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
    * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
    * @param consistencyMode - see [[ConsistencyMode]]
    * @param token - consul token
-   * @return
+   * @return - checks specific to the node provided on the path.
    */
-  def nodeChecks(
+  def getNodeChecks(
     node: String,
     dc: Option[String] = None,
     filter: Option[String] = None,
@@ -124,8 +140,9 @@ trait Health[F[_]] { this: ConsulApi[F] =>
   }
 
   /**
-   * /health/checks/:service
-   * @param service
+   * GET  /health/checks/:service
+   * This endpoint returns the checks associated with the service provided on the path.
+   * @param service - Specifies the service to list checks for. This is provided as part of the URL.
    * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
    * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
    * @param near - Specifies to sort the resulting list in ascending order based on the estimated round trip time
@@ -139,9 +156,9 @@ trait Health[F[_]] { this: ConsulApi[F] =>
    * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
    * @param consistencyMode - see [[ConsistencyMode]]
    * @param token - consul token
-   * @return
+   * @return - checks associated with the service provided on the path.
    */
-  def serviceChecks(
+  def getServiceChecks(
     service: String,
     dc: Option[String] = None,
     near: Option[String] = None,
@@ -159,8 +176,10 @@ trait Health[F[_]] { this: ConsulApi[F] =>
   }
 
   /**
-   * /health/state/:state
-   * @param state
+   * GET  /health/state/:state
+   * This endpoint returns the checks in the state provided on the path.
+   * @param state - Specifies the state to query. Supported states are any, passing, warning, or critical.
+   * The any state is a wildcard that can be used to return all checks.
    * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
    * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
    * @param near - Specifies to sort the resulting list in ascending order based on the estimated round trip time
@@ -176,7 +195,7 @@ trait Health[F[_]] { this: ConsulApi[F] =>
    * @param token - consul token
    * @return
    */
-  def checksInState(
+  def getChecksByState(
     state: ConsulStatus,
     dc: Option[String] = None,
     near: Option[String] = None,

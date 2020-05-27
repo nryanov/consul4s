@@ -15,7 +15,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
       runEither {
         for {
           node <- client.nodes().body
-          result <- client.nodeChecks(node.head.node).body
+          result <- client.getNodeChecks(node.head.node).body
         } yield {
           assertResult(CheckStatus.Passing)(result.head.status)
         }
@@ -29,7 +29,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
       runEither {
         for {
           _ <- client.agentRegisterLocalService(newService).body
-          result <- client.serviceChecks("testService").body
+          result <- client.getServiceChecks("testService").body
         } yield {
           assert(result.exists(_.serviceId == "testService"))
         }
@@ -41,7 +41,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
 
       runEither {
         for {
-          result <- client.checksInState(CheckStatus.Passing).body
+          result <- client.getChecksByState(CheckStatus.Passing).body
         } yield {
           assertResult(CheckStatus.Passing)(result.head.status)
         }
@@ -54,7 +54,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
       runEither {
         for {
           service <- client.services().body
-          result <- client.nodesForService(service.head._1).body
+          result <- client.getAllServiceInstances(service.head._1).body
         } yield {
           assert(result.length == 1)
         }
@@ -67,7 +67,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
       runEither {
         for {
           service <- client.services().body
-          result <- client.nodesForConnectCapableService(service.head._1).body
+          result <- client.getNodesForConnectCapableService(service.head._1).body
         } yield {
           assert(result.isEmpty)
         }
