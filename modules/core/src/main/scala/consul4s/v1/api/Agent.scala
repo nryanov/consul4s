@@ -8,11 +8,12 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * GET	/agent/members
-   * @param wan
+   * @param wan - Specifies to list WAN members instead of the LAN members (which is the default).
+   * This is only eligible for agents running in server mode. This is specified as part of the URL as a query parameter.
    * @param token - consul token
-   * @return
+   * @return - This endpoint returns the members the agent sees in the cluster gossip pool.
    */
-  def agentMembers(wan: Option[Boolean] = None, token: Option[String] = None): F[Result[List[MemberInfo]]] = {
+  def getAgentMembers(wan: Option[Boolean] = None, token: Option[String] = None): F[Result[List[MemberInfo]]] = {
     val wanParam = if (wan.getOrElse(false)) "wan" else ""
 
     val requestTemplate = basicRequest.get(uri"$url/agent/members?$wanParam")
@@ -23,10 +24,10 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/reload
+   * This endpoint instructs the agent to reload its configuration.
    * @param token - consul token
-   * @return
    */
-  def agentReload(token: Option[String] = None): F[Result[Unit]] = {
+  def reloadAgent(token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/agent/reload")
     val request = requestTemplate.copy(response = asResultUnit)
 
@@ -35,12 +36,17 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/maintenance
-   * @param enable
-   * @param reason
+   * This endpoint places the agent into "maintenance mode".
+   * During maintenance mode, the node will be marked as unavailable and will not be present in DNS or API queries.
+   * This API call is idempotent.
+   * @param enable - Specifies whether to enable or disable maintenance mode.
+   * This is specified as part of the URL as a query string parameter.
+   * @param reason - Specifies a text string explaining the reason for placing the node into maintenance mode.
+   * This is simply to aid human operators. If no reason is provided, a default value will be used instead.
+   * This is specified as part of the URL as a query string parameter, and, as such, must be URI-encoded.
    * @param token - consul token
-   * @return
    */
-  def agentEnableMaintenance(enable: Boolean, reason: Option[String] = None, token: Option[String] = None): F[Result[Unit]] = {
+  def setAgentMaintenanceMode(enable: Boolean, reason: Option[String] = None, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/agent/maintenance?enable=$enable&reason=$reason")
     val request = requestTemplate.copy(response = asResultUnit)
 
@@ -48,13 +54,15 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
   }
 
   /**
-   * PUT	/agent/join/:addres
-   * @param address
-   * @param wan
+   * PUT	/agent/join/:address
+   * This endpoint instructs the agent to attempt to connect to a given address.
+   * @param address - Specifies the address of the other agent to join. This is specified as part of the URL.
+   * @param wan - Specifies to list WAN members instead of the LAN members (which is the default).
+   * This is only eligible for agents running in server mode. This is specified as part of the URL as a query parameter.
    * @param token - consul token
    * @return
    */
-  def agentJoin(address: String, wan: Option[Boolean] = None, token: Option[String] = None): F[Result[Unit]] = {
+  def joinAgent(address: String, wan: Option[Boolean] = None, token: Option[String] = None): F[Result[Unit]] = {
     val wanParam = if (wan.getOrElse(false)) "wan" else ""
 
     val requestTemplate = basicRequest.get(uri"$url/agent/join/$address?$wanParam")
@@ -65,11 +73,11 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/token/default
-   * @param newToken
+   * This endpoint updates the ACL tokens currently in use by the agent.
+   * @param newToken - new consul token
    * @param token - consul token
-   * @return
    */
-  def agentUpdateACLTokenDefault(newToken: Token, token: Option[String] = None): F[Result[Unit]] = {
+  def updateAgentDefaultToken(newToken: Token, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/token/default")
     val request = requestTemplate.copy(response = asResultUnit)
 
@@ -78,11 +86,11 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/token/agent
-   * @param newToken
+   * This endpoint updates the ACL tokens currently in use by the agent.
+   * @param newToken - new consul token
    * @param token - consul token
-   * @return
    */
-  def agentUpdateACLTokenAgent(newToken: Token, token: Option[String] = None): F[Result[Unit]] = {
+  def updateAgentToken(newToken: Token, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/token/agent")
     val request = requestTemplate.copy(response = asResultUnit)
 
@@ -91,11 +99,11 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/token/agent_master
-   * @param newToken
+   * This endpoint updates the ACL tokens currently in use by the agent.
+   * @param newToken - new consul token
    * @param token - consul token
-   * @return
    */
-  def agentUpdateACLTokenMaster(newToken: Token, token: Option[String] = None): F[Result[Unit]] = {
+  def updateAgentMasterToken(newToken: Token, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/token/agent_master")
     val request = requestTemplate.copy(response = asResultUnit)
 
@@ -104,11 +112,11 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/token/replication
-   * @param newToken
+   * This endpoint updates the ACL tokens currently in use by the agent.
+   * @param newToken - new consul token
    * @param token - consul token
-   * @return
    */
-  def agentUpdateACLTokenReplication(newToken: Token, token: Option[String] = None): F[Result[Unit]] = {
+  def updateAgentReplicationToken(newToken: Token, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/token/replication")
     val request = requestTemplate.copy(response = asResultUnit)
 
@@ -119,9 +127,9 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
    * GET	/agent/checks
    * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
    * @param token - consul token
-   * @return
+   * @return - This endpoint returns all checks that are registered with the local agent.
    */
-  def agentCheckList(filter: Option[String] = None, token: Option[String] = None): F[Result[Map[String, HealthCheck]]] = {
+  def getAgentChecks(filter: Option[String] = None, token: Option[String] = None): F[Result[Map[String, HealthCheck]]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/checks?$filter=$filter")
     val request = requestTemplate.copy(response = jsonDecoder.asHealthCheckMap)
 
@@ -130,11 +138,11 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/check/register
-   * @param check
+   * This endpoint adds a new check to the local agent. Checks may be of script, HTTP, TCP, or TTL type.
+   * @param check - new agent check
    * @param token - consul token
-   * @return
    */
-  def agentRegisterCheck(check: Check, token: Option[String] = None): F[Result[Unit]] = {
+  def registerAgentCheck(check: Check, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/agent/check/register")
     val request = requestTemplate.copy(response = asResultUnit)
 
@@ -143,11 +151,11 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/check/deregister/:check_id
-   * @param checkId
+   * This endpoint remove a check from the local agent.
+   * @param checkId - check id
    * @param token - consul token
-   * @return
    */
-  def agentDeregisterCheck(checkId: String, token: Option[String] = None): F[Result[Unit]] = {
+  def deregisterAgentCheck(checkId: String, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/agent/check/deregister/$checkId")
     val request = requestTemplate.copy(response = asResultUnit)
 
@@ -156,12 +164,12 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/check/pass/:check_id
-   * @param checkId
-   * @param note
+   * This endpoint is used with a TTL type check to set the status of the check to passing and to reset the TTL clock.
+   * @param checkId - check id
+   * @param note - Specifies a human-readable message. This will be passed through to the check's Output field.
    * @param token - consul token
-   * @return
    */
-  def agentTTLCheckPass(checkId: String, note: Option[String] = None, token: Option[String] = None): F[Result[Unit]] = {
+  def setAgentTtlCheckPass(checkId: String, note: Option[String] = None, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/agent/check/pass/$checkId?note=$note")
     val request = requestTemplate.copy(response = asResultUnit)
 
@@ -170,12 +178,12 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/check/warn/:check_id
-   * @param checkId
-   * @param note
+   * This endpoint is used with a TTL type check to set the status of the check to warning and to reset the TTL clock.
+   * @param checkId - check id
+   * @param note - Specifies a human-readable message. This will be passed through to the check's Output field.
    * @param token - consul token
-   * @return
    */
-  def agentTTLCheckWarn(checkId: String, note: Option[String] = None, token: Option[String] = None): F[Result[Unit]] = {
+  def setAgentTtlCheckWarn(checkId: String, note: Option[String] = None, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/agent/check/warn/$checkId?note=$note")
     val request = requestTemplate.copy(response = asResultUnit)
 
@@ -184,12 +192,12 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/check/fail/:check_id
-   * @param checkId
-   * @param note
+   * This endpoint is used with a TTL type check to set the status of the check to critical and to reset the TTL clock.
+   * @param checkId - check id
+   * @param note - Specifies a human-readable message. This will be passed through to the check's Output field.
    * @param token - consul token
-   * @return
    */
-  def agentTTLCheckFail(checkId: String, note: Option[String] = None, token: Option[String] = None): F[Result[Unit]] = {
+  def setAgentTtlCheckFail(checkId: String, note: Option[String] = None, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/agent/check/fail/$checkId?note=$note")
     val request = requestTemplate.copy(response = asResultUnit)
 
@@ -198,12 +206,12 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/check/update/:check_id
-   * @param checkId
-   * @param checkUpdate
+   * This endpoint is used with a TTL type check to set the status of the check and to reset the TTL clock.
+   * @param checkId - Specifies the unique ID of the check to use. This is specified as part of the URL.
+   * @param checkUpdate - check updates
    * @param token - consul token
-   * @return
    */
-  def agentTTLCheckUpdate(checkId: String, checkUpdate: CheckUpdate, token: Option[String] = None): F[Result[Unit]] = {
+  def updateAgentTtlCheck(checkId: String, checkUpdate: CheckUpdate, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/agent/check/update/$checkId")
     val request = requestTemplate.copy(response = asResultUnit)
 
@@ -214,9 +222,9 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
    * GET	/agent/services
    * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
    * @param token - consul token
-   * @return
+   * @return - This endpoint returns all the services that are registered with the local agent.
    */
-  def agentServices(filter: Option[String] = None, token: Option[String] = None): F[Result[Map[String, Service]]] = {
+  def getAgentServices(filter: Option[String] = None, token: Option[String] = None): F[Result[Map[String, Service]]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/services?filter=$filter")
     val request = requestTemplate.copy(response = jsonDecoder.asServiceMap)
 
@@ -225,11 +233,11 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * GET	/agent/service/:service_id
-   * @param serviceId
+   * @param serviceId - service id
    * @param token - consul token
-   * @return
+   * @return - This endpoint returns the full service definition for a single service instance registered on the local agent.
    */
-  def agentService(serviceId: String, token: Option[String] = None): F[Result[Option[Service]]] = {
+  def getAgentService(serviceId: String, token: Option[String] = None): F[Result[Option[Service]]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/service/$serviceId")
     val request = requestTemplate.copy(response = jsonDecoder.asServiceOption)
 
@@ -238,11 +246,14 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * GET	/agent/health/service/name/:service_name
-   * @param serviceName
+   * @param serviceName - service name
    * @param token - consul token
-   * @return
+   * @return - Retrieve an aggregated state of service(s) on the local agent by name.
    */
-  def agentLocalServiceHealthByName(serviceName: String, token: Option[String] = None): F[Result[Option[List[AggregatedServiceStatus]]]] = {
+  def getAgentLocalServiceHealthByName(
+    serviceName: String,
+    token: Option[String] = None
+  ): F[Result[Option[List[AggregatedServiceStatus]]]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/health/service/name/$serviceName")
     val request = requestTemplate.copy(response = jsonDecoder.asAggregatedServiceStatusListOption)
 
@@ -251,11 +262,11 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * GET	/agent/health/service/id/:service_id
-   * @param serviceId
+   * @param serviceId - service id
    * @param token - consul token
-   * @return
+   * @return - Retrieve an aggregated state of service(s) on the local agent by ID.
    */
-  def agentLocalServiceHealthById(serviceId: String, token: Option[String] = None): F[Result[Option[AggregatedServiceStatus]]] = {
+  def getAgentLocalServiceHealthById(serviceId: String, token: Option[String] = None): F[Result[Option[AggregatedServiceStatus]]] = {
     val requestTemplate = basicRequest.get(uri"$url/agent/health/service/id/$serviceId")
     val request = requestTemplate.copy(response = jsonDecoder.asAggregatedServiceStatusOption)
 
@@ -264,12 +275,13 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/service/register
-   * @param service
-   * @param replaceExistingChecks
+   * This endpoint adds a new service, with optional health checks, to the local agent.
+   * @param service - service definition
+   * @param replaceExistingChecks - Missing healthchecks from the request will be deleted from the agent.
+   * Using this parameter allows to idempotently register a service and its checks without having to manually deregister checks.
    * @param token - consul token
-   * @return
    */
-  def agentRegisterLocalService(
+  def registerAgentService(
     service: NewService,
     replaceExistingChecks: Boolean = false,
     token: Option[String] = None
@@ -282,11 +294,11 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/service/deregister/:service_id
-   * @param serviceId
+   * This endpoint removes a service from the local agent. If the service does not exist, no action is taken.
+   * @param serviceId - service id
    * @param token - consul token
-   * @return
    */
-  def agentDeregisterService(serviceId: String, token: Option[String] = None): F[Result[Unit]] = {
+  def deregisterAgentService(serviceId: String, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/agent/service/deregister/$serviceId")
     val request = requestTemplate.copy(response = asResultUnit)
 
@@ -295,13 +307,18 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT	/agent/service/maintenance/:service_id
+   * This endpoint places a given service into "maintenance mode".
+   * During maintenance mode, the service will be marked as unavailable and will not be present in DNS or API queries.
+   * This API call is idempotent. Maintenance mode is persistent and will be automatically restored on agent restart.
    * @param serviceId
-   * @param enable
-   * @param reason
+   * @param enable - Specifies whether to enable or disable maintenance mode.
+   * This is specified as part of the URL as a query string parameter.
+   * @param reason - Specifies a text string explaining the reason for placing the node into maintenance mode.
+   * This is simply to aid human operators. If no reason is provided, a default value will be used instead.
+   * This is specified as part of the URL as a query string parameter, and, as such, must be URI-encoded.
    * @param token - consul token
-   * @return
    */
-  def agentEnableMaintenanceMode(
+  def setAgentServiceMaintenanceMode(
     serviceId: String,
     enable: Boolean,
     reason: Option[String] = None,

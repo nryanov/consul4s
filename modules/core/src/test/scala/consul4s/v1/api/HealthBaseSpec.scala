@@ -28,7 +28,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
 
       runEither {
         for {
-          _ <- client.agentRegisterLocalService(newService).body
+          _ <- client.registerAgentService(newService).body
           result <- client.getServiceChecks("testService").body
         } yield {
           assert(result.exists(_.serviceId == "testService"))
