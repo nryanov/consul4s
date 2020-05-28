@@ -8,9 +8,10 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT /catalog/register
-   * @param value
+   * This endpoint is a low-level mechanism for registering or updating entries in the catalog.
+   * @param value - new entity
    * @param token - consul token
-   * @return
+   * @return - unit
    */
   def registerEntity(value: NodeRegistration, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/catalog/register")
@@ -21,9 +22,10 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
 
   /**
    * PUT /catalog/deregister
-   * @param value
+   * This endpoint is a low-level mechanism for directly removing entries from the Catalog. I
+   * @param value - entity filter
    * @param token - consul token
-   * @return
+   * @return - unit
    */
   def deregisterEntity(value: NodeDeregistration, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/catalog/deregister")
@@ -35,9 +37,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
   /**
    * GET	/catalog/datacenters
    * @param token - consul token
-   * @return
+   * @return - This endpoint returns the list of all known datacenters.
    */
-  def datacenters(token: Option[String] = None): F[Result[List[String]]] = {
+  def getDatacenters(token: Option[String] = None): F[Result[List[String]]] = {
     val requestTemplate = basicRequest.get(uri"$url/catalog/datacenters")
     val request = requestTemplate.copy(response = jsonDecoder.asStringList)
 
@@ -59,9 +61,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
    * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
    * @param consistencyMode - see [[ConsistencyMode]]
    * @param token - consul token
-   * @return
+   * @return - This endpoint returns the nodes registered in a given datacenter.
    */
-  def nodes(
+  def getDatacenterNodes(
     dc: Option[String] = None,
     near: Option[String] = None,
     nodeMeta: Option[String] = None,
@@ -85,9 +87,9 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
    * with the specified key/value pairs. This is specified as part of the URL as a query parameter.
    * @param consistencyMode - see [[ConsistencyMode]]
    * @param token - consul token
-   * @return
+   * @return - This endpoint returns the services registered in a given datacenter.
    */
-  def services(
+  def getDatacenterServiceNames(
     dc: Option[String] = None,
     nodeMeta: Option[String] = None,
     consistencyMode: ConsistencyMode = ConsistencyMode.Default,
@@ -101,10 +103,11 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
 
   /**
    * GET /catalog/service/ + service
-   * @param service
+   * @param service - Specifies the name of the service for which to list nodes. This is specified as part of the URL.
    * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
    * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
-   * @param tag
+   * @param tag - Specifies the tag to filter on. This is specified as part of the URL as a query parameter.
+   * Can be used multiple times for additional filtering, returning only the results that include all of the tag values provided.
    * @param near - Specifies to sort the resulting list in ascending order based on the estimated round trip time
    * from that node. Passing ?near=_agent will use the agent's node for the sort.
    * Passing ?near=_ip will use the source IP of the request or the value of the X-Forwarded-For header
@@ -117,9 +120,10 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
    * @param consistencyMode - see [[ConsistencyMode]]
    * @param token - consul token
    * @param cacheMode - see [[CacheMode]]
-   * @return
+   * @return - This endpoint returns the nodes providing a service in a given datacenter.
    */
-  def nodesInfoForService(
+  // todo: tag may be used multiple times
+  def getDatacenterServices(
     service: String,
     dc: Option[String] = None,
     tag: Option[String] = None,
@@ -140,10 +144,11 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
 
   /**
    * GET /catalog/connect/ + service
-   * @param service
+   * @param service - Specifies the name of the service for which to list nodes. This is specified as part of the URL.
    * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
    * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
-   * @param tag
+   * @param tag - Specifies the tag to filter on. This is specified as part of the URL as a query parameter.
+   * Can be used multiple times for additional filtering, returning only the results that include all of the tag values provided.
    * @param near - Specifies to sort the resulting list in ascending order based on the estimated round trip time
    * from that node. Passing ?near=_agent will use the agent's node for the sort.
    * Passing ?near=_ip will use the source IP of the request or the value of the X-Forwarded-For header
@@ -155,9 +160,10 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
    * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
    * @param consistencyMode - see [[ConsistencyMode]]
    * @param token - consul token
-   * @return
+   * @return - This endpoint returns the nodes providing a Connect-capable service in a given datacenter.
    */
-  def nodesInfoForConnectCapableService(
+  // todo: tag may be used multiple times
+  def getConnectCapableDatacenterServices(
     service: String,
     dc: Option[String] = None,
     tag: Option[String] = None,
@@ -183,7 +189,7 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
    * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
    * @param consistencyMode - see [[ConsistencyMode]]
    * @param token - consul token
-   * @return
+   * @return - This endpoint returns the node's registered services.
    */
   def mapOfServicesForNode(
     node: String,
@@ -206,7 +212,7 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
    * @param filter - Specifies the expression used to filter the queries results prior to returning the data.
    * @param consistencyMode - see [[ConsistencyMode]]
    * @param token - consul token
-   * @return
+   * @return - This endpoint returns the node's registered services.
    */
   def listOfServicesForNode(
     node: String,

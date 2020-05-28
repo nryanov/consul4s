@@ -14,7 +14,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
 
       runEither {
         for {
-          node <- client.nodes().body
+          node <- client.getDatacenterNodes().body
           result <- client.getNodeChecks(node.head.node).body
         } yield {
           assertResult(CheckStatus.Passing)(result.head.status)
@@ -53,7 +53,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
 
       runEither {
         for {
-          service <- client.services().body
+          service <- client.getDatacenterServiceNames().body
           result <- client.getAllServiceInstances(service.head._1).body
         } yield {
           assert(result.length == 1)
@@ -66,7 +66,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
 
       runEither {
         for {
-          service <- client.services().body
+          service <- client.getDatacenterServiceNames().body
           result <- client.getNodesForConnectCapableService(service.head._1).body
         } yield {
           assert(result.isEmpty)
