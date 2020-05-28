@@ -1,5 +1,6 @@
 package consul4s.sprayJson.model
 
+import consul4s.model.catalog.NodeServiceList.NodeServiceListInternal
 import consul4s.model.catalog._
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
@@ -60,7 +61,8 @@ trait Catalog extends DefaultJsonProtocol { this: Health with Agent with Common 
     )
   )
 
-  implicit val nodeServiceListFormat: RootJsonFormat[NodeServiceList] = jsonFormat(NodeServiceList.apply, "Node", "Services")
+  implicit val nodeServiceListFormat: RootJsonFormat[NodeServiceListInternal] =
+    jsonFormat(NodeServiceListInternal.apply, "Node", "Services")
 
   implicit val nodeServiceMapFormat: RootJsonFormat[NodeServiceMap] = jsonFormat(NodeServiceMap.apply, "Node", "Services")
 

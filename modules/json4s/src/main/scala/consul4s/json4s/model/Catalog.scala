@@ -1,5 +1,6 @@
 package consul4s.json4s.model
 
+import consul4s.model.catalog.NodeServiceList.NodeServiceListInternal
 import consul4s.model.catalog._
 import org.json4s.FieldSerializer
 import org.json4s.FieldSerializer._
@@ -70,7 +71,7 @@ trait Catalog {
     Map()
   )
 
-  val nodeServiceListFormat = FieldSerializer[NodeServiceList](
+  val nodeServiceListFormat = FieldSerializer[NodeServiceListInternal](
     Map(),
     renameFrom("Node", "node").orElse(renameFrom("Services", "services"))
   )

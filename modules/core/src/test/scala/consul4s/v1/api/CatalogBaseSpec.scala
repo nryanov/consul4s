@@ -92,15 +92,15 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
       runEither {
         for {
           _ <- client.registerEntity(registerNode).body
-          result1 <- client.listOfServicesForNode("node").body
-          result2 <- client.mapOfServicesForNode("node").body
+          result1 <- client.getListOfNodeServices("node").body
+          result2 <- client.getMapOfNodeServices("node").body
           _ <- client.deregisterEntity(deleteNode).body
-          result3 <- client.listOfServicesForNode("node").body
-          result4 <- client.mapOfServicesForNode("node").body
+          result3 <- client.getListOfNodeServices("node").body
+          result4 <- client.getMapOfNodeServices("node").body
         } yield {
-          assert(result1.node.exists(_.node == "node") && result1.services.exists(_.exists(_.service == "testService")))
+          assert(result1.exists(_.node.node == "node") && result1.exists(_.services.exists(_.service == "testService")))
           assert(result2.exists(_.node.node == "node") && result2.exists(_.services.contains("testService")))
-          assert(result3.node.isEmpty)
+          assert(result3.isEmpty)
           assert(result4.isEmpty)
         }
       }

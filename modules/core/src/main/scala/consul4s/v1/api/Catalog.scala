@@ -1,5 +1,6 @@
 package consul4s.v1.api
 
+import consul4s.model.catalog.NodeServiceList.NodeServiceListInternal
 import consul4s.{CacheMode, ConsistencyMode, NoCache}
 import consul4s.model.catalog._
 import sttp.client._
@@ -191,7 +192,7 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
    * @param token - consul token
    * @return - This endpoint returns the node's registered services.
    */
-  def mapOfServicesForNode(
+  def getMapOfNodeServices(
     node: String,
     dc: Option[String] = None,
     filter: Option[String] = None,
@@ -214,15 +215,18 @@ trait Catalog[F[_]] { this: ConsulApi[F] =>
    * @param token - consul token
    * @return - This endpoint returns the node's registered services.
    */
-  def listOfServicesForNode(
+  def getListOfNodeServices(
     node: String,
     dc: Option[String] = None,
     filter: Option[String] = None,
     consistencyMode: ConsistencyMode = ConsistencyMode.Default,
     token: Option[String] = None
-  ): F[Result[NodeServiceList]] = {
+  ): F[Result[Option[NodeServiceList]]] = {
     val requestTemplate = basicRequest.get(addConsistencyMode(uri"$url/catalog/node-services/$node?dc=$dc&filter=$filter", consistencyMode))
-    val request = requestTemplate.copy(response = jsonDecoder.asNodeServiceList)
+    val request = requestTemplate.copy(response = jsonDecoder.asNodeServiceListInternal.mapRight {
+      case NodeServiceListInternal(Some(node), Some(services)) => Some(NodeServiceList(node, services))
+      case _                                                   => None
+    })
 
     sendRequest(request, token)
   }
