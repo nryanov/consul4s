@@ -13,7 +13,7 @@ lazy val testContainersVersion = "0.36.0"
 lazy val logbackVersion = "1.2.3"
 
 lazy val buildSettings = Seq(
-  organization := "com.nryanov",
+  organization := "com.nryanov.consul4s",
   scalaVersion := "2.13.2",
   crossScalaVersions := Seq("2.12.10", "2.13.2")
 )
@@ -35,8 +35,6 @@ lazy val publishSettings = Seq(
       Some("releases".at(nexus + "service/local/staging/deploy/maven2"))
   },
   publishArtifact in Test := false,
-//  pgpSecretRing := file("local.secring.gpg"),
-//  pgpPublicRing := file("local.pubring.gpg"),
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   releaseIgnoreUntrackedFiles := true,
   licenses := Seq("Apache 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
