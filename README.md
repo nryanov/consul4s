@@ -18,4 +18,41 @@ Currently `consul4s` supports these endpoints:
 - status
 - transaction
 
+## Modules
+Consul4s uses multi-project structure and contains of the following modules_:
+
+* [`consul4s-core`](modules/core) - core classes/functions
+* [`consul4s-circe`](modules/circe) - circe integration
+* [`consul4s-json4s`](modules/json4s) - json4s integration
+* [`consul4s-spray-json`](modules/spray-json) - spray-json integration
+
+## Installation
+```sbt
+libraryDependencies ++= Seq(
+  "com.nryanov.consul4s" %% "consul4s-core" % "[version]",
+  // And one of the following:
+  "com.nryanov.consul4s" %% "consul4s-circe" % "[version]",
+  "com.nryanov.consul4s" %% "consul4s-json4s" % "[version]",
+  "com.nryanov.consul4s" %% "consul4s-spray-json" % "[version]",
+)
+```
+
+Also you can add any sttp-client backend you want. 
+
 ## Getting Started
+```scala
+import consul4s.v1._
+import consul4s.circe._
+import sttp.client.HttpURLConnectionBackend
+
+object Main {
+ def main(args: Array[String]): Unit = {
+    val backend = HttpURLConnectionBackend()
+    val client = ConsulClient(backend) // will use default host and port: http://localhost:8500
+
+    for {
+      datacenters <- client.getDatacenters().body
+    } yield datacenters
+  }
+}
+```
