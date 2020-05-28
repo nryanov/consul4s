@@ -4,6 +4,7 @@ import com.dimafeng.testcontainers.scalatest.TestContainerForAll
 import consul4s.model.catalog._
 import consul4s.model.health.NewHealthCheck
 import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
+import scala.concurrent.duration._
 
 abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) extends ConsulSpec with TestContainerForAll {
   override val containerDef: ConsulContainer.Def = ConsulContainer.Def()
@@ -24,11 +25,13 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
     "return nodes" in withContainers { consul =>
       val client = createClient(consul)
 
-      runEither {
-        for {
-          result <- client.getDatacenterNodes().body
-        } yield {
-          assert(result.head.datacenter.contains("dc1"))
+      eventually(timeout(1000 milliseconds), interval(100 milliseconds)) {
+        runEither {
+          for {
+            result <- client.getDatacenterNodes().body
+          } yield {
+            assert(result.head.datacenter.contains("dc1"))
+          }
         }
       }
     }
