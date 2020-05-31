@@ -54,15 +54,11 @@ lazy val publishSettings = Seq(
       checkSnapshotDependencies,
       inquireVersions,
       runClean,
-//      runTest,
+      runTest,
       setReleaseVersion,
-      commitReleaseVersion,
-      tagRelease,
       releaseStepCommandAndRemaining("+publishSigned"),
       releaseStepCommand("sonatypeBundleRelease"),
       setNextVersion
-//      commitNextVersion,
-//      pushChanges
     )
   },
   pomExtra :=
@@ -135,8 +131,8 @@ lazy val core = project
     libraryDependencies ++= Seq(
       "eu.timepit" %% "refined" % refinedVersion,
       "com.softwaremill.sttp.client" %% "core" % sttpClientVersion,
-      "com.softwaremill.sttp.client" %% "slf4j-backend" % sttpClientVersion,
       "com.beachape" %% "enumeratum" % enumeratumVersion,
+      "com.softwaremill.sttp.client" %% "slf4j-backend" % sttpClientVersion % Test,
       "com.dimafeng" %% "testcontainers-scala" % testContainersVersion % Test,
       "ch.qos.logback" % "logback-classic" % logbackVersion % Test
     )
@@ -173,5 +169,17 @@ lazy val sprayJson = project
     name := "consul4s-spray-json",
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client" %% "spray-json" % sttpClientVersion
+    )
+  )
+
+lazy val examples = project
+  .in(file("examples"))
+  .dependsOn(core, circe)
+  .settings(allSettings)
+  .settings(noPublish)
+  .settings(
+    name := "examples",
+    libraryDependencies ++= Seq(
+      "com.softwaremill.sttp.client" %% "async-http-client-backend-cats" % sttpClientVersion
     )
   )

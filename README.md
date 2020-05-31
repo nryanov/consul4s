@@ -1,9 +1,6 @@
 # consul4s
  
-A native Scala client for interacting with Consul built on top of [sttp-client](https//github.com/softwaremill/sttp).
-
-
-> STTP: Backend implementations include ones based on [akka-http](https://doc.akka.io/docs/akka-http/current/scala/http/), [async-http-client](https://github.com/AsyncHttpClient/async-http-client), [http4s](https://http4s.org), [OkHttp](http://square.github.io/okhttp/), and HTTP clients which ship with Java. They integrate with [Akka](https://akka.io), [Monix](https://monix.io), [fs2](https://github.com/functional-streams-for-scala/fs2), [cats-effect](https://github.com/typelevel/cats-effect), [scalaz](https://github.com/scalaz/scalaz) and [ZIO](https://github.com/zio/zio). 
+A native Scala client for interacting with Consul built on top of [sttp-client](https//github.com/softwaremill/sttp). 
 
 ## Features
 Currently `consul4s` supports these endpoints:
@@ -40,6 +37,9 @@ libraryDependencies ++= Seq(
 Also you can add any sttp-client backend you want. 
 
 ## Getting Started
+Without any additional dependencies you can use the default `HttpURLConnectionBackend` as backend for requests. But sttp also supports other backend implementations:
+> STTP: Backend implementations include ones based on [akka-http](https://doc.akka.io/docs/akka-http/current/scala/http/), [async-http-client](https://github.com/AsyncHttpClient/async-http-client), [http4s](https://http4s.org), [OkHttp](http://square.github.io/okhttp/), and HTTP clients which ship with Java. They integrate with [Akka](https://akka.io), [Monix](https://monix.io), [fs2](https://github.com/functional-streams-for-scala/fs2), [cats-effect](https://github.com/typelevel/cats-effect), [scalaz](https://github.com/scalaz/scalaz) and [ZIO](https://github.com/zio/zio).
+
 ```scala
 import consul4s.v1._
 import consul4s.circe._
