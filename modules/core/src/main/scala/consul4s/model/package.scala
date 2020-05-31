@@ -7,7 +7,7 @@ package object model {
   sealed abstract class CheckStatus(val value: String) extends StringEnumEntry
 
   object CheckStatus extends StringEnum[CheckStatus] {
-    override def values: IndexedSeq[CheckStatus] = findValues
+    val values = findValues
 
     case object Any extends CheckStatus("any")
 
@@ -23,7 +23,7 @@ package object model {
   sealed abstract class ServiceKind(val value: String) extends StringEnumEntry
 
   object ServiceKind extends StringEnum[ServiceKind] {
-    override def values: IndexedSeq[ServiceKind] = findValues
+    val values = findValues
 
     case object Typical extends ServiceKind("")
 
@@ -37,7 +37,7 @@ package object model {
   sealed abstract class SessionBehavior(val value: String) extends StringEnumEntry
 
   object SessionBehavior extends StringEnum[SessionBehavior] {
-    override def values: IndexedSeq[SessionBehavior] = findValues
+    val values = findValues
 
     case object Release extends SessionBehavior("release")
 

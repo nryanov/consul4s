@@ -6,7 +6,7 @@ package object transaction {
   sealed abstract class CheckOp(val value: String) extends StringEnumEntry
 
   object CheckOp extends StringEnum[CheckOp] {
-    override def values: IndexedSeq[CheckOp] = findValues
+    val values = findValues
 
     case object Get extends CheckOp("get")
 
@@ -22,7 +22,7 @@ package object transaction {
   sealed abstract class KVOp(val value: String) extends StringEnumEntry
 
   object KVOp extends StringEnum[KVOp] {
-    override def values: IndexedSeq[KVOp] = findValues
+    val values = findValues
 
     case object Set extends KVOp("set")
 
@@ -52,7 +52,7 @@ package object transaction {
   sealed abstract class NodeOp(val value: String) extends StringEnumEntry
 
   object NodeOp extends StringEnum[NodeOp] {
-    override def values: IndexedSeq[NodeOp] = findValues
+    val values = findValues
 
     case object Get extends NodeOp("get")
 
@@ -68,7 +68,7 @@ package object transaction {
   sealed abstract class ServiceOp(val value: String) extends StringEnumEntry
 
   object ServiceOp extends StringEnum[ServiceOp] {
-    override def values: IndexedSeq[ServiceOp] = findValues
+    val values = findValues
 
     case object Get extends ServiceOp("get")
 
