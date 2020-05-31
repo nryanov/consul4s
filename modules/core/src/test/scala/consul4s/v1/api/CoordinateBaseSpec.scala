@@ -13,7 +13,7 @@ class CoordinateBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEnc
 
       runEither {
         for {
-          r <- client.coordinateWANDatacenters().body
+          r <- client.getDatacenterCoordinates().body
         } yield {
           assert(true)
         }
@@ -27,7 +27,7 @@ class CoordinateBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEnc
       runEither {
         for {
           _ <- client.registerEntity(entityRegistration).body
-          r <- client.coordinateLANNodes(dc = Some("dc1")).body
+          r <- client.getNodeCoordinates(dc = Some("dc1")).body
         } yield {
           assert(true)
         }
@@ -39,8 +39,8 @@ class CoordinateBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEnc
 
       runEither {
         for {
-          node <- client.nodes().body
-          r <- client.coordinateLANNode(node.head.node).body
+          node <- client.getDatacenterNodes().body
+          r <- client.getNodeCoordinate(node.head.node).body
         } yield {
           assert(true)
         }

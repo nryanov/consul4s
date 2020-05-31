@@ -2,6 +2,7 @@ package consul4s.circe.model
 
 import consul4s.model.ServiceKind
 import consul4s.model.agent.{Service, TaggedAddress, Weights}
+import consul4s.model.catalog.NodeServiceList.NodeServiceListInternal
 import consul4s.model.catalog._
 import io.circe.Decoder.Result
 import io.circe._
@@ -102,11 +103,11 @@ trait Catalog { this: Agent with Health with Common =>
     )
   }
 
-  implicit val nodeServiceListDecoder: Decoder[NodeServiceList] = new Decoder[NodeServiceList] {
-    override def apply(c: HCursor): Result[NodeServiceList] = for {
+  implicit val nodeServiceListInternalDecoder: Decoder[NodeServiceListInternal] = new Decoder[NodeServiceListInternal] {
+    override def apply(c: HCursor): Result[NodeServiceListInternal] = for {
       node <- c.downField("Node").as[Option[Node]]
       services <- c.downField("Services").as[Option[List[Service]]]
-    } yield NodeServiceList(node, services)
+    } yield NodeServiceListInternal(node, services)
   }
 
   implicit val nodeServiceMapDecoder: Decoder[NodeServiceMap] = new Decoder[NodeServiceMap] {

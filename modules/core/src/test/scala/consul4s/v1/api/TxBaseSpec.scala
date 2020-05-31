@@ -30,7 +30,7 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
 
       runEither {
         for {
-          result <- client.executeTx(List(txTask)).body
+          result <- client.createTransaction(List(txTask)).body
         } yield {
           assert(result.errors.isEmpty)
           assert(result.results.flatMap(_.headOption).flatMap(_.kv).exists(_.key == "key"))
@@ -54,7 +54,7 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
 
       runEither {
         for {
-          result <- client.executeTx(List(txTask)).body
+          result <- client.createTransaction(List(txTask)).body
         } yield {
           assert(result.results.flatMap(_.headOption).flatMap(_.node).exists(_.node == "testNode"))
           assert(result.errors.isEmpty)
@@ -80,7 +80,7 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
       runEither {
         for {
           _ <- client.registerEntity(newNode).body
-          result <- client.executeTx(List(txTask)).body
+          result <- client.createTransaction(List(txTask)).body
         } yield {
           assert(result.results.flatMap(_.headOption).flatMap(_.service).exists(_.service == "testService"))
           assert(result.errors.isEmpty)
@@ -111,7 +111,7 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
       runEither {
         for {
           _ <- client.registerEntity(newNode).body
-          result <- client.executeTx(List(txTask)).body
+          result <- client.createTransaction(List(txTask)).body
         } yield {
           assert(result.results.flatMap(_.headOption).flatMap(_.check).exists(_.checkId == "checkName"))
           assert(result.errors.isEmpty)

@@ -14,7 +14,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
 
       runEither {
         for {
-          result <- client.datacenters().body
+          result <- client.getDatacenters().body
         } yield {
           assertResult(List("dc1"))(result)
         }
@@ -24,9 +24,9 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
     "return nodes" in withContainers { consul =>
       val client = createClient(consul)
 
-      runEither {
+      runEitherEventually {
         for {
-          result <- client.nodes().body
+          result <- client.getDatacenterNodes().body
         } yield {
           assert(result.head.datacenter.contains("dc1"))
         }
@@ -38,7 +38,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
 
       runEither {
         for {
-          result <- client.services().body
+          result <- client.getDatacenterServiceNames().body
         } yield {
           assertResult(Set("consul"))(result.keySet)
         }
@@ -54,9 +54,9 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
       runEither {
         for {
           _ <- client.registerEntity(registerNode).body
-          result <- client.nodes().body
+          result <- client.getDatacenterNodes().body
           _ <- client.deregisterEntity(deleteNode).body
-          afterDeregistration <- client.nodes().body
+          afterDeregistration <- client.getDatacenterNodes().body
         } yield {
           assert(result.exists(_.node == "node"))
           assert(!afterDeregistration.exists(_.node == "node"))
@@ -73,9 +73,9 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
       runEither {
         for {
           _ <- client.registerEntity(registerNode).body
-          result1 <- client.nodesInfoForService("testService").body
+          result1 <- client.getDatacenterServices("testService").body
           _ <- client.deregisterEntity(deleteNode).body
-          result2 <- client.nodesInfoForService("testService").body
+          result2 <- client.getDatacenterServices("testService").body
         } yield {
           assert(result1.exists(_.serviceName == "testService"))
           assert(!result2.exists(_.serviceName == "testService"))
@@ -92,15 +92,15 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
       runEither {
         for {
           _ <- client.registerEntity(registerNode).body
-          result1 <- client.listOfServicesForNode("node").body
-          result2 <- client.mapOfServicesForNode("node").body
+          result1 <- client.getListOfNodeServices("node").body
+          result2 <- client.getMapOfNodeServices("node").body
           _ <- client.deregisterEntity(deleteNode).body
-          result3 <- client.listOfServicesForNode("node").body
-          result4 <- client.mapOfServicesForNode("node").body
+          result3 <- client.getListOfNodeServices("node").body
+          result4 <- client.getMapOfNodeServices("node").body
         } yield {
-          assert(result1.node.exists(_.node == "node") && result1.services.exists(_.exists(_.service == "testService")))
+          assert(result1.exists(_.node.node == "node") && result1.exists(_.services.exists(_.service == "testService")))
           assert(result2.exists(_.node.node == "node") && result2.exists(_.services.contains("testService")))
-          assert(result3.node.isEmpty)
+          assert(result3.isEmpty)
           assert(result4.isEmpty)
         }
       }

@@ -65,7 +65,7 @@ package object api {
         cacheControlHeader match {
           case Some(value) =>
             val newUri: Identity[Uri] = request.uri.querySegment(Value("cached"))
-            val newHeaders = request.headers ++ Seq(Header("Cache-Control", value))
+            val newHeaders = request.headers ++ Seq(Header.notValidated("Cache-Control", value))
             request.copy(uri = newUri, headers = newHeaders)
           case None =>
             val newUri: Identity[Uri] = request.uri.querySegment(Value("cached"))
@@ -80,7 +80,7 @@ package object api {
       request: RequestT[Identity, Either[ResponseError[Exception], A], Nothing],
       token: String
     ): RequestT[Identity, Either[ResponseError[Exception], A], Nothing] =
-      request.copy(headers = request.headers ++ Seq(Header("X-Consul-Token", token)))
+      request.copy(headers = request.headers ++ Seq(Header.notValidated("X-Consul-Token", token)))
 
     private def makeBody(f: => String): F[String] = sttpBackend.responseMonad.eval(f)
   }

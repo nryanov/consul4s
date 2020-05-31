@@ -2,6 +2,7 @@ package consul4s
 
 import consul4s.circe.model._
 import consul4s.model.agent._
+import consul4s.model.catalog.NodeServiceList.NodeServiceListInternal
 import consul4s.model.catalog._
 import consul4s.model.coordinate.{DatacenterCoordinate, NodeCoordinate}
 import consul4s.model.event.UserEvent
@@ -95,7 +96,8 @@ package object circe
     override def asCatalogServiceList: ResponseAs[Either[ResponseError[Exception], List[CatalogService]], Nothing] =
       asJson[List[CatalogService]]
 
-    override def asNodeServiceList: ResponseAs[Either[ResponseError[Exception], NodeServiceList], Nothing] = asJson[NodeServiceList]
+    override def asNodeServiceListInternal: ResponseAs[Either[ResponseError[Exception], NodeServiceListInternal], Nothing] =
+      asJson[NodeServiceListInternal]
 
     override def asNodeServiceMap: ResponseAs[Either[ResponseError[Exception], Option[NodeServiceMap]], Nothing] =
       asJsonOption404[NodeServiceMap]

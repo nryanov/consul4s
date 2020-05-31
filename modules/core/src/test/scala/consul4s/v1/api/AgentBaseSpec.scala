@@ -14,7 +14,7 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
       runEither {
         for {
-          info <- client.agentMembers().body
+          info <- client.getAgentMembers().body
         } yield {
           assert(true)
         }
@@ -27,10 +27,10 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
       runEither {
         for {
-          _ <- client.agentRegisterCheck(check).body
-          r1 <- client.agentCheckList().body
-          _ <- client.agentDeregisterCheck("testTTLCheck").body
-          r2 <- client.agentCheckList().body
+          _ <- client.registerAgentCheck(check).body
+          r1 <- client.getAgentChecks().body
+          _ <- client.deregisterAgentCheck("testTTLCheck").body
+          r2 <- client.getAgentChecks().body
         } yield {
           assert(r1.contains("testTTLCheck"))
           assert(r1("testTTLCheck").status == CheckStatus.Critical)
@@ -45,11 +45,11 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
       runEither {
         for {
-          _ <- client.agentRegisterCheck(check).body
-          _ <- client.agentTTLCheckPass("testTTLCheck", Some("manual update to pass")).body
-          r1 <- client.agentCheckList().body
-          _ <- client.agentDeregisterCheck("testTTLCheck").body
-          r2 <- client.agentCheckList().body
+          _ <- client.registerAgentCheck(check).body
+          _ <- client.setAgentTtlCheckPass("testTTLCheck", Some("manual update to pass")).body
+          r1 <- client.getAgentChecks().body
+          _ <- client.deregisterAgentCheck("testTTLCheck").body
+          r2 <- client.getAgentChecks().body
         } yield {
           assert(r1.contains("testTTLCheck"))
 
@@ -69,11 +69,11 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
       runEither {
         for {
-          _ <- client.agentRegisterCheck(check).body
-          _ <- client.agentTTLCheckWarn("testTTLCheck", Some("manual update to warn")).body
-          r1 <- client.agentCheckList().body
-          _ <- client.agentDeregisterCheck("testTTLCheck").body
-          r2 <- client.agentCheckList().body
+          _ <- client.registerAgentCheck(check).body
+          _ <- client.setAgentTtlCheckWarn("testTTLCheck", Some("manual update to warn")).body
+          r1 <- client.getAgentChecks().body
+          _ <- client.deregisterAgentCheck("testTTLCheck").body
+          r2 <- client.getAgentChecks().body
         } yield {
           assert(r1.contains("testTTLCheck"))
 
@@ -93,11 +93,11 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
       runEither {
         for {
-          _ <- client.agentRegisterCheck(check).body
-          _ <- client.agentTTLCheckFail("testTTLCheck", Some("manual update to fail")).body
-          r1 <- client.agentCheckList().body
-          _ <- client.agentDeregisterCheck("testTTLCheck").body
-          r2 <- client.agentCheckList().body
+          _ <- client.registerAgentCheck(check).body
+          _ <- client.setAgentTtlCheckFail("testTTLCheck", Some("manual update to fail")).body
+          r1 <- client.getAgentChecks().body
+          _ <- client.deregisterAgentCheck("testTTLCheck").body
+          r2 <- client.getAgentChecks().body
         } yield {
           assert(r1.contains("testTTLCheck"))
 
@@ -117,11 +117,11 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
       runEither {
         for {
-          _ <- client.agentRegisterCheck(check).body
-          _ <- client.agentTTLCheckUpdate("testTTLCheck", CheckUpdate(CheckStatus.Passing, Some("manual update to pass"))).body
-          r1 <- client.agentCheckList().body
-          _ <- client.agentDeregisterCheck("testTTLCheck").body
-          r2 <- client.agentCheckList().body
+          _ <- client.registerAgentCheck(check).body
+          _ <- client.updateAgentTtlCheck("testTTLCheck", CheckUpdate(CheckStatus.Passing, Some("manual update to pass"))).body
+          r1 <- client.getAgentChecks().body
+          _ <- client.deregisterAgentCheck("testTTLCheck").body
+          r2 <- client.getAgentChecks().body
         } yield {
           assert(r1.contains("testTTLCheck"))
 
@@ -153,11 +153,11 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
       runEither {
         for {
-          _ <- client.agentRegisterLocalService(newService).body
-          services <- client.agentServices().body
-          serviceInfo <- client.agentService("testService").body
-          _ <- client.agentDeregisterService("testService").body
-          servicesAfterDeletion <- client.agentServices().body
+          _ <- client.registerAgentService(newService).body
+          services <- client.getAgentServices().body
+          serviceInfo <- client.getAgentService("testService").body
+          _ <- client.deregisterAgentService("testService").body
+          servicesAfterDeletion <- client.getAgentServices().body
         } yield {
           assert(services.contains("testService"))
           assert(!servicesAfterDeletion.contains("testService"))
@@ -193,12 +193,12 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
       runEither {
         for {
-          _ <- client.agentRegisterLocalService(newService).body
-          services <- client.agentServices().body
-          aggregatedServiceInfoById <- client.agentLocalServiceHealthById("testService").body
-          aggregatedServiceInfoByName <- client.agentLocalServiceHealthByName("testService").body
-          _ <- client.agentDeregisterService("testService").body
-          servicesAfterDeletion <- client.agentServices().body
+          _ <- client.registerAgentService(newService).body
+          services <- client.getAgentServices().body
+          aggregatedServiceInfoById <- client.getAgentLocalServiceHealthById("testService").body
+          aggregatedServiceInfoByName <- client.getAgentLocalServiceHealthByName("testService").body
+          _ <- client.deregisterAgentService("testService").body
+          servicesAfterDeletion <- client.getAgentServices().body
         } yield {
           assert(aggregatedServiceInfoById.exists(_.service == expectedService))
           assert(aggregatedServiceInfoByName.exists(_.exists(_.service == expectedService)))
@@ -230,12 +230,12 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
       runEither {
         for {
-          _ <- client.agentRegisterLocalService(newService).body
-          services <- client.agentServices().body
-          _ <- client.agentEnableMaintenanceMode("testService", enable = true).body
-          aggregatedServiceInfoById <- client.agentLocalServiceHealthById("testService").body
-          _ <- client.agentDeregisterService("testService").body
-          servicesAfterDeletion <- client.agentServices().body
+          _ <- client.registerAgentService(newService).body
+          services <- client.getAgentServices().body
+          _ <- client.setAgentServiceMaintenanceMode("testService", enable = true).body
+          aggregatedServiceInfoById <- client.getAgentLocalServiceHealthById("testService").body
+          _ <- client.deregisterAgentService("testService").body
+          servicesAfterDeletion <- client.getAgentServices().body
         } yield {
           assert(aggregatedServiceInfoById.exists(_.service == expectedService))
           assert(aggregatedServiceInfoById.exists(_.aggregatedStatus == CheckStatus.Maintenance))

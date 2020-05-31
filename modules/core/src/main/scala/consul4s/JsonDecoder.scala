@@ -1,7 +1,7 @@
 package consul4s
 
-import consul4s.model.CheckStatus
 import consul4s.model.agent._
+import consul4s.model.catalog.NodeServiceList.NodeServiceListInternal
 import consul4s.model.catalog._
 import consul4s.model.coordinate.{DatacenterCoordinate, NodeCoordinate}
 import consul4s.model.event.UserEvent
@@ -35,7 +35,7 @@ trait JsonDecoder {
 
   def asCatalogServiceList: ResponseAs[Either[ResponseError[Exception], List[CatalogService]], Nothing]
 
-  def asNodeServiceList: ResponseAs[Either[ResponseError[Exception], NodeServiceList], Nothing]
+  def asNodeServiceListInternal: ResponseAs[Either[ResponseError[Exception], NodeServiceListInternal], Nothing]
 
   def asNodeServiceMap: ResponseAs[Either[ResponseError[Exception], Option[NodeServiceMap]], Nothing]
 

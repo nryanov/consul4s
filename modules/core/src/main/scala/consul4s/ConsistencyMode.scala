@@ -5,7 +5,7 @@ import enumeratum.values._
 sealed abstract class ConsistencyMode(val value: String) extends StringEnumEntry
 
 object ConsistencyMode extends StringEnum[ConsistencyMode] {
-  override def values: IndexedSeq[ConsistencyMode] = findValues
+  val values = findValues
 
   /**
    * If not specified, the default is strongly consistent in almost all cases.
