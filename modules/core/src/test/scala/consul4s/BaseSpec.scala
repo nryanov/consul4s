@@ -16,5 +16,5 @@ trait BaseSpec extends AnyWordSpec with Matchers with EitherValues with Eventual
     )
 
   def runEitherEventually(fa: => Either[ResponseError[Exception], Assertion]): Assertion =
-    eventually(timeout(1000 millisecond), interval(100 millisecond))(runEither(fa))
+    eventually(timeout(5000 millisecond), interval(100 millisecond))(runEither(fa))
 }

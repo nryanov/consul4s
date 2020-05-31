@@ -10,7 +10,7 @@ abstract class StatusBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
     "return leader" in withContainers { consul =>
       val client = createClient(consul)
 
-      runEither {
+      runEitherEventually {
         for {
           leader <- client.getRaftLeader().body
         } yield {
@@ -22,7 +22,7 @@ abstract class StatusBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
     "return peers" in withContainers { consul =>
       val client = createClient(consul)
 
-      runEither {
+      runEitherEventually {
         for {
           peers <- client.getRaftPeers().body
         } yield {
