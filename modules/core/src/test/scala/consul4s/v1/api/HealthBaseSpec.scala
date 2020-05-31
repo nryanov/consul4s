@@ -12,10 +12,12 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
     "return node checks" in withContainers { consul =>
       val client = createClient(consul)
 
-      runEither {
+      val nodesE = client.getDatacenterNodes().body
+
+      runEitherEventually {
         for {
-          node <- client.getDatacenterNodes().body
-          result <- client.getNodeChecks(node.head.node).body
+          nodes <- nodesE
+          result <- client.getNodeChecks(nodes.head.node).body
         } yield {
           assertResult(CheckStatus.Passing)(result.head.status)
         }
@@ -26,10 +28,13 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
       val client = createClient(consul)
       val newService = NewService("testService", checks = Some(List(ServiceTTLCheck("ttlCheck", "15s"))))
 
-      runEither {
+      val registerServiceResult = client.registerAgentService(newService).body
+
+      runEitherEventually {
         for {
-          _ <- client.registerAgentService(newService).body
+          _ <- registerServiceResult
           result <- client.getServiceChecks("testService").body
+          _ <- client.deregisterAgentService("testService").body
         } yield {
           assert(result.exists(_.serviceId == "testService"))
         }
@@ -39,7 +44,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
     "return checks in state" in withContainers { consul =>
       val client = createClient(consul)
 
-      runEither {
+      runEitherEventually {
         for {
           result <- client.getChecksByState(CheckStatus.Passing).body
         } yield {
@@ -51,7 +56,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
     "return nodes for service" in withContainers { consul =>
       val client = createClient(consul)
 
-      runEither {
+      runEitherEventually {
         for {
           service <- client.getDatacenterServiceNames().body
           result <- client.getAllServiceInstances(service.head._1).body
@@ -64,7 +69,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
     "return nodes for connect capable service" in withContainers { consul =>
       val client = createClient(consul)
 
-      runEither {
+      runEitherEventually {
         for {
           service <- client.getDatacenterServiceNames().body
           result <- client.getNodesForConnectCapableService(service.head._1).body

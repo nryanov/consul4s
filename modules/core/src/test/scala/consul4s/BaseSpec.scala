@@ -6,10 +6,15 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import sttp.client.ResponseError
 
+import scala.concurrent.duration._
+
 trait BaseSpec extends AnyWordSpec with Matchers with EitherValues with Eventually {
   def runEither(fa: => Either[ResponseError[Exception], Assertion]): Assertion =
     fa.fold(
       error => fail(error.body),
       _ => succeed
     )
+
+  def runEitherEventually(fa: => Either[ResponseError[Exception], Assertion]): Assertion =
+    eventually(timeout(1000 millisecond), interval(100 millisecond))(runEither(fa))
 }

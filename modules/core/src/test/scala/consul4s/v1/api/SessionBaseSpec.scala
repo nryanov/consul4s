@@ -5,7 +5,7 @@ import consul4s.model.CheckStatus
 import consul4s.model.catalog.{NodeDeregistration, NodeRegistration}
 import consul4s.model.health.NewHealthCheck
 import consul4s.model.session.NewSession
-import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
+import consul4s.{ConsistencyMode, ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
 
 class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) extends ConsulSpec with TestContainerForAll {
   override val containerDef: ConsulContainer.Def = ConsulContainer.Def()
@@ -24,7 +24,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
             )
             .body
           sessionId <- client.createSession(session).body
-          sessionList <- client.getListOfActiveSessions().body
+          sessionList <- client.getListOfActiveSessions(consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
           assert(sessionList.exists(_.id.contains(sessionId.id)))
@@ -46,7 +46,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
             .body
           r <- client.getListOfActiveNodeSessions("node").body
           sessionId <- client.createSession(session).body
-          sessionList <- client.getListOfActiveNodeSessions("node").body
+          sessionList <- client.getListOfActiveNodeSessions("node", consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
           assert(r.isEmpty)
@@ -68,7 +68,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
             )
             .body
           sessionId <- client.createSession(session).body
-          sessionInfo <- client.getSessionInfo(sessionId).body
+          sessionInfo <- client.getSessionInfo(sessionId, consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
           assert(sessionInfo.exists(_.id.contains(sessionId.id)))
@@ -89,9 +89,9 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
             )
             .body
           sessionId <- client.createSession(session).body
-          sessionInfo <- client.getSessionInfo(sessionId).body
+          sessionInfo <- client.getSessionInfo(sessionId, consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deleteSession(sessionId).body
-          sessionInfoAfterDeletion <- client.getSessionInfo(sessionId).body
+          sessionInfoAfterDeletion <- client.getSessionInfo(sessionId, consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
           assert(sessionInfo.exists(_.id.contains(sessionId.id)))
@@ -113,7 +113,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
             )
             .body
           sessionId <- client.createSession(session).body
-          sessionList <- client.getListOfActiveSessions().body
+          sessionList <- client.getListOfActiveSessions(consistencyMode = ConsistencyMode.Consistent).body
           response <- client.renewSession(sessionId).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
