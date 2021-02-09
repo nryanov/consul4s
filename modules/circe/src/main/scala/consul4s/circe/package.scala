@@ -45,7 +45,7 @@ package object circe
       } else if (meta.code.code == 404) {
         Right(None)
       } else {
-        Left[ResponseError[Exception], Option[A]](HttpError(str))
+        Left[ResponseError[Exception], Option[A]](HttpError(str, meta.code))
       }
     }
 
@@ -56,7 +56,7 @@ package object circe
       } else if (meta.code.code == 404) {
         Right(None)
       } else {
-        Left[ResponseError[Exception], Option[A]](HttpError(str))
+        Left[ResponseError[Exception], Option[A]](HttpError(str, meta.code))
       }
     }
 
@@ -65,7 +65,7 @@ package object circe
       if (meta.code.code == 200 || meta.code.code == 409) {
         deserializeJson[A].apply(str).fold(err => Left(DeserializationError(str, err)), res => Right(res))
       } else {
-        Left[ResponseError[Exception], A](HttpError(str))
+        Left[ResponseError[Exception], A](HttpError(str, meta.code))
       }
     }
 

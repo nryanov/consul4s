@@ -99,7 +99,7 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
       } else if (meta.code.code == 404) { // If no key exists at the given path, a 404 is returned instead of a 200 response.
         Right(None)
       } else {
-        Left[ResponseError[Exception], Option[String]](HttpError(str))
+        Left[ResponseError[Exception], Option[String]](HttpError(str, meta.code))
       }
     })
 

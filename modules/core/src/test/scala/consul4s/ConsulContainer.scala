@@ -10,6 +10,6 @@ object ConsulContainer {
 
   case class Def()
       extends GenericContainer.Def[ConsulContainer](
-        new ConsulContainer(GenericContainer(dockerImage = "consul:1.7.3", exposedPorts = Seq(8500), waitStrategy = waitStrategy))
+        new ConsulContainer(GenericContainer(dockerImage = "consul:1.9.3", exposedPorts = Seq(8500), waitStrategy = waitStrategy))
       )
 }
