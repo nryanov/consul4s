@@ -1,21 +1,21 @@
 import ReleaseTransformations._
 
-lazy val refinedVersion = "0.9.14"
-lazy val sttpClientVersion = "2.0.0"
-lazy val kindProjectorVersion = "0.11.0"
+lazy val refinedVersion = "0.9.20"
+lazy val sttpClientVersion = "2.2.9"
+lazy val kindProjectorVersion = "0.11.3"
 lazy val circeVersion = "0.13.0"
-lazy val json4sVersion = "3.6.8"
-lazy val enumeratumVersion = "1.6.0"
-lazy val slf4jApiVersion = "1.7.25"
+lazy val json4sVersion = "3.6.10"
+lazy val enumeratumVersion = "1.6.1"
+lazy val slf4jApiVersion = "1.7.30"
 
-lazy val scalaTestVersion = "3.1.1"
-lazy val testContainersVersion = "0.36.0"
+lazy val scalaTestVersion = "3.2.3"
+lazy val testContainersVersion = "0.39.0"
 lazy val logbackVersion = "1.2.3"
 
 lazy val buildSettings = Seq(
   organization := "com.nryanov.consul4s",
-  scalaVersion := "2.13.2",
-  crossScalaVersions := Seq("2.12.10", "2.13.2")
+  scalaVersion := "2.13.4",
+  crossScalaVersions := Seq("2.12.13", "2.13.4")
 )
 
 lazy val noPublish = Seq(

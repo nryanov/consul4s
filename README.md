@@ -1,6 +1,6 @@
 # consul4s
  
-A native Scala client for interacting with Consul built on top of [sttp-client](https//github.com/softwaremill/sttp). 
+A native Scala client for interacting with Consul built on top of [sttp-client](https://github.com/softwaremill/sttp). 
 
 ## Features
 Currently `consul4s` supports these endpoints:

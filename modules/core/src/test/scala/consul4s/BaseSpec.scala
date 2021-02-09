@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 trait BaseSpec extends AnyWordSpec with Matchers with EitherValues with Eventually {
   def runEither(fa: => Either[ResponseError[Exception], Assertion]): Assertion =
     fa.fold(
-      error => fail(error.body),
+      error => fail(error),
       _ => succeed
     )
 

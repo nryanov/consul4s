@@ -69,7 +69,7 @@ package object json4s
       } else if (meta.code.code == 404) {
         Right(None)
       } else {
-        Left[ResponseError[Exception], Option[A]](HttpError(str))
+        Left[ResponseError[Exception], Option[A]](HttpError(str, meta.code))
       }
     }
 
@@ -83,7 +83,7 @@ package object json4s
       } else if (meta.code.code == 404) {
         Right(None)
       } else {
-        Left[ResponseError[Exception], Option[A]](HttpError(str))
+        Left[ResponseError[Exception], Option[A]](HttpError(str, meta.code))
       }
     }
 
@@ -95,7 +95,7 @@ package object json4s
           res => Right(res)
         )
       } else {
-        Left[ResponseError[Exception], A](HttpError(str))
+        Left[ResponseError[Exception], A](HttpError(str, meta.code))
       }
     }
 
