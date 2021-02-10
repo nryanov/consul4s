@@ -3,7 +3,6 @@ package consul4s.model.catalog
 import consul4s.model.health.NewHealthCheck
 
 /**
- *
  * @param node - Specifies the node ID to register.
  * @param address - Specifies the address to register.
  * @param service - Specifies to register a service.

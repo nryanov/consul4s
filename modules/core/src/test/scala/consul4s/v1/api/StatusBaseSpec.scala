@@ -13,9 +13,7 @@ abstract class StatusBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
       runEitherEventually {
         for {
           leader <- client.getRaftLeader().body
-        } yield {
-          assertResult("127.0.0.1:8300")(leader)
-        }
+        } yield assertResult("127.0.0.1:8300")(leader)
       }
     }
 
@@ -25,9 +23,7 @@ abstract class StatusBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
       runEitherEventually {
         for {
           peers <- client.getRaftPeers().body
-        } yield {
-          assertResult(List("127.0.0.1:8300"))(peers)
-        }
+        } yield assertResult(List("127.0.0.1:8300"))(peers)
       }
     }
   }

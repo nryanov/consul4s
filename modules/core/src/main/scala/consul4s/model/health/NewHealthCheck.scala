@@ -4,7 +4,6 @@ import consul4s.model.CheckStatus
 import NewHealthCheck._
 
 /**
- *
  * @param node
  * @param name
  * @param checkId

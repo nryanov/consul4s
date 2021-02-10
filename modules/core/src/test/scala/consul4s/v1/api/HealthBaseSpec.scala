@@ -18,9 +18,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
         for {
           nodes <- nodesE
           result <- client.getNodeChecks(nodes.head.node, consistencyMode = ConsistencyMode.Consistent).body
-        } yield {
-          assertResult(CheckStatus.Passing)(result.head.status)
-        }
+        } yield assertResult(CheckStatus.Passing)(result.head.status)
       }
     }
 
@@ -35,9 +33,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
           _ <- registerServiceResult
           result <- client.getServiceChecks("testService", consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterAgentService("testService").body
-        } yield {
-          assert(result.exists(_.serviceId == "testService"))
-        }
+        } yield assert(result.exists(_.serviceId == "testService"))
       }
     }
 
@@ -47,9 +43,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
       runEitherEventually {
         for {
           result <- client.getChecksByState(CheckStatus.Passing, consistencyMode = ConsistencyMode.Consistent).body
-        } yield {
-          assertResult(CheckStatus.Passing)(result.head.status)
-        }
+        } yield assertResult(CheckStatus.Passing)(result.head.status)
       }
     }
 
@@ -60,9 +54,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
         for {
           service <- client.getDatacenterServiceNames().body
           result <- client.getAllServiceInstances(service.head._1, consistencyMode = ConsistencyMode.Consistent).body
-        } yield {
-          assert(result.length == 1)
-        }
+        } yield assert(result.length == 1)
       }
     }
 
@@ -73,9 +65,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
         for {
           service <- client.getDatacenterServiceNames(consistencyMode = ConsistencyMode.Consistent).body
           result <- client.getNodesForConnectCapableService(service.head._1).body
-        } yield {
-          assert(result.isEmpty)
-        }
+        } yield assert(result.isEmpty)
       }
     }
   }

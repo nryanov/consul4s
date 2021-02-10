@@ -26,9 +26,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           sessionId <- client.createSession(session).body
           sessionList <- client.getListOfActiveSessions(consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
-        } yield {
-          assert(sessionList.exists(_.id.contains(sessionId.id)))
-        }
+        } yield assert(sessionList.exists(_.id.contains(sessionId.id)))
       }
     }
 
@@ -70,9 +68,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           sessionId <- client.createSession(session).body
           sessionInfo <- client.getSessionInfo(sessionId, consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
-        } yield {
-          assert(sessionInfo.exists(_.id.contains(sessionId.id)))
-        }
+        } yield assert(sessionInfo.exists(_.id.contains(sessionId.id)))
       }
     }
 

@@ -9,51 +9,51 @@ import org.json4s.FieldSerializer._
 
 trait Transaction {
   class KVOpSerializer
-      extends CustomSerializer[KVOp](
-        implicit format =>
-          (
-            {
-              case JString(value) => KVOp.withValue(value)
-            }, {
-              case op: KVOp => JString(op.value)
-            }
-          )
+      extends CustomSerializer[KVOp](implicit format =>
+        (
+          { case JString(value) =>
+            KVOp.withValue(value)
+          },
+          { case op: KVOp =>
+            JString(op.value)
+          }
+        )
       )
 
   class CheckOpSerializer
-      extends CustomSerializer[CheckOp](
-        implicit format =>
-          (
-            {
-              case JString(value) => CheckOp.withValue(value)
-            }, {
-              case op: CheckOp => JString(op.value)
-            }
-          )
+      extends CustomSerializer[CheckOp](implicit format =>
+        (
+          { case JString(value) =>
+            CheckOp.withValue(value)
+          },
+          { case op: CheckOp =>
+            JString(op.value)
+          }
+        )
       )
 
   class NodeOpSerializer
-      extends CustomSerializer[NodeOp](
-        implicit format =>
-          (
-            {
-              case JString(value) => NodeOp.withValue(value)
-            }, {
-              case op: NodeOp => JString(op.value)
-            }
-          )
+      extends CustomSerializer[NodeOp](implicit format =>
+        (
+          { case JString(value) =>
+            NodeOp.withValue(value)
+          },
+          { case op: NodeOp =>
+            JString(op.value)
+          }
+        )
       )
 
   class ServiceOpSerializer
-      extends CustomSerializer[ServiceOp](
-        implicit format =>
-          (
-            {
-              case JString(value) => ServiceOp.withValue(value)
-            }, {
-              case op: ServiceOp => JString(op.value)
-            }
-          )
+      extends CustomSerializer[ServiceOp](implicit format =>
+        (
+          { case JString(value) =>
+            ServiceOp.withValue(value)
+          },
+          { case op: ServiceOp =>
+            JString(op.value)
+          }
+        )
       )
 
   val txResultFormat = FieldSerializer[TxResult](

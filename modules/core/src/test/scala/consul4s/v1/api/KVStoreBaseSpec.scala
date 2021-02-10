@@ -32,9 +32,7 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
           _ <- client.createOrUpdate("key1", "value1").body
           _ <- client.createOrUpdate("key2", "value2").body
           getKeys <- client.getKeyListByPath("key").body
-        } yield {
-          assert(getKeys.contains(List("key1", "key2")))
-        }
+        } yield assert(getKeys.contains(List("key1", "key2")))
       }
     }
 
@@ -46,9 +44,7 @@ abstract class KVStoreBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
           _ <- client.createOrUpdate("key1", "value1").body
           _ <- client.createOrUpdate("key2", "value2").body
           getRecurse <- client.getValuesByKeyPath("key").body
-        } yield {
-          assert(getRecurse.map(_.map(_.decodedValue.getOrElse(""))).contains(List("value1", "value2")))
-        }
+        } yield assert(getRecurse.map(_.map(_.decodedValue.getOrElse(""))).contains(List("value1", "value2")))
       }
     }
 

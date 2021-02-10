@@ -15,9 +15,7 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
       runEither {
         for {
           info <- client.getAgentMembers().body
-        } yield {
-          assert(true)
-        }
+        } yield assert(true)
       }
     }
 

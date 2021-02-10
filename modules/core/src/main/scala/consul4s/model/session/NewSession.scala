@@ -3,7 +3,6 @@ package consul4s.model.session
 import consul4s.model.SessionBehavior
 
 /**
- *
  * @param lockDelay - Specifies the duration for the lock delay. This must be greater than 0. Example: "15s"
  * @param node - Specifies the name of the node. This must refer to a node that is already registered.
  * @param name - Specifies a human-readable name for the session.
