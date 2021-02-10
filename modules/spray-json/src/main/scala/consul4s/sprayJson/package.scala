@@ -50,8 +50,8 @@ package object sprayJson
       }
     }
 
-  private def asJsonOption404Extended[A](
-    implicit reader: JsonReader[Option[A]]
+  private def asJsonOption404Extended[A](implicit
+    reader: JsonReader[Option[A]]
   ): ResponseAs[Either[ResponseError[Exception], Option[A]], Nothing] =
     asStringAlways.mapWithMetadata { (str, meta) =>
       if (allowedCodes.contains(meta.code.code)) {

@@ -8,7 +8,6 @@ import consul4s.model.CheckStatus
 sealed trait ServiceCheck
 
 /**
- *
  * @param name - Specifies the name of the check.
  * @param args - Specifies command arguments to run to update the status of the check.
  * @param interval - Specifies the frequency at which to run this check. This is required for HTTP and TCP checks.
@@ -32,7 +31,6 @@ final case class ServiceScriptCheck(
 ) extends ServiceCheck
 
 /**
- *
  * @param name - Specifies the name of the check.
  * @param http - Specifies an HTTP check to perform a GET request against the value of HTTP (expected to be a URL) every Interval. If the response is any 2xx code, the check is passing. If the response is 429 Too Many Requests, the check is warning. Otherwise, the check is critical. HTTP checks also support SSL. By default, a valid SSL certificate is expected. Certificate verification can be controlled using the TLSSkipVerify.
  * @param tlsSkipVerify - Specifies if the certificate for an HTTPS check should not be verified.
@@ -68,7 +66,6 @@ final case class ServiceHttpCheck(
 ) extends ServiceCheck
 
 /**
- *
  * @param name - Specifies the name of the check.
  * @param tcp - Specifies a TCP to connect against the value of TCP (expected to be an IP or hostname plus port combination) every Interval. If the connection attempt is successful, the check is passing. If the connection attempt is unsuccessful, the check is critical. In the case of a hostname that resolves to both IPv4 and IPv6 addresses, an attempt will be made to both addresses, and the first successful connection attempt will result in a successful check.
  * @param interval - Specifies the frequency at which to run this check. This is required for HTTP and TCP checks.
@@ -96,7 +93,6 @@ final case class ServiceTCPCheck(
 ) extends ServiceCheck
 
 /**
- *
  * @param name - Specifies the name of the check.
  * @param ttl - Specifies this is a TTL check, and the TTL endpoint must be used periodically to update the state of the check.
  * @param checkId - Specifies a unique ID for this check on the node. This defaults to the "Name" parameter, but it may be necessary to provide an ID for uniqueness.
@@ -116,7 +112,6 @@ final case class ServiceTTLCheck(
 ) extends ServiceCheck
 
 /**
- *
  * @param name - Specifies the name of the check.
  * @param dockerContainerId - Specifies that the check is a Docker check, and Consul will evaluate the script every Interval in the given container using the specified Shell. Note that Shell is currently only supported for Docker checks.
  * @param shell
@@ -146,7 +141,6 @@ final case class ServiceDockerCheck(
 ) extends ServiceCheck
 
 /**
- *
  * @param name - Specifies the name of the check.
  * @param grpc - Specifies a gRPC check's endpoint that supports the standard gRPC health checking protocol. The state of the check will be updated at the given Interval by probing the configured endpoint. Add the service identifier after the gRPC check's endpoint in the following format to check for a specific service instead of the whole gRPC server /:service_identifier.
  * @param grpcUseTLS - Specifies whether to use TLS for this gRPC health check. If TLS is enabled, then by default, a valid TLS certificate is expected. Certificate verification can be turned off by setting TLSSkipVerify to true.
@@ -174,7 +168,6 @@ final case class ServiceGRpcCheck(
 ) extends ServiceCheck
 
 /**
- *
  * @param checkId - Specifies a unique ID for this check on the node. This defaults to the "Name" parameter, but it may be necessary to provide an ID for uniqueness.
  * @param aliasNode - Specifies the ID of the node for an alias check. If no service is specified, the check will alias the health of the node. If a service is specified, the check will alias the specified service on this particular node.
  * @param aliasService - Specifies the ID of a service for an alias check. If the service is not registered with the same agent, AliasNode must also be specified. Note this is the service ID and not the service name (though they are very often the same).

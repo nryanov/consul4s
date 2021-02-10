@@ -6,8 +6,8 @@ import sttp.model.{Header, Uri}
 import sttp.model.Uri.QuerySegment.Value
 
 package object api {
-  abstract class ConsulApi[F[_]](protected val url: String, protected val sttpBackend: SttpBackend[F, Nothing, NothingT])(
-    implicit protected val jsonDecoder: JsonDecoder,
+  abstract class ConsulApi[F[_]](protected val url: String, protected val sttpBackend: SttpBackend[F, Nothing, NothingT])(implicit
+    protected val jsonDecoder: JsonDecoder,
     protected val jsonEncoder: JsonEncoder
   ) extends KVStore[F]
       with Status[F]

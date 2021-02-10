@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets
 import java.util.Base64
 
 /**
- *
  * @param key - is simply the full path of the entry.
  * @param createIndex - is the internal index value that represents when the entry was created.
  * @param modifyIndex - is the last index that modified this key.

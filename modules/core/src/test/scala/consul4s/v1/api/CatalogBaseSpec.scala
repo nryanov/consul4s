@@ -15,9 +15,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
       runEither {
         for {
           result <- client.getDatacenters().body
-        } yield {
-          assertResult(List("dc1"))(result)
-        }
+        } yield assertResult(List("dc1"))(result)
       }
     }
 
@@ -27,9 +25,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
       runEitherEventually {
         for {
           result <- client.getDatacenterNodes().body
-        } yield {
-          assert(result.head.datacenter.contains("dc1"))
-        }
+        } yield assert(result.head.datacenter.contains("dc1"))
       }
     }
 
@@ -39,9 +35,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
       runEither {
         for {
           result <- client.getDatacenterServiceNames().body
-        } yield {
-          assertResult(Set("consul"))(result.keySet)
-        }
+        } yield assertResult(Set("consul"))(result.keySet)
       }
     }
 

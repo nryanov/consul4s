@@ -16,9 +16,7 @@ class QueryBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder)
       runEither {
         for {
           r <- client.executeQuery("notExisting").body
-        } yield {
-          assert(r.isEmpty)
-        }
+        } yield assert(r.isEmpty)
       }
     }
 
@@ -64,9 +62,7 @@ class QueryBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder)
       runEither {
         for {
           r <- client.executeQuery(uuid).body
-        } yield {
-          assert(r.contains(expectedResult))
-        }
+        } yield assert(r.contains(expectedResult))
       }
     }
   }
