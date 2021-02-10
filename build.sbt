@@ -56,9 +56,12 @@ lazy val publishSettings = Seq(
       runClean,
       runTest,
       setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
       releaseStepCommandAndRemaining("+publishSigned"),
       releaseStepCommand("sonatypeBundleRelease"),
-      setNextVersion
+      setNextVersion,
+      commitNextVersion
     )
   },
   pomExtra :=
