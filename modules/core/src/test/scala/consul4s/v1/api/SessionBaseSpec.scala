@@ -15,7 +15,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
       val client = createClient(consul)
       val session = NewSession("node", "15s")
 
-      runEither {
+      runEitherEventually {
         for {
           // node should exist
           _ <- client
@@ -26,7 +26,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           sessionId <- client.createSession(session).body
           sessionList <- client.getListOfActiveSessions(consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
-        } yield assert(sessionList.exists(_.id.contains(sessionId.id)))
+        } yield assert(sessionList.exists(_.id == sessionId.id))
       }
     }
 
@@ -34,7 +34,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
       val client = createClient(consul)
       val session = NewSession("node", "15s")
 
-      runEither {
+      runEitherEventually {
         for {
           // node should exist
           _ <- client
@@ -48,7 +48,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
           assert(r.isEmpty)
-          assert(sessionList.exists(_.id.contains(sessionId.id)))
+          assert(sessionList.exists(_.id == sessionId.id))
         }
       }
     }
@@ -57,7 +57,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
       val client = createClient(consul)
       val session = NewSession("node", "15s")
 
-      runEither {
+      runEitherEventually {
         for {
           // node should exist
           _ <- client
@@ -68,7 +68,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           sessionId <- client.createSession(session).body
           sessionInfo <- client.getSessionInfo(sessionId, consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
-        } yield assert(sessionInfo.exists(_.id.contains(sessionId.id)))
+        } yield assert(sessionInfo.exists(_.id == sessionId.id))
       }
     }
 
@@ -76,7 +76,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
       val client = createClient(consul)
       val session = NewSession("node", "15s")
 
-      runEither {
+      runEitherEventually {
         for {
           // node should exist
           _ <- client
@@ -90,7 +90,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           sessionInfoAfterDeletion <- client.getSessionInfo(sessionId, consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
-          assert(sessionInfo.exists(_.id.contains(sessionId.id)))
+          assert(sessionInfo.exists(_.id == sessionId.id))
           assert(sessionInfoAfterDeletion.isEmpty)
         }
       }
@@ -100,7 +100,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
       val client = createClient(consul)
       val session = NewSession("node", "15s")
 
-      runEither {
+      runEitherEventually {
         for {
           // node should exist
           _ <- client
@@ -113,7 +113,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           response <- client.renewSession(sessionId).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
-          assert(sessionList.exists(_.id.contains(sessionId.id)))
+          assert(sessionList.exists(_.id == sessionId.id))
           assert(response.exists(_.id.contains(sessionId.id)))
         }
       }

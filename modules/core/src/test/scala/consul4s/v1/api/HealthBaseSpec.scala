@@ -12,11 +12,9 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
     "return node checks" in withContainers { consul =>
       val client = createClient(consul)
 
-      val nodesE = client.getDatacenterNodes().body
-
       runEitherEventually {
         for {
-          nodes <- nodesE
+          nodes <- client.getDatacenterNodes().body
           result <- client.getNodeChecks(nodes.head.node, consistencyMode = ConsistencyMode.Consistent).body
         } yield assertResult(CheckStatus.Passing)(result.head.status)
       }
@@ -26,11 +24,9 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
       val client = createClient(consul)
       val newService = NewService("testService", checks = Some(List(ServiceTTLCheck("ttlCheck", "15s"))))
 
-      val registerServiceResult = client.registerAgentService(newService).body
-
       runEitherEventually {
         for {
-          _ <- registerServiceResult
+          _ <- client.registerAgentService(newService).body
           result <- client.getServiceChecks("testService", consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterAgentService("testService").body
         } yield assert(result.exists(_.serviceId == "testService"))
