@@ -114,6 +114,26 @@ lazy val commonSettings = Seq(
 
 lazy val allSettings = commonSettings ++ buildSettings ++ publishSettings
 
+lazy val docSettings = allSettings ++ Seq(
+  micrositeName := "consul4s",
+  micrositeDescription := "A native Scala client for interacting with Consul built on top of sttp-client",
+  micrositeAuthor := "Nikita Ryanov",
+  mdocIn := baseDirectory.value / "mdoc",
+  micrositeHighlightTheme := "atom-one-light",
+  micrositeHomepage := "https://nryanov.github.io/consul4s/",
+  micrositeDocumentationUrl := "api",
+  micrositeGithubOwner := "nryanov",
+  micrositeGithubRepo := "consul4s",
+  micrositeGitterChannel := false,
+  micrositeBaseUrl := "consul4s",
+  ghpagesNoJekyll := false,
+  git.remoteRepo := "git@github.com:nryanov/consul4s.git",
+  micrositePushSiteWith := GHPagesPlugin,
+  micrositeGithubLinks := true,
+  mdocIn := sourceDirectory.value / "main" / "mdoc",
+  includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.svg" | "*.js" | "*.swf" | "*.yml" | "*.md"
+)
+
 lazy val consul4s = project
   .in(file("."))
   .settings(moduleName := "consul4s")
@@ -129,8 +149,8 @@ lazy val consul4s = project
 lazy val core = project
   .in(file("modules/core"))
   .settings(allSettings)
+  .settings(moduleName := "consul4s-core")
   .settings(
-    name := "consul4s-core",
     libraryDependencies ++= Seq(
       "eu.timepit" %% "refined" % refinedVersion,
       "com.softwaremill.sttp.client" %% "core" % sttpClientVersion,
@@ -143,46 +163,56 @@ lazy val core = project
 
 lazy val circe = project
   .in(file("modules/circe"))
-  .dependsOn(core % "compile->compile;test->test")
+  .settings(moduleName := "consul4s-circe")
   .settings(allSettings)
   .settings(
-    name := "consul4s-circe",
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client" %% "circe" % sttpClientVersion
     )
   )
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val json4s = project
   .in(file("modules/json4s"))
-  .dependsOn(core % "compile->compile;test->test")
+  .settings(moduleName := "consul4s-json4s")
   .settings(allSettings)
   .settings(
-    name := "consul4s-json4s",
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client" %% "json4s" % sttpClientVersion,
       "org.json4s" %% "json4s-jackson" % json4sVersion
     )
   )
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val sprayJson = project
   .in(file("modules/spray-json"))
-  .dependsOn(core % "compile->compile;test->test")
+  .settings(moduleName := "consul4s-spray-json")
   .settings(allSettings)
   .settings(
-    name := "consul4s-spray-json",
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client" %% "spray-json" % sttpClientVersion
     )
   )
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val examples = project
   .in(file("examples"))
-  .dependsOn(core, circe)
+  .settings(moduleName := "examples")
   .settings(allSettings)
   .settings(noPublish)
   .settings(
-    name := "examples",
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client" %% "async-http-client-backend-cats" % sttpClientVersion
     )
   )
+  .dependsOn(core, circe)
+
+lazy val docs = project
+  .settings(docSettings)
+  .settings(noPublish)
+  .settings(moduleName := "consul4s-docs")
+  .settings(
+    libraryDependencies ++= Seq()
+  )
+  .enablePlugins(MicrositesPlugin, ScalaUnidocPlugin)
+  .dependsOn(core, circe)
