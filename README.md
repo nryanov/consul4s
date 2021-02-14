@@ -1,4 +1,7 @@
 # consul4s
+
+[![GitHub license](https://img.shields.io/github/license/nryanov/consul4s)](https://github.com/nryanov/consul4s/blob/master/LICENSE.txt)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.nryanov.consul4s/consul4s-core_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.nryanov.consul4s/consul4s-core_2.13)
  
 A native Scala client for interacting with Consul built on top of [sttp-client](https://github.com/softwaremill/sttp). 
 
@@ -23,7 +26,9 @@ Consul4s uses multi-project structure and contains of the following modules_:
 * [`consul4s-json4s`](modules/json4s) - json4s integration
 * [`consul4s-spray-json`](modules/spray-json) - spray-json integration
 
-## Installation
+## Quick start
+consul4s is published for Scala 2.13 and 2.12 to Maven Central, so just add the following to your build.sbt:
+
 ```sbt
 libraryDependencies ++= Seq(
   "com.nryanov.consul4s" %% "consul4s-core" % "[version]",
