@@ -53,3 +53,28 @@ jobs:
 
       - name: Run sprayJson-tests
         run: sbt ++${{ matrix.scala }} sprayJson/test
+
+  microsite:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        scala: [2.13.4]
+        java: [adopt@1.11]
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v2
+
+      - name: Setup Java and Scala
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: ${{ matrix.java }}
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - run: gem install bundler
+
+      - run: bundle install --gemfile=site/Gemfile
+
+      - run: sbt ++${{ matrix.scala }} docs/makeMicrosite
