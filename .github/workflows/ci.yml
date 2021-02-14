@@ -75,6 +75,7 @@ jobs:
 
       - run: gem install bundler
 
-      - run: bundle install --gemfile=docs/Gemfile
+      - name: Install Jekyll
+        run: gem install jekyll -v 4.2.0
 
       - run: sbt ++${{ matrix.scala }} docs/makeMicrosite
