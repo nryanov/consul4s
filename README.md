@@ -26,7 +26,7 @@ Consul4s uses multi-project structure and contains of the following modules_:
 * [`consul4s-json4s`](modules/json4s) - json4s integration
 * [`consul4s-spray-json`](modules/spray-json) - spray-json integration
 
-## Quick start
+## Installation
 consul4s is published for Scala 2.13 and 2.12 to Maven Central, so just add the following to your build.sbt:
 
 ```sbt
