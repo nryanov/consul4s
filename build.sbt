@@ -1,6 +1,6 @@
 import ReleaseTransformations._
 
-lazy val refinedVersion = "0.9.20"
+lazy val refinedVersion = "0.9.21"
 lazy val sttpClientVersion = "2.2.9"
 lazy val kindProjectorVersion = "0.11.3"
 lazy val circeVersion = "0.13.0"
