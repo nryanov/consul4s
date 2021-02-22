@@ -2,7 +2,7 @@ package consul4s.v1.api
 
 import consul4s.model.agent._
 import consul4s.model.health.HealthCheck
-import sttp.client._
+import sttp.client3._
 
 trait Agent[F[_]] { this: ConsulApi[F] =>
 

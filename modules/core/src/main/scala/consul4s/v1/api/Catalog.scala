@@ -3,7 +3,7 @@ package consul4s.v1.api
 import consul4s.model.catalog.NodeServiceList.NodeServiceListInternal
 import consul4s.{CacheMode, ConsistencyMode, NoCache}
 import consul4s.model.catalog._
-import sttp.client._
+import sttp.client3._
 
 trait Catalog[F[_]] { this: ConsulApi[F] =>
 

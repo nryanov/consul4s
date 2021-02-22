@@ -1,10 +1,11 @@
 package consul4s.v1.api
 
+import consul4s.ConsulResponseError
 import consul4s.ConsistencyMode
 import consul4s.model.kv.KVPair
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.numeric._
-import sttp.client._
+import sttp.client3._
 
 trait KVStore[F[_]] { this: ConsulApi[F] =>
 
@@ -99,7 +100,7 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
       } else if (meta.code.code == 404) { // If no key exists at the given path, a 404 is returned instead of a 200 response.
         Right(None)
       } else {
-        Left[ResponseError[Exception], Option[String]](HttpError(str, meta.code))
+        Left[ConsulResponseError, Option[String]](HttpError(str, meta.code))
       }
     })
 

@@ -2,7 +2,7 @@ package consul4s.v1.api
 
 import consul4s.ConsistencyMode
 import consul4s.model.session.{NewSession, SessionId, SessionInfo}
-import sttp.client._
+import sttp.client3._
 
 trait Session[F[_]] { this: ConsulApi[F] =>
 

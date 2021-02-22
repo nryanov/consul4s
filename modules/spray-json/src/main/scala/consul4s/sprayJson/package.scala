@@ -11,8 +11,8 @@ import consul4s.model.query.QueryResult
 import consul4s.model.session.{NewSession, SessionId, SessionInfo}
 import consul4s.model.transaction.{TxResults, TxTask}
 import consul4s.sprayJson.model._
-import sttp.client.{DeserializationError, HttpError, ResponseAs, ResponseError, asStringAlways}
-import sttp.client.sprayJson._
+import sttp.client3.{DeserializationException, HttpError, ResponseAs, asStringAlways}
+import sttp.client3.sprayJson._
 import spray.json._
 
 import scala.util.Try
@@ -39,111 +39,117 @@ package object sprayJson
    */
   private val allowedCodes = Set(200, 429, 503)
 
-  private def asJsonOption404[A](implicit reader: JsonReader[Option[A]]): ResponseAs[Either[ResponseError[Exception], Option[A]], Nothing] =
+  private def asJsonOption404[A](implicit
+    reader: JsonReader[Option[A]]
+  ): ResponseAs[Either[ConsulResponseError, Option[A]], Any] =
     asStringAlways.mapWithMetadata { (str, meta) =>
       if (meta.isSuccess) {
-        Try(deserializeJson[Option[A]].apply(str)).fold(err => Left(DeserializationError(str, new Exception(err))), res => Right(res))
+        Try(deserializeJson[Option[A]].apply(str)).fold(err => Left(DeserializationException(str, new Exception(err))), res => Right(res))
       } else if (meta.code.code == 404) {
         Right(None)
       } else {
-        Left[ResponseError[Exception], Option[A]](HttpError(str, meta.code))
+        Left[ConsulResponseError, Option[A]](HttpError(str, meta.code))
       }
     }
 
   private def asJsonOption404Extended[A](implicit
     reader: JsonReader[Option[A]]
-  ): ResponseAs[Either[ResponseError[Exception], Option[A]], Nothing] =
+  ): ResponseAs[Either[ConsulResponseError, Option[A]], Any] =
     asStringAlways.mapWithMetadata { (str, meta) =>
       if (allowedCodes.contains(meta.code.code)) {
-        Try(deserializeJson[Option[A]].apply(str)).fold(err => Left(DeserializationError(str, new Exception(err))), res => Right(res))
+        Try(deserializeJson[Option[A]].apply(str)).fold(err => Left(DeserializationException(str, new Exception(err))), res => Right(res))
       } else if (meta.code.code == 404) {
         Right(None)
       } else {
-        Left[ResponseError[Exception], Option[A]](HttpError(str, meta.code))
+        Left[ConsulResponseError, Option[A]](HttpError(str, meta.code))
       }
     }
 
-  private def asJson200or409[A: JsonReader]: ResponseAs[Either[ResponseError[Exception], A], Nothing] =
+  private def asJson200or409[A: JsonReader]: ResponseAs[Either[ConsulResponseError, A], Any] =
     asStringAlways.mapWithMetadata { (str, meta) =>
       if (meta.code.code == 200 || meta.code.code == 409) {
-        Try(deserializeJson[A].apply(str)).fold(err => Left(DeserializationError(str, new Exception(err))), res => Right(res))
+        Try(deserializeJson[A].apply(str)).fold(err => Left(DeserializationException(str, new Exception(err))), res => Right(res))
       } else {
-        Left[ResponseError[Exception], A](HttpError(str, meta.code))
+        Left[ConsulResponseError, A](HttpError(str, meta.code))
       }
     }
 
   implicit val jsonDecoder: JsonDecoder = new JsonDecoder {
-    override def asBoolean: ResponseAs[Either[ResponseError[Exception], Boolean], Nothing] = asJson[Boolean]
+    override def asBoolean: ResponseAs[Either[ConsulResponseError, Boolean], Any] = asJson[Boolean]
 
-    override def asStringValue: ResponseAs[Either[ResponseError[Exception], String], Nothing] = asJson[String]
+    override def asStringValue: ResponseAs[Either[ConsulResponseError, String], Any] = asJson[String]
 
-    override def asStringList: ResponseAs[Either[ResponseError[Exception], List[String]], Nothing] = asJson[List[String]]
+    override def asStringList: ResponseAs[Either[ConsulResponseError, List[String]], Any] = asJson[List[String]]
 
-    override def asStringListOption: ResponseAs[Either[ResponseError[Exception], Option[List[String]]], Nothing] =
+    override def asStringListOption: ResponseAs[Either[ConsulResponseError, Option[List[String]]], Any] =
       asJsonOption404[List[String]]
 
-    override def asMapSingleValue: ResponseAs[Either[ResponseError[Exception], Map[String, String]], Nothing] = asJson[Map[String, String]]
+    override def asMapSingleValue: ResponseAs[Either[ConsulResponseError, Map[String, String]], Any] =
+      asJson[Map[String, String]]
 
-    override def asMapMultipleValues: ResponseAs[Either[ResponseError[Exception], Map[String, List[String]]], Nothing] =
+    override def asMapMultipleValues: ResponseAs[Either[ConsulResponseError, Map[String, List[String]]], Any] =
       asJson[Map[String, List[String]]]
 
-    override def asKVPairListOption: ResponseAs[Either[ResponseError[Exception], Option[List[KVPair]]], Nothing] =
+    override def asKVPairListOption: ResponseAs[Either[ConsulResponseError, Option[List[KVPair]]], Any] =
       asJsonOption404[List[KVPair]]
 
-    override def asHealthCheckList: ResponseAs[Either[ResponseError[Exception], List[HealthCheck]], Nothing] = asJson[List[HealthCheck]]
+    override def asHealthCheckList: ResponseAs[Either[ConsulResponseError, List[HealthCheck]], Any] =
+      asJson[List[HealthCheck]]
 
-    override def asServiceEntryList: ResponseAs[Either[ResponseError[Exception], List[ServiceEntry]], Nothing] = asJson[List[ServiceEntry]]
+    override def asServiceEntryList: ResponseAs[Either[ConsulResponseError, List[ServiceEntry]], Any] =
+      asJson[List[ServiceEntry]]
 
-    override def asNodeList: ResponseAs[Either[ResponseError[Exception], List[Node]], Nothing] = asJson[List[Node]]
+    override def asNodeList: ResponseAs[Either[ConsulResponseError, List[Node]], Any] = asJson[List[Node]]
 
-    override def asCatalogServiceList: ResponseAs[Either[ResponseError[Exception], List[CatalogService]], Nothing] =
+    override def asCatalogServiceList: ResponseAs[Either[ConsulResponseError, List[CatalogService]], Any] =
       asJson[List[CatalogService]]
 
-    override def asNodeServiceListInternal: ResponseAs[Either[ResponseError[Exception], NodeServiceListInternal], Nothing] =
+    override def asNodeServiceListInternal: ResponseAs[Either[ConsulResponseError, NodeServiceListInternal], Any] =
       asJson[NodeServiceListInternal]
 
-    override def asNodeServiceMap: ResponseAs[Either[ResponseError[Exception], Option[NodeServiceMap]], Nothing] =
+    override def asNodeServiceMap: ResponseAs[Either[ConsulResponseError, Option[NodeServiceMap]], Any] =
       asJsonOption404[NodeServiceMap]
 
-    override def asUserEvent: ResponseAs[Either[ResponseError[Exception], UserEvent], Nothing] = asJson[UserEvent]
+    override def asUserEvent: ResponseAs[Either[ConsulResponseError, UserEvent], Any] = asJson[UserEvent]
 
-    override def asUserEventList: ResponseAs[Either[ResponseError[Exception], List[UserEvent]], Nothing] = asJson[List[UserEvent]]
+    override def asUserEventList: ResponseAs[Either[ConsulResponseError, List[UserEvent]], Any] = asJson[List[UserEvent]]
 
-    override def asSessionInfo: ResponseAs[Either[ResponseError[Exception], SessionInfo], Nothing] = asJson[SessionInfo]
+    override def asSessionInfo: ResponseAs[Either[ConsulResponseError, SessionInfo], Any] = asJson[SessionInfo]
 
-    override def asSessionInfoList: ResponseAs[Either[ResponseError[Exception], List[SessionInfo]], Nothing] = asJson[List[SessionInfo]]
+    override def asSessionInfoList: ResponseAs[Either[ConsulResponseError, List[SessionInfo]], Any] =
+      asJson[List[SessionInfo]]
 
-    override def asSessionId: ResponseAs[Either[ResponseError[Exception], SessionId], Nothing] = asJson[SessionId]
+    override def asSessionId: ResponseAs[Either[ConsulResponseError, SessionId], Any] = asJson[SessionId]
 
-    override def asMemberInfoList: ResponseAs[Either[ResponseError[Exception], List[MemberInfo]], Nothing] = asJson[List[MemberInfo]]
+    override def asMemberInfoList: ResponseAs[Either[ConsulResponseError, List[MemberInfo]], Any] = asJson[List[MemberInfo]]
 
-    override def asHealthCheckMap: ResponseAs[Either[ResponseError[Exception], Map[String, HealthCheck]], Nothing] =
+    override def asHealthCheckMap: ResponseAs[Either[ConsulResponseError, Map[String, HealthCheck]], Any] =
       asJson[Map[String, HealthCheck]]
 
-    override def asServiceMap: ResponseAs[Either[ResponseError[Exception], Map[String, Service]], Nothing] = asJson[Map[String, Service]]
+    override def asServiceMap: ResponseAs[Either[ConsulResponseError, Map[String, Service]], Any] =
+      asJson[Map[String, Service]]
 
-    override def asServiceOption: ResponseAs[Either[ResponseError[Exception], Option[Service]], Nothing] = asJsonOption404[Service]
+    override def asServiceOption: ResponseAs[Either[ConsulResponseError, Option[Service]], Any] = asJsonOption404[Service]
 
-    override def asAggregatedServiceStatusOption: ResponseAs[Either[ResponseError[Exception], Option[AggregatedServiceStatus]], Nothing] =
+    override def asAggregatedServiceStatusOption: ResponseAs[Either[ConsulResponseError, Option[AggregatedServiceStatus]], Any] =
       asJsonOption404Extended[AggregatedServiceStatus]
 
-    override def asAggregatedServiceStatusListOption
-      : ResponseAs[Either[ResponseError[Exception], Option[List[AggregatedServiceStatus]]], Nothing] =
+    override def asAggregatedServiceStatusListOption: ResponseAs[Either[ConsulResponseError, Option[List[AggregatedServiceStatus]]], Any] =
       asJsonOption404Extended[List[AggregatedServiceStatus]]
 
-    override def asDatacenterCoordinateList: ResponseAs[Either[ResponseError[Exception], List[DatacenterCoordinate]], Nothing] =
+    override def asDatacenterCoordinateList: ResponseAs[Either[ConsulResponseError, List[DatacenterCoordinate]], Any] =
       asJson[List[DatacenterCoordinate]]
 
-    override def asNodeCoordinateList: ResponseAs[Either[ResponseError[Exception], List[NodeCoordinate]], Nothing] =
+    override def asNodeCoordinateList: ResponseAs[Either[ConsulResponseError, List[NodeCoordinate]], Any] =
       asJson[List[NodeCoordinate]]
 
-    override def asNodeCoordinateListOption: ResponseAs[Either[ResponseError[Exception], Option[List[NodeCoordinate]]], Nothing] =
+    override def asNodeCoordinateListOption: ResponseAs[Either[ConsulResponseError, Option[List[NodeCoordinate]]], Any] =
       asJsonOption404[List[NodeCoordinate]]
 
-    override def asQueryResultOption: ResponseAs[Either[ResponseError[Exception], Option[QueryResult]], Nothing] =
+    override def asQueryResultOption: ResponseAs[Either[ConsulResponseError, Option[QueryResult]], Any] =
       asJsonOption404[QueryResult]
 
-    override def asTxResults: ResponseAs[Either[ResponseError[Exception], TxResults], Nothing] = asJson200or409[TxResults]
+    override def asTxResults: ResponseAs[Either[ConsulResponseError, TxResults], Any] = asJson200or409[TxResults]
   }
 
   implicit val jsonEncoder: JsonEncoder = new JsonEncoder {
