@@ -1,7 +1,7 @@
 import ReleaseTransformations._
 
 lazy val refinedVersion = "0.9.21"
-lazy val sttpClientVersion = "2.2.9"
+lazy val sttpClientVersion = "3.0.0"
 lazy val kindProjectorVersion = "0.11.3"
 lazy val circeVersion = "0.13.0"
 lazy val json4sVersion = "3.6.10"
@@ -153,9 +153,9 @@ lazy val core = project
   .settings(
     libraryDependencies ++= Seq(
       "eu.timepit" %% "refined" % refinedVersion,
-      "com.softwaremill.sttp.client" %% "core" % sttpClientVersion,
+      "com.softwaremill.sttp.client3" %% "core" % sttpClientVersion,
       "com.beachape" %% "enumeratum" % enumeratumVersion,
-      "com.softwaremill.sttp.client" %% "slf4j-backend" % sttpClientVersion % Test,
+      "com.softwaremill.sttp.client3" %% "slf4j-backend" % sttpClientVersion % Test,
       "com.dimafeng" %% "testcontainers-scala" % testContainersVersion % Test,
       "ch.qos.logback" % "logback-classic" % logbackVersion % Test
     )
@@ -167,7 +167,7 @@ lazy val circe = project
   .settings(allSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client" %% "circe" % sttpClientVersion
+      "com.softwaremill.sttp.client3" %% "circe" % sttpClientVersion
     )
   )
   .dependsOn(core % "compile->compile;test->test")
@@ -178,7 +178,7 @@ lazy val json4s = project
   .settings(allSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client" %% "json4s" % sttpClientVersion,
+      "com.softwaremill.sttp.client3" %% "json4s" % sttpClientVersion,
       "org.json4s" %% "json4s-jackson" % json4sVersion
     )
   )
@@ -190,7 +190,7 @@ lazy val sprayJson = project
   .settings(allSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client" %% "spray-json" % sttpClientVersion
+      "com.softwaremill.sttp.client3" %% "spray-json" % sttpClientVersion
     )
   )
   .dependsOn(core % "compile->compile;test->test")
@@ -202,7 +202,7 @@ lazy val examples = project
   .settings(noPublish)
   .settings(
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client" %% "async-http-client-backend-cats" % sttpClientVersion
+      "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpClientVersion
     )
   )
   .dependsOn(core, circe)

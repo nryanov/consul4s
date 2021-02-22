@@ -4,7 +4,7 @@ import com.dimafeng.testcontainers.scalatest.TestContainerForAll
 import consul4s.model.query.QueryResult
 import consul4s.model.query.QueryResult._
 import consul4s.{ConsulContainer, ConsulSpec, JsonDecoder, JsonEncoder}
-import sttp.client._
+import sttp.client3._
 
 class QueryBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) extends ConsulSpec with TestContainerForAll {
   override val containerDef: ConsulContainer.Def = ConsulContainer.Def()

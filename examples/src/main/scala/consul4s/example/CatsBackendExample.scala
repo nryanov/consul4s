@@ -4,7 +4,7 @@ import consul4s.circe._
 import consul4s.v1.ConsulClient
 import cats.effect._
 import cats.data.EitherT
-import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
+import sttp.client3.asynchttpclient.cats.AsyncHttpClientCatsBackend
 
 object CatsBackendExample extends IOApp {
   override def run(args: List[String]): IO[ExitCode] = createClient[IO]().use { client =>

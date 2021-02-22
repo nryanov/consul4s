@@ -1,12 +1,13 @@
 package consul4s.v1
 
+import consul4s.ConsulResponseError
 import consul4s.{BackgroundRefreshCache, CacheMode, ConsistencyMode, JsonDecoder, JsonEncoder, NoCache, SimpleCache}
-import sttp.client.{HttpError, Identity, NothingT, RequestT, Response, ResponseAs, ResponseError, SttpBackend, asStringAlways}
+import sttp.client3.{HttpError, Identity, RequestT, Response, ResponseAs, SttpBackend, asStringAlways}
 import sttp.model.{Header, Uri}
 import sttp.model.Uri.QuerySegment.Value
 
 package object api {
-  abstract class ConsulApi[F[_]](protected val url: String, protected val sttpBackend: SttpBackend[F, Nothing, NothingT])(implicit
+  abstract class ConsulApi[F[_]](protected val url: String, protected val sttpBackend: SttpBackend[F, Any])(implicit
     protected val jsonDecoder: JsonDecoder,
     protected val jsonEncoder: JsonEncoder
   ) extends KVStore[F]
@@ -19,26 +20,25 @@ package object api {
       with Coordinate[F]
       with PreparedQuery[F]
       with Transaction[F] {
-    type Result[A] = Response[Either[ResponseError[Exception], A]]
+    type Result[A] = Response[Either[ConsulResponseError, A]]
 
-    protected final def asResultUnit: ResponseAs[Either[ResponseError[Exception], Unit], Nothing] = asStringAlways.mapWithMetadata {
-      (str, meta) =>
-        if (meta.isSuccess) {
-          Right(())
-        } else {
-          Left[ResponseError[Exception], Unit](HttpError(str, meta.code))
-        }
+    protected final def asResultUnit: ResponseAs[Either[ConsulResponseError, Unit], Any] = asStringAlways.mapWithMetadata { (str, meta) =>
+      if (meta.isSuccess) {
+        Right(())
+      } else {
+        Left[ConsulResponseError, Unit](HttpError(str, meta.code))
+      }
     }
 
     protected final def saveSendRequest[A](
-      request: RequestT[Identity, Either[ResponseError[Exception], A], Nothing],
+      request: RequestT[Identity, Either[ConsulResponseError, A], Any],
       bodyF: => String,
       token: Option[String]
     ): F[Result[A]] =
       sttpBackend.responseMonad.flatMap(makeBody(bodyF))(body => sendRequest(request.body(body), token))
 
     protected final def sendRequest[A](
-      request: RequestT[Identity, Either[ResponseError[Exception], A], Nothing],
+      request: RequestT[Identity, Either[ConsulResponseError, A], Any],
       token: Option[String]
     ): F[Result[A]] =
       token match {
@@ -57,9 +57,9 @@ package object api {
       }
 
     protected final def addCacheMode[A](
-      request: RequestT[Identity, Either[ResponseError[Exception], A], Nothing],
+      request: RequestT[Identity, Either[ConsulResponseError, A], Any],
       cacheMode: CacheMode
-    ): RequestT[Identity, Either[ResponseError[Exception], A], Nothing] = cacheMode match {
+    ): RequestT[Identity, Either[ConsulResponseError, A], Any] = cacheMode match {
       case NoCache => request
       case SimpleCache(cacheControlHeader) =>
         cacheControlHeader match {
@@ -77,9 +77,9 @@ package object api {
     }
 
     private def addTokenHeader[A](
-      request: RequestT[Identity, Either[ResponseError[Exception], A], Nothing],
+      request: RequestT[Identity, Either[ConsulResponseError, A], Any],
       token: String
-    ): RequestT[Identity, Either[ResponseError[Exception], A], Nothing] =
+    ): RequestT[Identity, Either[ConsulResponseError, A], Any] =
       request.copy(headers = request.headers ++ Seq(Header("X-Consul-Token", token)))
 
     private def makeBody(f: => String): F[String] = sttpBackend.responseMonad.eval(f)

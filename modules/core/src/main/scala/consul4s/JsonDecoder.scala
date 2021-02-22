@@ -10,64 +10,64 @@ import consul4s.model.kv.KVPair
 import consul4s.model.query.QueryResult
 import consul4s.model.session._
 import consul4s.model.transaction.TxResults
-import sttp.client._
+import sttp.client3._
 
 trait JsonDecoder {
-  def asBoolean: ResponseAs[Either[ResponseError[Exception], Boolean], Nothing]
+  def asBoolean: ResponseAs[Either[ConsulResponseError, Boolean], Any]
 
-  def asStringValue: ResponseAs[Either[ResponseError[Exception], String], Nothing]
+  def asStringValue: ResponseAs[Either[ConsulResponseError, String], Any]
 
-  def asStringList: ResponseAs[Either[ResponseError[Exception], List[String]], Nothing]
+  def asStringList: ResponseAs[Either[ConsulResponseError, List[String]], Any]
 
-  def asStringListOption: ResponseAs[Either[ResponseError[Exception], Option[List[String]]], Nothing]
+  def asStringListOption: ResponseAs[Either[ConsulResponseError, Option[List[String]]], Any]
 
-  def asMapSingleValue: ResponseAs[Either[ResponseError[Exception], Map[String, String]], Nothing]
+  def asMapSingleValue: ResponseAs[Either[ConsulResponseError, Map[String, String]], Any]
 
-  def asMapMultipleValues: ResponseAs[Either[ResponseError[Exception], Map[String, List[String]]], Nothing]
+  def asMapMultipleValues: ResponseAs[Either[ConsulResponseError, Map[String, List[String]]], Any]
 
-  def asKVPairListOption: ResponseAs[Either[ResponseError[Exception], Option[List[KVPair]]], Nothing]
+  def asKVPairListOption: ResponseAs[Either[ConsulResponseError, Option[List[KVPair]]], Any]
 
-  def asHealthCheckList: ResponseAs[Either[ResponseError[Exception], List[HealthCheck]], Nothing]
+  def asHealthCheckList: ResponseAs[Either[ConsulResponseError, List[HealthCheck]], Any]
 
-  def asServiceEntryList: ResponseAs[Either[ResponseError[Exception], List[ServiceEntry]], Nothing]
+  def asServiceEntryList: ResponseAs[Either[ConsulResponseError, List[ServiceEntry]], Any]
 
-  def asNodeList: ResponseAs[Either[ResponseError[Exception], List[Node]], Nothing]
+  def asNodeList: ResponseAs[Either[ConsulResponseError, List[Node]], Any]
 
-  def asCatalogServiceList: ResponseAs[Either[ResponseError[Exception], List[CatalogService]], Nothing]
+  def asCatalogServiceList: ResponseAs[Either[ConsulResponseError, List[CatalogService]], Any]
 
-  def asNodeServiceListInternal: ResponseAs[Either[ResponseError[Exception], NodeServiceListInternal], Nothing]
+  def asNodeServiceListInternal: ResponseAs[Either[ConsulResponseError, NodeServiceListInternal], Any]
 
-  def asNodeServiceMap: ResponseAs[Either[ResponseError[Exception], Option[NodeServiceMap]], Nothing]
+  def asNodeServiceMap: ResponseAs[Either[ConsulResponseError, Option[NodeServiceMap]], Any]
 
-  def asUserEvent: ResponseAs[Either[ResponseError[Exception], UserEvent], Nothing]
+  def asUserEvent: ResponseAs[Either[ConsulResponseError, UserEvent], Any]
 
-  def asUserEventList: ResponseAs[Either[ResponseError[Exception], List[UserEvent]], Nothing]
+  def asUserEventList: ResponseAs[Either[ConsulResponseError, List[UserEvent]], Any]
 
-  def asSessionInfo: ResponseAs[Either[ResponseError[Exception], SessionInfo], Nothing]
+  def asSessionInfo: ResponseAs[Either[ConsulResponseError, SessionInfo], Any]
 
-  def asSessionInfoList: ResponseAs[Either[ResponseError[Exception], List[SessionInfo]], Nothing]
+  def asSessionInfoList: ResponseAs[Either[ConsulResponseError, List[SessionInfo]], Any]
 
-  def asSessionId: ResponseAs[Either[ResponseError[Exception], SessionId], Nothing]
+  def asSessionId: ResponseAs[Either[ConsulResponseError, SessionId], Any]
 
-  def asMemberInfoList: ResponseAs[Either[ResponseError[Exception], List[MemberInfo]], Nothing]
+  def asMemberInfoList: ResponseAs[Either[ConsulResponseError, List[MemberInfo]], Any]
 
-  def asHealthCheckMap: ResponseAs[Either[ResponseError[Exception], Map[String, HealthCheck]], Nothing]
+  def asHealthCheckMap: ResponseAs[Either[ConsulResponseError, Map[String, HealthCheck]], Any]
 
-  def asServiceMap: ResponseAs[Either[ResponseError[Exception], Map[String, Service]], Nothing]
+  def asServiceMap: ResponseAs[Either[ConsulResponseError, Map[String, Service]], Any]
 
-  def asServiceOption: ResponseAs[Either[ResponseError[Exception], Option[Service]], Nothing]
+  def asServiceOption: ResponseAs[Either[ConsulResponseError, Option[Service]], Any]
 
-  def asAggregatedServiceStatusOption: ResponseAs[Either[ResponseError[Exception], Option[AggregatedServiceStatus]], Nothing]
+  def asAggregatedServiceStatusOption: ResponseAs[Either[ConsulResponseError, Option[AggregatedServiceStatus]], Any]
 
-  def asAggregatedServiceStatusListOption: ResponseAs[Either[ResponseError[Exception], Option[List[AggregatedServiceStatus]]], Nothing]
+  def asAggregatedServiceStatusListOption: ResponseAs[Either[ConsulResponseError, Option[List[AggregatedServiceStatus]]], Any]
 
-  def asDatacenterCoordinateList: ResponseAs[Either[ResponseError[Exception], List[DatacenterCoordinate]], Nothing]
+  def asDatacenterCoordinateList: ResponseAs[Either[ConsulResponseError, List[DatacenterCoordinate]], Any]
 
-  def asNodeCoordinateList: ResponseAs[Either[ResponseError[Exception], List[NodeCoordinate]], Nothing]
+  def asNodeCoordinateList: ResponseAs[Either[ConsulResponseError, List[NodeCoordinate]], Any]
 
-  def asNodeCoordinateListOption: ResponseAs[Either[ResponseError[Exception], Option[List[NodeCoordinate]]], Nothing]
+  def asNodeCoordinateListOption: ResponseAs[Either[ConsulResponseError, Option[List[NodeCoordinate]]], Any]
 
-  def asQueryResultOption: ResponseAs[Either[ResponseError[Exception], Option[QueryResult]], Nothing]
+  def asQueryResultOption: ResponseAs[Either[ConsulResponseError, Option[QueryResult]], Any]
 
-  def asTxResults: ResponseAs[Either[ResponseError[Exception], TxResults], Nothing]
+  def asTxResults: ResponseAs[Either[ConsulResponseError, TxResults], Any]
 }

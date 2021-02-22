@@ -1,6 +1,6 @@
 package consul4s.v1.api
 
-import sttp.client._
+import sttp.client3._
 
 trait Status[F[_]] { this: ConsulApi[F] =>
 
