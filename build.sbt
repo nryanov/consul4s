@@ -15,7 +15,7 @@ lazy val logbackVersion = "1.2.3"
 lazy val buildSettings = Seq(
   organization := "com.nryanov.consul4s",
   scalaVersion := "2.13.4",
-  crossScalaVersions := Seq("2.12.13", "2.13.4")
+  crossScalaVersions := Seq("2.13.5", "2.13.4")
 )
 
 lazy val noPublish = Seq(
