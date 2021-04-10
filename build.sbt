@@ -3,8 +3,6 @@ import ReleaseTransformations._
 lazy val refinedVersion = "0.9.23"
 lazy val sttpClientVersion = "3.2.3"
 lazy val kindProjectorVersion = "0.11.3"
-lazy val circeVersion = "0.13.0"
-lazy val json4sVersion = "3.6.11"
 lazy val enumeratumVersion = "1.6.1"
 lazy val slf4jApiVersion = "1.7.30"
 
@@ -12,10 +10,15 @@ lazy val scalaTestVersion = "3.2.7"
 lazy val testContainersVersion = "0.39.3"
 lazy val logbackVersion = "1.2.3"
 
+val scala2_12 = "2.12.13"
+val scala2_13 = "2.13.5"
+
+val compileAndTest = "compile->compile;test->test"
+
 lazy val buildSettings = Seq(
   organization := "com.nryanov.consul4s",
-  scalaVersion := "2.13.5",
-  crossScalaVersions := Seq("2.12.13", "2.13.5")
+  scalaVersion := scala2_13,
+  crossScalaVersions := Seq(scala2_12, scala2_13)
 )
 
 lazy val noPublish = Seq(
@@ -143,7 +146,8 @@ lazy val consul4s = project
     core,
     circe,
     json4s,
-    sprayJson
+    sprayJson,
+    zioJson
   )
 
 lazy val core = project
@@ -170,7 +174,7 @@ lazy val circe = project
       "com.softwaremill.sttp.client3" %% "circe" % sttpClientVersion
     )
   )
-  .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(core % compileAndTest)
 
 lazy val json4s = project
   .in(file("modules/json4s"))
@@ -178,11 +182,10 @@ lazy val json4s = project
   .settings(allSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client3" %% "json4s" % sttpClientVersion,
-      "org.json4s" %% "json4s-jackson" % json4sVersion
+      "com.softwaremill.sttp.client3" %% "json4s" % sttpClientVersion
     )
   )
-  .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(core % compileAndTest)
 
 lazy val sprayJson = project
   .in(file("modules/spray-json"))
@@ -193,7 +196,18 @@ lazy val sprayJson = project
       "com.softwaremill.sttp.client3" %% "spray-json" % sttpClientVersion
     )
   )
-  .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(core % compileAndTest)
+
+lazy val zioJson = project
+  .in(file("modules/zio-json"))
+  .settings(moduleName := "consul4s-zio-json")
+  .settings(allSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.softwaremill.sttp.client3" %% "zio-json" % sttpClientVersion
+    )
+  )
+  .dependsOn(core % compileAndTest)
 
 lazy val examples = project
   .in(file("examples"))
