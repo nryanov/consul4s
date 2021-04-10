@@ -53,3 +53,6 @@ jobs:
 
       - name: Run sprayJson-tests
         run: sbt ++${{ matrix.scala }} sprayJson/test
+
+      - name: Run zio-json-tests
+        run: sbt ++${{ matrix.scala }} zioJson/test
