@@ -20,13 +20,13 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           // node should exist
           _ <- client
             .registerEntity(
-              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
+              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", Status = Some(CheckStatus.Passing))))
             )
             .body
           sessionId <- client.createSession(session).body
           sessionList <- client.getListOfActiveSessions(consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
-        } yield assert(sessionList.exists(_.id == sessionId.ID))
+        } yield assert(sessionList.exists(_.ID == sessionId.ID))
       }
     }
 
@@ -39,7 +39,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           // node should exist
           _ <- client
             .registerEntity(
-              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
+              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", Status = Some(CheckStatus.Passing))))
             )
             .body
           r <- client.getListOfActiveNodeSessions("node").body
@@ -48,7 +48,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
           assert(r.isEmpty)
-          assert(sessionList.exists(_.id == sessionId.ID))
+          assert(sessionList.exists(_.ID == sessionId.ID))
         }
       }
     }
@@ -62,13 +62,13 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           // node should exist
           _ <- client
             .registerEntity(
-              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
+              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", Status = Some(CheckStatus.Passing))))
             )
             .body
           sessionId <- client.createSession(session).body
           sessionInfo <- client.getSessionInfo(sessionId, consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
-        } yield assert(sessionInfo.exists(_.id == sessionId.ID))
+        } yield assert(sessionInfo.exists(_.ID == sessionId.ID))
       }
     }
 
@@ -81,7 +81,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           // node should exist
           _ <- client
             .registerEntity(
-              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
+              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", Status = Some(CheckStatus.Passing))))
             )
             .body
           sessionId <- client.createSession(session).body
@@ -90,7 +90,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           sessionInfoAfterDeletion <- client.getSessionInfo(sessionId, consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
-          assert(sessionInfo.exists(_.id == sessionId.ID))
+          assert(sessionInfo.exists(_.ID == sessionId.ID))
           assert(sessionInfoAfterDeletion.isEmpty)
         }
       }
@@ -105,7 +105,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           // node should exist
           _ <- client
             .registerEntity(
-              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", status = Some(CheckStatus.Passing))))
+              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", Status = Some(CheckStatus.Passing))))
             )
             .body
           sessionId <- client.createSession(session).body
@@ -113,8 +113,8 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
           response <- client.renewSession(sessionId).body
           _ <- client.deregisterEntity(NodeDeregistration("node")).body
         } yield {
-          assert(sessionList.exists(_.id == sessionId.ID))
-          assert(response.exists(_.id.contains(sessionId.ID)))
+          assert(sessionList.exists(_.ID == sessionId.ID))
+          assert(response.exists(_.ID.contains(sessionId.ID)))
         }
       }
     }

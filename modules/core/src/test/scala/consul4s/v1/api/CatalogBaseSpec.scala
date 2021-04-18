@@ -25,7 +25,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
       runEitherEventually {
         for {
           result <- client.getDatacenterNodes().body
-        } yield assert(result.head.datacenter.contains("dc1"))
+        } yield assert(result.head.Datacenter.contains("dc1"))
       }
     }
 
@@ -52,8 +52,8 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
           _ <- client.deregisterEntity(deleteNode).body
           afterDeregistration <- client.getDatacenterNodes().body
         } yield {
-          assert(result.exists(_.node == "node"))
-          assert(!afterDeregistration.exists(_.node == "node"))
+          assert(result.exists(_.Node == "node"))
+          assert(!afterDeregistration.exists(_.Node == "node"))
         }
       }
     }
@@ -71,8 +71,8 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
           _ <- client.deregisterEntity(deleteNode).body
           result2 <- client.getDatacenterServices("testService").body
         } yield {
-          assert(result1.exists(_.serviceName == "testService"))
-          assert(!result2.exists(_.serviceName == "testService"))
+          assert(result1.exists(_.ServiceName == "testService"))
+          assert(!result2.exists(_.ServiceName == "testService"))
         }
       }
     }
@@ -92,8 +92,8 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
           result3 <- client.getListOfNodeServices("node").body
           result4 <- client.getMapOfNodeServices("node").body
         } yield {
-          assert(result1.exists(_.Node.node == "node") && result1.exists(_.Services.exists(_.service == "testService")))
-          assert(result2.exists(_.Node.node == "node") && result2.exists(_.Services.contains("testService")))
+          assert(result1.exists(_.Node.Node == "node") && result1.exists(_.Services.exists(_.Service == "testService")))
+          assert(result2.exists(_.Node.Node == "node") && result2.exists(_.Services.contains("testService")))
           assert(result3.isEmpty)
           assert(result4.isEmpty)
         }

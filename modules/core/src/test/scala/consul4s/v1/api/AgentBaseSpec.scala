@@ -31,7 +31,7 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
           r2 <- client.getAgentChecks().body
         } yield {
           assert(r1.contains("testTTLCheck"))
-          assert(r1("testTTLCheck").status == CheckStatus.Critical)
+          assert(r1("testTTLCheck").Status == CheckStatus.Critical)
           assert(r2.isEmpty)
         }
       }
@@ -53,8 +53,8 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
           val checkInfo = r1("testTTLCheck")
 
-          assert(checkInfo.status == CheckStatus.Passing)
-          assert(checkInfo.output == "manual update to pass")
+          assert(checkInfo.Status == CheckStatus.Passing)
+          assert(checkInfo.Output == "manual update to pass")
 
           assert(r2.isEmpty)
         }
@@ -77,8 +77,8 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
           val checkInfo = r1("testTTLCheck")
 
-          assert(checkInfo.status == CheckStatus.Warning)
-          assert(checkInfo.output == "manual update to warn")
+          assert(checkInfo.Status == CheckStatus.Warning)
+          assert(checkInfo.Output == "manual update to warn")
 
           assert(r2.isEmpty)
         }
@@ -101,8 +101,8 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
           val checkInfo = r1("testTTLCheck")
 
-          assert(checkInfo.status == CheckStatus.Critical)
-          assert(checkInfo.output == "manual update to fail")
+          assert(checkInfo.Status == CheckStatus.Critical)
+          assert(checkInfo.Output == "manual update to fail")
 
           assert(r2.isEmpty)
         }
@@ -125,8 +125,8 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
 
           val checkInfo = r1("testTTLCheck")
 
-          assert(checkInfo.status == CheckStatus.Passing)
-          assert(checkInfo.output == "manual update to pass")
+          assert(checkInfo.Status == CheckStatus.Passing)
+          assert(checkInfo.Output == "manual update to pass")
 
           assert(r2.isEmpty)
         }
@@ -138,15 +138,15 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
       val newService = NewService("testService")
 
       val expectedService = Service(
-        service = "testService",
-        id = "testService",
-        tags = Some(List()),
-        address = "",
-        taggedAddresses = None,
-        meta = Some(Map()),
-        port = 0,
-        enableTagOverride = false,
-        weights = Weights(1, 1)
+        Service = "testService",
+        ID = "testService",
+        Tags = Some(List()),
+        Address = "",
+        TaggedAddresses = None,
+        Meta = Some(Map()),
+        Port = 0,
+        EnableTagOverride = false,
+        Weights = Weights(1, 1)
       )
 
       runEither {
@@ -168,8 +168,8 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
       val client = createClient(consul)
       val newService = NewService(
         "testService",
-        check = Some(ServiceTTLCheck("testTTLCheck1", "5s")),
-        checks = Some(
+        Check = Some(ServiceTTLCheck("testTTLCheck1", "5s")),
+        Checks = Some(
           List(
             ServiceTTLCheck("testTTLCheck2", "15s"),
             ServiceTTLCheck("testTTLCheck3", "30s")
@@ -178,15 +178,15 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
       )
 
       val expectedService = Service(
-        service = "testService",
-        id = "testService",
-        tags = Some(List()),
-        address = "",
-        taggedAddresses = None,
-        meta = Some(Map()),
-        port = 0,
-        enableTagOverride = false,
-        weights = Weights(1, 1)
+        Service = "testService",
+        ID = "testService",
+        Tags = Some(List()),
+        Address = "",
+        TaggedAddresses = None,
+        Meta = Some(Map()),
+        Port = 0,
+        EnableTagOverride = false,
+        Weights = Weights(1, 1)
       )
 
       runEither {
@@ -215,15 +215,15 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
       val newService = NewService("testService")
 
       val expectedService = Service(
-        service = "testService",
-        id = "testService",
-        tags = Some(List()),
-        address = "",
-        taggedAddresses = None,
-        meta = Some(Map()),
-        port = 0,
-        enableTagOverride = false,
-        weights = Weights(1, 1)
+        Service = "testService",
+        ID = "testService",
+        Tags = Some(List()),
+        Address = "",
+        TaggedAddresses = None,
+        Meta = Some(Map()),
+        Port = 0,
+        EnableTagOverride = false,
+        Weights = Weights(1, 1)
       )
 
       runEither {

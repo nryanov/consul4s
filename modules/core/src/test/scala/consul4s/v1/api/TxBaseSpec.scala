@@ -19,11 +19,11 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
       val client = createClient(consul)
       val value = new String(Base64.getEncoder.encode("value".getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8)
       val txTask = TxTask(
-        kv = Some(
+        KV = Some(
           KVTask(
-            verb = KVOp.Set,
-            key = "key",
-            value = Some(value)
+            Verb = KVOp.Set,
+            Key = "key",
+            Value = Some(value)
           )
         )
       )
@@ -32,8 +32,8 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
         for {
           result <- client.createTransaction(List(txTask)).body
         } yield {
-          assert(result.errors.isEmpty)
-          assert(result.results.flatMap(_.headOption).flatMap(_.kv).exists(_.Key == "key"))
+          assert(result.Errors.isEmpty)
+          assert(result.Results.flatMap(_.headOption).flatMap(_.KV).exists(_.Key == "key"))
         }
       }
     }
@@ -41,12 +41,12 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
     "create Node" in withContainers { consul =>
       val client = createClient(consul)
       val txTask = TxTask(
-        node = Some(
+        Node = Some(
           NodeTask(
-            verb = NodeOp.Set,
-            node = NodeDefinition(
-              node = "testNode",
-              address = "localhost"
+            Verb = NodeOp.Set,
+            Node = NodeDefinition(
+              Node = "testNode",
+              Address = "localhost"
             )
           )
         )
@@ -56,8 +56,8 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
         for {
           result <- client.createTransaction(List(txTask)).body
         } yield {
-          assert(result.results.flatMap(_.headOption).flatMap(_.node).exists(_.node == "testNode"))
-          assert(result.errors.isEmpty)
+          assert(result.Results.flatMap(_.headOption).flatMap(_.Node).exists(_.Node == "testNode"))
+          assert(result.Errors.isEmpty)
         }
       }
     }
@@ -66,12 +66,12 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
       val client = createClient(consul)
       val newNode = NodeRegistration("testNodeForService", "address")
       val txTask = TxTask(
-        service = Some(
+        Service = Some(
           ServiceTask(
-            verb = ServiceOp.Set,
-            node = "testNodeForService",
-            service = NewCatalogService(
-              service = "testService"
+            Verb = ServiceOp.Set,
+            Node = "testNodeForService",
+            Service = NewCatalogService(
+              Service = "testService"
             )
           )
         )
@@ -82,8 +82,8 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
           _ <- client.registerEntity(newNode).body
           result <- client.createTransaction(List(txTask)).body
         } yield {
-          assert(result.results.flatMap(_.headOption).flatMap(_.service).exists(_.service == "testService"))
-          assert(result.errors.isEmpty)
+          assert(result.Results.flatMap(_.headOption).flatMap(_.Service).exists(_.Service == "testService"))
+          assert(result.Errors.isEmpty)
         }
       }
     }
@@ -92,15 +92,15 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
       val client = createClient(consul)
       val newNode = NodeRegistration("testCheckNode", "address")
       val txTask = TxTask(
-        check = Some(
+        Check = Some(
           CheckTask(
-            verb = CheckOp.Set,
-            check = NewHealthCheck(
-              node = "testCheckNode",
-              name = "checkName",
-              definition = Some(
+            Verb = CheckOp.Set,
+            Check = NewHealthCheck(
+              Node = "testCheckNode",
+              Name = "checkName",
+              Definition = Some(
                 NewHealthCheckDefinition(
-                  tcp = Some("localhost:8888")
+                  TCP = Some("localhost:8888")
                 )
               )
             )
@@ -113,8 +113,8 @@ class TxBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder) ex
           _ <- client.registerEntity(newNode).body
           result <- client.createTransaction(List(txTask)).body
         } yield {
-          assert(result.results.flatMap(_.headOption).flatMap(_.check).exists(_.checkId == "checkName"))
-          assert(result.errors.isEmpty)
+          assert(result.Results.flatMap(_.headOption).flatMap(_.Check).exists(_.CheckID == "checkName"))
+          assert(result.Errors.isEmpty)
         }
       }
     }
