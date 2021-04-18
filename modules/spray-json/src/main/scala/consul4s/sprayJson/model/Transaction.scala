@@ -42,23 +42,21 @@ trait Transaction extends DefaultJsonProtocol { this: Health with KV with Catalo
     }
   }
 
-  implicit val txResultFormat: RootJsonFormat[TxResult] = jsonFormat(TxResult.apply, "KV", "Node", "Service", "Check")
+  implicit val txResultFormat: RootJsonFormat[TxResult] = jsonFormat4(TxResult.apply)
 
-  implicit val txErrorFormat: RootJsonFormat[TxError] = jsonFormat(TxError.apply, "OpIndex", "What")
+  implicit val txErrorFormat: RootJsonFormat[TxError] = jsonFormat2(TxError.apply)
 
-  implicit val txResultsFormat: RootJsonFormat[TxResults] = jsonFormat(TxResults.apply, "Results", "Errors")
+  implicit val txResultsFormat: RootJsonFormat[TxResults] = jsonFormat2(TxResults.apply)
 
-  implicit val kvTaskFormat: RootJsonFormat[KVTask] = jsonFormat(KVTask.apply, "Verb", "Key", "Value", "Flags", "Index", "Session")
+  implicit val kvTaskFormat: RootJsonFormat[KVTask] = jsonFormat6(KVTask.apply)
 
-  implicit val serviceTaskFormat: RootJsonFormat[ServiceTask] = jsonFormat(ServiceTask.apply, "Verb", "Node", "Service")
+  implicit val serviceTaskFormat: RootJsonFormat[ServiceTask] = jsonFormat3(ServiceTask.apply)
 
-  implicit val nodeTaskFormat: RootJsonFormat[NodeTask] =
-    rootFormat(lazyFormat(jsonFormat(NodeTask.apply, "Verb", "Node")))
+  implicit val nodeTaskFormat: RootJsonFormat[NodeTask] = rootFormat(lazyFormat(jsonFormat2(NodeTask.apply)))
 
-  implicit val nodeDefinitionFormat: RootJsonFormat[NodeDefinition] =
-    jsonFormat(NodeDefinition.apply, "Node", "Address", "ID", "Datacenter", "TaggedAddresses", "NodeMeta")
+  implicit val nodeDefinitionFormat: RootJsonFormat[NodeDefinition] = jsonFormat6(NodeDefinition.apply)
 
-  implicit val checkTaskFormat: RootJsonFormat[CheckTask] = jsonFormat(CheckTask.apply, "Verb", "Check")
+  implicit val checkTaskFormat: RootJsonFormat[CheckTask] = jsonFormat2(CheckTask.apply)
 
-  implicit val txTaskFormat: RootJsonFormat[TxTask] = jsonFormat(TxTask.apply, "KV", "Node", "Service", "Check")
+  implicit val txTaskFormat: RootJsonFormat[TxTask] = jsonFormat4(TxTask.apply)
 }

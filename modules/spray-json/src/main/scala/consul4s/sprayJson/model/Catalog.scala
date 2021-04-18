@@ -5,65 +5,18 @@ import consul4s.model.catalog._
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 trait Catalog extends DefaultJsonProtocol { this: Health with Agent with Common =>
-  implicit val catalogServiceFormat: RootJsonFormat[CatalogService] = jsonFormat(
-    CatalogService.apply,
-    "ID",
-    "Node",
-    "Address",
-    "Datacenter",
-    "TaggedAddresses",
-    "NodeMeta",
-    "ServiceKind",
-    "ServiceID",
-    "ServiceName",
-    "ServiceTags",
-    "ServiceAddress",
-    "ServiceTaggedAddresses",
-    "ServiceWeights",
-    "ServiceMeta",
-    "ServicePort",
-    "ServiceEnableTagOverride"
-  )
+  implicit val catalogServiceFormat: RootJsonFormat[CatalogService] = jsonFormat16(CatalogService.apply)
 
-  implicit val newCatalogServiceFormat: RootJsonFormat[NewCatalogService] = jsonFormat(
-    NewCatalogService.apply,
-    "Service",
-    "ID",
-    "Tags",
-    "Address",
-    "TaggedAddresses",
-    "Meta",
-    "Port",
-    "EnableTagOverride",
-    "Weights"
-  )
+  implicit val newCatalogServiceFormat: RootJsonFormat[NewCatalogService] = jsonFormat9(NewCatalogService.apply)
 
-  implicit val nodeFormat: RootJsonFormat[Node] = jsonFormat(Node.apply, "Node", "Address", "ID", "Datacenter", "TaggedAddresses", "Meta")
+  implicit val nodeFormat: RootJsonFormat[Node] = jsonFormat6(Node.apply)
 
-  implicit val nodeDeregistrationFormat: RootJsonFormat[NodeDeregistration] =
-    jsonFormat(NodeDeregistration.apply, "Node", "Datacenter", "CheckID", "ServiceID")
+  implicit val nodeDeregistrationFormat: RootJsonFormat[NodeDeregistration] = jsonFormat4(NodeDeregistration.apply)
 
-  implicit val nodeRegistrationFormat: RootJsonFormat[NodeRegistration] = rootFormat(
-    lazyFormat(
-      jsonFormat(
-        NodeRegistration.apply,
-        "Node",
-        "Address",
-        "Service",
-        "Check",
-        "Checks",
-        "ID",
-        "Datacenter",
-        "TaggedAddresses",
-        "NodeMeta",
-        "SkipNodeUpdate"
-      )
-    )
-  )
+  implicit val nodeRegistrationFormat: RootJsonFormat[NodeRegistration] = rootFormat(lazyFormat(jsonFormat10(NodeRegistration.apply)))
 
-  implicit val nodeServiceListFormat: RootJsonFormat[NodeServiceListInternal] =
-    jsonFormat(NodeServiceListInternal.apply, "Node", "Services")
+  implicit val nodeServiceListFormat: RootJsonFormat[NodeServiceListInternal] = jsonFormat2(NodeServiceListInternal.apply)
 
-  implicit val nodeServiceMapFormat: RootJsonFormat[NodeServiceMap] = jsonFormat(NodeServiceMap.apply, "Node", "Services")
+  implicit val nodeServiceMapFormat: RootJsonFormat[NodeServiceMap] = jsonFormat2(NodeServiceMap.apply)
 
 }

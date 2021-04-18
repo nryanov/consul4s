@@ -6,64 +6,14 @@ import consul4s.model.health.NewHealthCheck._
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 trait Health extends DefaultJsonProtocol { this: Common with Agent with Catalog =>
-  implicit val healthCheckDefinitionFormat: RootJsonFormat[HealthCheckDefinition] = jsonFormat(
-    HealthCheckDefinition.apply,
-    "HTTP",
-    "Header",
-    "Method",
-    "Body",
-    "TLSSkipVerify",
-    "TCP",
-    "Interval",
-    "Timeout",
-    "DeregisterCriticalServiceAfter"
-  )
+  implicit val healthCheckDefinitionFormat: RootJsonFormat[HealthCheckDefinition] = jsonFormat9(HealthCheckDefinition.apply)
 
-  implicit val healthCheckFormat: RootJsonFormat[HealthCheck] = jsonFormat(
-    HealthCheck.apply,
-    "Node",
-    "CheckID",
-    "Name",
-    "Status",
-    "Notes",
-    "Output",
-    "ServiceID",
-    "ServiceName",
-    "ServiceTags",
-    "Type",
-    "Definition",
-    "CreateIndex",
-    "ModifyIndex"
-  )
+  implicit val healthCheckFormat: RootJsonFormat[HealthCheck] = jsonFormat13(HealthCheck.apply)
 
-  implicit val newHealthCheckDefinitionFormat: RootJsonFormat[NewHealthCheckDefinition] = jsonFormat(
-    NewHealthCheckDefinition.apply,
-    "HTTP",
-    "Header",
-    "Method",
-    "Body",
-    "TLSSkipVerify",
-    "TCP",
-    "Interval",
-    "Timeout",
-    "DeregisterCriticalServiceAfter"
-  )
+  implicit val newHealthCheckDefinitionFormat: RootJsonFormat[NewHealthCheckDefinition] = jsonFormat9(NewHealthCheckDefinition.apply)
 
-  implicit val newHealthCheckFormat: RootJsonFormat[NewHealthCheck] = jsonFormat(
-    NewHealthCheck.apply,
-    "Node",
-    "Name",
-    "CheckID",
-    "Status",
-    "Notes",
-    "Output",
-    "ServiceID",
-    "ServiceName",
-    "ServiceTags",
-    "Type",
-    "Definition"
-  )
+  implicit val newHealthCheckFormat: RootJsonFormat[NewHealthCheck] = jsonFormat11(NewHealthCheck.apply)
 
-  implicit val serviceEntryFormat: RootJsonFormat[ServiceEntry] = jsonFormat(ServiceEntry.apply, "Node", "Service", "Checks")
+  implicit val serviceEntryFormat: RootJsonFormat[ServiceEntry] = jsonFormat3(ServiceEntry.apply)
 
 }

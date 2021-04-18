@@ -4,111 +4,29 @@ import consul4s.model.agent._
 import spray.json._
 
 trait Agent extends DefaultJsonProtocol { this: Health with Catalog with Common =>
-  implicit val taggedAddressFormat: RootJsonFormat[TaggedAddress] = jsonFormat(TaggedAddress.apply, "Address", "Port")
+  implicit val taggedAddressFormat: RootJsonFormat[TaggedAddress] = jsonFormat2(TaggedAddress.apply)
 
-  implicit val tokenFormat: RootJsonFormat[Token] = jsonFormat(Token, "Token")
+  implicit val tokenFormat: RootJsonFormat[Token] = jsonFormat1(Token)
 
-  implicit val weightsFormat: RootJsonFormat[Weights] = jsonFormat(Weights.apply, "Passing", "Warning")
+  implicit val weightsFormat: RootJsonFormat[Weights] = jsonFormat2(Weights.apply)
 
-  implicit val checkUpdateFormat: RootJsonFormat[CheckUpdate] = jsonFormat(CheckUpdate.apply, "Status", "Output")
+  implicit val checkUpdateFormat: RootJsonFormat[CheckUpdate] = jsonFormat2(CheckUpdate.apply)
 
-  implicit val memberInfoFormat: RootJsonFormat[MemberInfo] = jsonFormat(
-    MemberInfo.apply,
-    "Name",
-    "Addr",
-    "Port",
-    "Tags",
-    "Status",
-    "ProtocolMin",
-    "ProtocolMax",
-    "ProtocolCur",
-    "DelegateMin",
-    "DelegateMax",
-    "DelegateCur"
-  )
+  implicit val memberInfoFormat: RootJsonFormat[MemberInfo] = jsonFormat11(MemberInfo.apply)
 
-  implicit val scriptCheckFormat: RootJsonFormat[ScriptCheck] = jsonFormat(
-    ScriptCheck.apply,
-    "Name",
-    "Args",
-    "Timeout",
-    "Interval",
-    "ID",
-    "ServiceID",
-    "Status",
-    "Notes",
-    "DeregisterCriticalServiceAfter"
-  )
+  implicit val scriptCheckFormat: RootJsonFormat[ScriptCheck] = jsonFormat9(ScriptCheck.apply)
 
-  implicit val httpCheckFormat: RootJsonFormat[HttpCheck] = jsonFormat(
-    HttpCheck.apply,
-    "Name",
-    "HTTP",
-    "TLSSkipVerify",
-    "Interval",
-    "Timeout",
-    "Header",
-    "Method",
-    "Body",
-    "ID",
-    "ServiceID",
-    "Status",
-    "Notes",
-    "SuccessBeforePassing",
-    "FailuresBeforeCritical",
-    "DeregisterCriticalServiceAfter"
-  )
+  implicit val httpCheckFormat: RootJsonFormat[HttpCheck] = jsonFormat15(HttpCheck.apply)
 
-  implicit val tcpCheckFormat: RootJsonFormat[TCPCheck] = jsonFormat(
-    TCPCheck.apply,
-    "Name",
-    "TCP",
-    "Interval",
-    "Timeout",
-    "ID",
-    "ServiceID",
-    "Status",
-    "Notes",
-    "SuccessBeforePassing",
-    "FailuresBeforeCritical",
-    "DeregisterCriticalServiceAfter"
-  )
+  implicit val tcpCheckFormat: RootJsonFormat[TCPCheck] = jsonFormat11(TCPCheck.apply)
 
-  implicit val ttlCheckFormat: RootJsonFormat[TTLCheck] =
-    jsonFormat(TTLCheck.apply, "Name", "TTL", "ID", "ServiceID", "Status", "Notes", "DeregisterCriticalServiceAfter")
+  implicit val ttlCheckFormat: RootJsonFormat[TTLCheck] = jsonFormat7(TTLCheck.apply)
 
-  implicit val dockerCheckFormat: RootJsonFormat[DockerCheck] = jsonFormat(
-    DockerCheck.apply,
-    "Name",
-    "DockerContainerId",
-    "Shell",
-    "Args",
-    "Interval",
-    "ID",
-    "ServiceID",
-    "Status",
-    "Notes",
-    "SuccessBeforePassing",
-    "FailuresBeforeCritical",
-    "DeregisterCriticalServiceAfter"
-  )
+  implicit val dockerCheckFormat: RootJsonFormat[DockerCheck] = jsonFormat12(DockerCheck.apply)
 
-  implicit val gRpcCheckFormat: RootJsonFormat[GRpcCheck] = jsonFormat(
-    GRpcCheck.apply,
-    "Name",
-    "GRPC",
-    "GRPCUseTLS",
-    "Interval",
-    "ID",
-    "ServiceID",
-    "Status",
-    "Notes",
-    "SuccessBeforePassing",
-    "FailuresBeforeCritical",
-    "DeregisterCriticalServiceAfter"
-  )
+  implicit val gRpcCheckFormat: RootJsonFormat[GRpcCheck] = jsonFormat11(GRpcCheck.apply)
 
-  implicit val aliasCheckFormat: RootJsonFormat[AliasCheck] = jsonFormat(AliasCheck.apply, "ID", "AliasNode", "AliasService")
+  implicit val aliasCheckFormat: RootJsonFormat[AliasCheck] = jsonFormat3(AliasCheck.apply)
 
   implicit val checkFormat: RootJsonFormat[Check] = new RootJsonFormat[Check] {
     def write(obj: Check): JsValue =
@@ -127,89 +45,20 @@ trait Agent extends DefaultJsonProtocol { this: Health with Catalog with Common 
     def read(json: JsValue): Check = throw new UnsupportedOperationException("Not supported")
   }
 
-  implicit val serviceScriptCheckFormat: RootJsonFormat[ServiceScriptCheck] = jsonFormat(
-    ServiceScriptCheck.apply,
-    "Name",
-    "Args",
-    "Timeout",
-    "Interval",
-    "CheckID",
-    "ServiceID",
-    "Status",
-    "Notes",
-    "DeregisterCriticalServiceAfter"
-  )
+  implicit val serviceScriptCheckFormat: RootJsonFormat[ServiceScriptCheck] = jsonFormat9(ServiceScriptCheck.apply)
 
-  implicit val serviceHttpCheckFormat: RootJsonFormat[ServiceHttpCheck] = jsonFormat(
-    ServiceHttpCheck.apply,
-    "Name",
-    "HTTP",
-    "TLSSkipVerify",
-    "Interval",
-    "Timeout",
-    "Header",
-    "Method",
-    "Body",
-    "CheckID",
-    "ServiceID",
-    "Status",
-    "Notes",
-    "SuccessBeforePassing",
-    "FailuresBeforeCritical",
-    "DeregisterCriticalServiceAfter"
-  )
+  implicit val serviceHttpCheckFormat: RootJsonFormat[ServiceHttpCheck] = jsonFormat15(ServiceHttpCheck.apply)
 
-  implicit val serviceTcpCheckFormat: RootJsonFormat[ServiceTCPCheck] = jsonFormat(
-    ServiceTCPCheck.apply,
-    "Name",
-    "TCP",
-    "Interval",
-    "Timeout",
-    "CheckID",
-    "ServiceID",
-    "Status",
-    "Notes",
-    "SuccessBeforePassing",
-    "FailuresBeforeCritical",
-    "DeregisterCriticalServiceAfter"
-  )
+  implicit val serviceTcpCheckFormat: RootJsonFormat[ServiceTCPCheck] = jsonFormat11(ServiceTCPCheck.apply)
 
-  implicit val serviceTtlCheckFormat: RootJsonFormat[ServiceTTLCheck] =
-    jsonFormat(ServiceTTLCheck.apply, "Name", "TTL", "CheckID", "ServiceID", "Status", "Notes", "DeregisterCriticalServiceAfter")
+  implicit val serviceTtlCheckFormat: RootJsonFormat[ServiceTTLCheck] = jsonFormat7(ServiceTTLCheck.apply)
 
-  implicit val serviceDockerCheckFormat: RootJsonFormat[ServiceDockerCheck] = jsonFormat(
-    ServiceDockerCheck.apply,
-    "Name",
-    "DockerContainerId",
-    "Shell",
-    "Args",
-    "Interval",
-    "CheckID",
-    "ServiceID",
-    "Status",
-    "Notes",
-    "SuccessBeforePassing",
-    "FailuresBeforeCritical",
-    "DeregisterCriticalServiceAfter"
-  )
+  implicit val serviceDockerCheckFormat: RootJsonFormat[ServiceDockerCheck] = jsonFormat12(ServiceDockerCheck.apply)
 
-  implicit val serviceGRpcCheckFormat: RootJsonFormat[ServiceGRpcCheck] = jsonFormat(
-    ServiceGRpcCheck.apply,
-    "Name",
-    "GRPC",
-    "GRPCUseTLS",
-    "Interval",
-    "CheckID",
-    "ServiceID",
-    "Status",
-    "Notes",
-    "SuccessBeforePassing",
-    "FailuresBeforeCritical",
-    "DeregisterCriticalServiceAfter"
-  )
+  implicit val serviceGRpcCheckFormat: RootJsonFormat[ServiceGRpcCheck] = jsonFormat11(ServiceGRpcCheck.apply)
 
   implicit val serviceAliasCheckFormat: RootJsonFormat[ServiceAliasCheck] =
-    jsonFormat(ServiceAliasCheck.apply, "CheckID", "AliasNode", "AliasService")
+    jsonFormat3(ServiceAliasCheck.apply)
 
   implicit val serviceCheckFormat: RootJsonFormat[ServiceCheck] = new RootJsonFormat[ServiceCheck] {
     def write(obj: ServiceCheck): JsValue =
@@ -228,26 +77,12 @@ trait Agent extends DefaultJsonProtocol { this: Health with Catalog with Common 
     def read(json: JsValue): ServiceCheck = throw new UnsupportedOperationException("Not supported")
   }
 
-  implicit val newServiceFormat: RootJsonFormat[NewService] = jsonFormat(
-    NewService.apply,
-    "Name",
-    "ID",
-    "Tags",
-    "Address",
-    "TaggedAddresses",
-    "Meta",
-    "Port",
-    "Check",
-    "Checks",
-    "EnableTagOverride",
-    "Weights"
-  )
+  implicit val newServiceFormat: RootJsonFormat[NewService] = jsonFormat11(NewService.apply)
 
-  implicit val serviceFormat: RootJsonFormat[Service] =
-    jsonFormat(Service.apply, "Service", "ID", "Tags", "Address", "TaggedAddresses", "Meta", "Port", "EnableTagOverride", "Weights")
+  implicit val serviceFormat: RootJsonFormat[Service] = jsonFormat9(Service.apply)
 
   implicit val aggregatedServiceStatusFormat: RootJsonFormat[AggregatedServiceStatus] =
-    rootFormat(lazyFormat(jsonFormat(AggregatedServiceStatus.apply, "AggregatedStatus", "Service", "Checks")))
+    rootFormat(lazyFormat(jsonFormat3(AggregatedServiceStatus.apply)))
 
   implicit object UpstreamDestTypeFormat extends RootJsonFormat[UpstreamDestType] {
     override def write(obj: UpstreamDestType): JsValue = JsString(obj.value)
