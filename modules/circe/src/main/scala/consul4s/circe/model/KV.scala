@@ -8,13 +8,13 @@ import io.circe.syntax._
 trait KV {
   implicit val kvPairEncoder: Encoder[KVPair] = new Encoder[KVPair] {
     override def apply(a: KVPair): Json = Json.obj(
-      ("Key", a.key.asJson),
-      ("CreateIndex", a.createIndex.asJson),
-      ("ModifyIndex", a.modifyIndex.asJson),
-      ("LockIndex", a.lockIndex.asJson),
-      ("Flags", a.flags.asJson),
-      ("Value", a.value.asJson),
-      ("Session", a.session.asJson)
+      ("Key", a.Key.asJson),
+      ("CreateIndex", a.CreateIndex.asJson),
+      ("ModifyIndex", a.ModifyIndex.asJson),
+      ("LockIndex", a.LockIndex.asJson),
+      ("Flags", a.Flags.asJson),
+      ("Value", a.Value.asJson),
+      ("Session", a.Session.asJson)
     )
   }
 
@@ -27,14 +27,6 @@ trait KV {
       flags <- c.downField("Flags").as[Long]
       value <- c.downField("Value").as[Option[String]]
       session <- c.downField("Session").as[Option[String]]
-    } yield KVPair(
-      key,
-      createIndex,
-      modifyIndex,
-      lockIndex,
-      flags,
-      value,
-      session
-    )
+    } yield KVPair(key, createIndex, modifyIndex, lockIndex, flags, value, session)
   }
 }

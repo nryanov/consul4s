@@ -5,20 +5,20 @@ import consul4s.model.agent.{TaggedAddress, Weights}
 
 // todo: Proxy & Connect
 final case class CatalogService(
-  id: String,
-  node: String,
-  address: String,
-  datacenter: String,
-  taggedAddresses: Option[Map[String, String]],
-  nodeMeta: Option[Map[String, String]],
-  serviceKind: ServiceKind,
-  serviceID: String,
-  serviceName: String,
-  serviceTags: Option[List[String]],
-  serviceAddress: String,
-  serviceTaggedAddresses: Option[Map[String, TaggedAddress]],
-  serviceWeights: Weights,
-  serviceMeta: Option[Map[String, String]],
-  servicePort: Int,
-  serviceEnableTagOverride: Boolean
+  ID: String,
+  Node: String,
+  Address: String,
+  Datacenter: String,
+  TaggedAddresses: Option[Map[String, String]],
+  NodeMeta: Option[Map[String, String]],
+  ServiceKind: ServiceKind,
+  ServiceID: String,
+  ServiceName: String,
+  ServiceTags: Option[List[String]],
+  ServiceAddress: String,
+  ServiceTaggedAddresses: Option[Map[String, TaggedAddress]],
+  ServiceWeights: Weights,
+  ServiceMeta: Option[Map[String, String]],
+  ServicePort: Int,
+  ServiceEnableTagOverride: Boolean
 )

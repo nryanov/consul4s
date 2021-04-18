@@ -36,7 +36,7 @@ class CoordinateBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEnc
       runEither {
         for {
           node <- client.getDatacenterNodes().body
-          r <- client.getNodeCoordinate(node.head.node).body
+          r <- client.getNodeCoordinate(node.head.Node).body
         } yield assert(true)
       }
     }

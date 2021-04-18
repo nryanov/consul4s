@@ -15,15 +15,6 @@ trait Event {
       tagFilter <- c.downField("TagFilter").as[String]
       version <- c.downField("Version").as[Long]
       lTime <- c.downField("LTime").as[Long]
-    } yield UserEvent(
-      id,
-      name,
-      payload,
-      nodeFilter,
-      serviceFilter,
-      tagFilter,
-      version,
-      lTime
-    )
+    } yield UserEvent(id, name, payload, nodeFilter, serviceFilter, tagFilter, version, lTime)
   }
 }

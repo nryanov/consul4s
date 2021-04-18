@@ -41,19 +41,19 @@ trait Session { this: Common =>
 
   implicit val newSessionInfoEncoder: Encoder[NewSession] = new Encoder[NewSession] {
     override def apply(a: NewSession): Json = Json.obj(
-      ("Node", a.node.asJson),
-      ("LockDelay", a.lockDelay.asJson),
-      ("Name", a.name.asJson),
-      ("ID", a.id.asJson),
-      ("Checks", a.checks.asJson),
-      ("Behavior", a.behavior.asJson),
-      ("TTL", a.ttl.asJson)
+      ("Node", a.Node.asJson),
+      ("LockDelay", a.LockDelay.asJson),
+      ("Name", a.Name.asJson),
+      ("ID", a.ID.asJson),
+      ("Checks", a.Checks.asJson),
+      ("Behavior", a.Behavior.asJson),
+      ("TTL", a.TTL.asJson)
     )
   }
 
   implicit val sessionIdEncoder: Encoder[SessionId] = new Encoder[SessionId] {
     override def apply(a: SessionId): Json = Json.obj(
-      ("ID", a.id.asJson)
+      ("ID", a.ID.asJson)
     )
   }
 }

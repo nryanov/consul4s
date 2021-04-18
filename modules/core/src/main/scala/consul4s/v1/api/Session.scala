@@ -34,7 +34,7 @@ trait Session[F[_]] { this: ConsulApi[F] =>
    * @return - true if session was deleted otherwise false
    */
   def deleteSession(sessionId: SessionId, dc: Option[String] = None, token: Option[String] = None): F[Result[Boolean]] = {
-    val requestTemplate = basicRequest.put(uri"$url/session/destroy/${sessionId.id}?dc=$dc")
+    val requestTemplate = basicRequest.put(uri"$url/session/destroy/${sessionId.ID}?dc=$dc")
     val request = requestTemplate.copy(response = jsonDecoder.asBoolean)
 
     sendRequest(request, token)
@@ -56,7 +56,7 @@ trait Session[F[_]] { this: ConsulApi[F] =>
     consistencyMode: ConsistencyMode = ConsistencyMode.Default,
     token: Option[String] = None
   ): F[Result[List[SessionInfo]]] = {
-    val requestTemplate = basicRequest.get(addConsistencyMode(uri"$url/session/info/${sessionId.id}?dc=$dc", consistencyMode))
+    val requestTemplate = basicRequest.get(addConsistencyMode(uri"$url/session/info/${sessionId.ID}?dc=$dc", consistencyMode))
     val request = requestTemplate.copy(response = jsonDecoder.asSessionInfoList)
 
     sendRequest(request, token)
@@ -115,7 +115,7 @@ trait Session[F[_]] { this: ConsulApi[F] =>
    * @return - updated session or None if session does not exist
    */
   def renewSession(sessionId: SessionId, dc: Option[String] = None, token: Option[String] = None): F[Result[Option[SessionInfo]]] = {
-    val requestTemplate = basicRequest.put(uri"$url/session/renew/${sessionId.id}?dc=$dc")
+    val requestTemplate = basicRequest.put(uri"$url/session/renew/${sessionId.ID}?dc=$dc")
     val request = requestTemplate.copy(response = jsonDecoder.asSessionInfoList.mapRight(_.headOption))
 
     sendRequest(request, token)

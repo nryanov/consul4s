@@ -15,21 +15,21 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
       runEitherEventually {
         for {
           nodes <- client.getDatacenterNodes().body
-          result <- client.getNodeChecks(nodes.head.node, consistencyMode = ConsistencyMode.Consistent).body
-        } yield assertResult(CheckStatus.Passing)(result.head.status)
+          result <- client.getNodeChecks(nodes.head.Node, consistencyMode = ConsistencyMode.Consistent).body
+        } yield assertResult(CheckStatus.Passing)(result.head.Status)
       }
     }
 
     "return service checks" in withContainers { consul =>
       val client = createClient(consul)
-      val newService = NewService("testService", checks = Some(List(ServiceTTLCheck("ttlCheck", "15s"))))
+      val newService = NewService("testService", Checks = Some(List(ServiceTTLCheck("ttlCheck", "15s"))))
 
       runEitherEventually {
         for {
           _ <- client.registerAgentService(newService).body
           result <- client.getServiceChecks("testService", consistencyMode = ConsistencyMode.Consistent).body
           _ <- client.deregisterAgentService("testService").body
-        } yield assert(result.exists(_.serviceId == "testService"))
+        } yield assert(result.exists(_.ServiceID == "testService"))
       }
     }
 
@@ -39,7 +39,7 @@ abstract class HealthBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Js
       runEitherEventually {
         for {
           result <- client.getChecksByState(CheckStatus.Passing, consistencyMode = ConsistencyMode.Consistent).body
-        } yield assertResult(CheckStatus.Passing)(result.head.status)
+        } yield assertResult(CheckStatus.Passing)(result.head.Status)
       }
     }
 
