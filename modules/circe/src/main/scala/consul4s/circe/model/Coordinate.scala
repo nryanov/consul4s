@@ -9,10 +9,10 @@ import io.circe.syntax._
 trait Coordinate {
   implicit val coordEncoder: Encoder[Coord] = new Encoder[Coord] {
     override def apply(a: Coord): Json = Json.obj(
-      ("Vec", a.vec.asJson),
-      ("Error", a.error.asJson),
-      ("Adjustment", a.adjustment.asJson),
-      ("Height", a.height.asJson)
+      ("Vec", a.Vec.asJson),
+      ("Error", a.Error.asJson),
+      ("Adjustment", a.Adjustment.asJson),
+      ("Height", a.Height.asJson)
     )
   }
 
@@ -29,12 +29,7 @@ trait Coordinate {
       error <- c.downField("Error").as[Double]
       adjustment <- c.downField("Adjustment").as[Double]
       height <- c.downField("Height").as[Double]
-    } yield Coord(
-      vec,
-      error,
-      adjustment,
-      height
-    )
+    } yield Coord(vec, error, adjustment, height)
   }
 
   implicit val nodeCoordinateDecoder: Decoder[NodeCoordinate] = new Decoder[NodeCoordinate] {

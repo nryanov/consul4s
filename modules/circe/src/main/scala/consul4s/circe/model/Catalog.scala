@@ -49,15 +49,15 @@ trait Catalog { this: Agent with Health with Common =>
 
   implicit val newCatalogServiceInfoEncoder: Encoder[NewCatalogService] = new Encoder[NewCatalogService] {
     override def apply(a: NewCatalogService): Json = Json.obj(
-      ("Service", a.service.asJson),
-      ("ID", a.id.asJson),
-      ("Tags", a.tags.asJson),
-      ("Address", a.address.asJson),
-      ("TaggedAddresses", a.taggedAddresses.asJson),
-      ("Meta", a.meta.asJson),
-      ("Port", a.port.asJson),
-      ("EnableTagOverride", a.enableTagOverride.asJson),
-      ("Weights", a.weights.asJson)
+      ("Service", a.Service.asJson),
+      ("ID", a.ID.asJson),
+      ("Tags", a.Tags.asJson),
+      ("Address", a.Address.asJson),
+      ("TaggedAddresses", a.TaggedAddresses.asJson),
+      ("Meta", a.Meta.asJson),
+      ("Port", a.Port.asJson),
+      ("EnableTagOverride", a.EnableTagOverride.asJson),
+      ("Weights", a.Weights.asJson)
     )
   }
 
@@ -81,10 +81,10 @@ trait Catalog { this: Agent with Health with Common =>
 
   implicit val entityDeregistrationEncoder: Encoder[NodeDeregistration] = new Encoder[NodeDeregistration] {
     override def apply(a: NodeDeregistration): Json = Json.obj(
-      ("Node", a.node.asJson),
-      ("Datacenter", a.datacenter.asJson),
-      ("CheckID", a.checkId.asJson),
-      ("ServiceID", a.serviceId.asJson)
+      ("Node", a.Node.asJson),
+      ("Datacenter", a.Datacenter.asJson),
+      ("CheckID", a.CheckID.asJson),
+      ("ServiceID", a.ServiceID.asJson)
     )
   }
 
