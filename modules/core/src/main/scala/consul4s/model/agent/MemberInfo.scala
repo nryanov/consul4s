@@ -2,7 +2,7 @@ package consul4s.model.agent
 
 final case class MemberInfo(
   Name: String,
-  Address: String,
+  Addr: String,
   Port: Int,
   Tags: Option[Map[String, String]],
   Status: Int,
