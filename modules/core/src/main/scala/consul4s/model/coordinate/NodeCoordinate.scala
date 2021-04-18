@@ -2,8 +2,8 @@ package consul4s.model.coordinate
 
 import NodeCoordinate._
 
-final case class NodeCoordinate(node: String, coord: Coord)
+final case class NodeCoordinate(Node: String, Coord: Coord)
 
 object NodeCoordinate {
-  final case class Coord(vec: List[Double], error: Double, adjustment: Double, height: Double)
+  final case class Coord(Vec: List[Double], Error: Double, Adjustment: Double, Height: Double)
 }

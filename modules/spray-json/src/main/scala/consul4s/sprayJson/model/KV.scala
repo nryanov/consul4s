@@ -6,4 +6,5 @@ import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 trait KV extends DefaultJsonProtocol {
   implicit val kvPairFormat: RootJsonFormat[KVPair] =
     jsonFormat(KVPair.apply, "Key", "CreateIndex", "ModifyIndex", "LockIndex", "Flags", "Value", "Session")
+
 }

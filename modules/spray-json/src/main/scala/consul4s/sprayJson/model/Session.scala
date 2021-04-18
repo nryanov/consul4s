@@ -4,23 +4,10 @@ import consul4s.model.session._
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 trait Session extends DefaultJsonProtocol { this: Common =>
-  implicit val newSessionFormat: RootJsonFormat[NewSession] =
-    jsonFormat(NewSession.apply, "Node", "LockDelay", "Name", "ID", "Checks", "Behavior", "TTL")
+  implicit val newSessionFormat: RootJsonFormat[NewSession] = jsonFormat7(NewSession.apply)
 
   implicit val sessionIdFormat: RootJsonFormat[SessionId] = jsonFormat(SessionId, "ID")
 
-  implicit val sessionInfoFormat: RootJsonFormat[SessionInfo] = jsonFormat(
-    SessionInfo.apply,
-    "ID",
-    "Name",
-    "Node",
-    "LockDelay",
-    "CreateIndex",
-    "ModifyIndex",
-    "ServiceChecks",
-    "NodeChecks",
-    "Behavior",
-    "TTL"
-  )
+  implicit val sessionInfoFormat: RootJsonFormat[SessionInfo] = jsonFormat10(SessionInfo.apply)
 
 }

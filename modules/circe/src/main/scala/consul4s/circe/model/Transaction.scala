@@ -77,54 +77,54 @@ trait Transaction { this: Common with Agent with Health with KV with Catalog =>
 
   implicit val kvTxEncoder: Encoder[KVTask] = new Encoder[KVTask] {
     override def apply(a: KVTask): Json = Json.obj(
-      ("Verb", a.verb.asJson),
-      ("Key", a.key.asJson),
-      ("Value", a.value.asJson),
-      ("Flags", a.flags.asJson),
-      ("Index", a.index.asJson),
-      ("Session", a.session.asJson)
+      ("Verb", a.Verb.asJson),
+      ("Key", a.Key.asJson),
+      ("Value", a.Value.asJson),
+      ("Flags", a.Flags.asJson),
+      ("Index", a.Index.asJson),
+      ("Session", a.Session.asJson)
     )
   }
 
   implicit val checkTxEncoder: Encoder[CheckTask] = new Encoder[CheckTask] {
     override def apply(a: CheckTask): Json = Json.obj(
-      ("Verb", a.verb.asJson),
-      ("Check", a.check.asJson)
+      ("Verb", a.Verb.asJson),
+      ("Check", a.Check.asJson)
     )
   }
 
   implicit val newNodeEncoder: Encoder[NodeDefinition] = new Encoder[NodeDefinition] {
     override def apply(a: NodeDefinition): Json = Json.obj(
-      ("Node", a.node.asJson),
-      ("Address", a.address.asJson),
-      ("ID", a.id.asJson),
-      ("Datacenter", a.datacenter.asJson),
-      ("TaggedAddresses", a.taggedAddresses.asJson),
-      ("NodeMeta", a.nodeMeta.asJson)
+      ("Node", a.Node.asJson),
+      ("Address", a.Address.asJson),
+      ("ID", a.ID.asJson),
+      ("Datacenter", a.Datacenter.asJson),
+      ("TaggedAddresses", a.TaggedAddresses.asJson),
+      ("NodeMeta", a.NodeMeta.asJson)
     )
   }
 
   implicit val nodeTxEncoder: Encoder[NodeTask] = new Encoder[NodeTask] {
     override def apply(a: NodeTask): Json = Json.obj(
-      ("Verb", a.verb.asJson),
-      ("Node", a.node.asJson)
+      ("Verb", a.Verb.asJson),
+      ("Node", a.Node.asJson)
     )
   }
 
   implicit val serviceTxEncoder: Encoder[ServiceTask] = new Encoder[ServiceTask] {
     override def apply(a: ServiceTask): Json = Json.obj(
-      ("Verb", a.verb.asJson),
-      ("Node", a.node.asJson),
-      ("Service", a.service.asJson)
+      ("Verb", a.Verb.asJson),
+      ("Node", a.Node.asJson),
+      ("Service", a.Service.asJson)
     )
   }
 
   implicit val txTaskEncoder: Encoder[TxTask] = new Encoder[TxTask] {
     override def apply(a: TxTask): Json = Json.obj(
-      ("KV", a.kv.asJson),
-      ("Node", a.node.asJson),
-      ("Service", a.service.asJson),
-      ("Check", a.check.asJson)
+      ("KV", a.KV.asJson),
+      ("Node", a.Node.asJson),
+      ("Service", a.Service.asJson),
+      ("Check", a.Check.asJson)
     )
   }
 }

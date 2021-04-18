@@ -14,7 +14,7 @@ class EventBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncoder)
         for {
           result1 <- client.fireEvent("test", "payload").body
           result2 <- client.getEvents().body
-        } yield assert(result2.exists(_.name == result1.name))
+        } yield assert(result2.exists(_.Name == result1.Name))
       }
     }
 

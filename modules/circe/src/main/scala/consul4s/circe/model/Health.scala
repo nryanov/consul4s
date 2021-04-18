@@ -69,31 +69,31 @@ trait Health { this: Common with Agent with Catalog =>
 
   implicit val newHealthCheckDefinitionEncoder: Encoder[NewHealthCheckDefinition] = new Encoder[NewHealthCheckDefinition] {
     override def apply(a: NewHealthCheckDefinition): Json = Json.obj(
-      ("HTTP", a.http.asJson),
-      ("Header", a.header.asJson),
-      ("Method", a.method.asJson),
-      ("Body", a.body.asJson),
-      ("TLSSkipVerify", a.tlsSkipVerify.asJson),
-      ("TCP", a.tcp.asJson),
-      ("Interval", a.interval.asJson),
-      ("Timeout", a.timeout.asJson),
-      ("DeregisterCriticalServiceAfter", a.deregisterCriticalServiceAfter.asJson)
+      ("HTTP", a.HTTP.asJson),
+      ("Header", a.Header.asJson),
+      ("Method", a.Method.asJson),
+      ("Body", a.Body.asJson),
+      ("TLSSkipVerify", a.TLSSkipVerify.asJson),
+      ("TCP", a.TCP.asJson),
+      ("Interval", a.Interval.asJson),
+      ("Timeout", a.Timeout.asJson),
+      ("DeregisterCriticalServiceAfter", a.DeregisterCriticalServiceAfter.asJson)
     )
   }
 
   implicit val newHealthCheckEncoder: Encoder[NewHealthCheck] = new Encoder[NewHealthCheck] {
     override def apply(a: NewHealthCheck): Json = Json.obj(
-      ("Node", a.node.asJson),
-      ("Name", a.name.asJson),
-      ("CheckID", a.checkId.asJson),
-      ("Status", a.status.asJson),
-      ("Notes", a.notes.asJson),
-      ("Output", a.output.asJson),
-      ("ServiceID", a.serviceId.asJson),
-      ("ServiceName", a.serviceName.asJson),
-      ("ServiceTags", a.serviceTags.asJson),
-      ("Type", a.`type`.asJson),
-      ("Definition", a.definition.asJson)
+      ("Node", a.Node.asJson),
+      ("Name", a.Name.asJson),
+      ("CheckID", a.CheckID.asJson),
+      ("Status", a.Status.asJson),
+      ("Notes", a.Notes.asJson),
+      ("Output", a.Output.asJson),
+      ("ServiceID", a.ServiceID.asJson),
+      ("ServiceName", a.ServiceName.asJson),
+      ("ServiceTags", a.ServiceTags.asJson),
+      ("Type", a.Type.asJson),
+      ("Definition", a.Definition.asJson)
     )
   }
 

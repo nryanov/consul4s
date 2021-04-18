@@ -49,15 +49,15 @@ trait Catalog { this: Agent with Health with Common =>
 
   implicit val newCatalogServiceInfoEncoder: Encoder[NewCatalogService] = new Encoder[NewCatalogService] {
     override def apply(a: NewCatalogService): Json = Json.obj(
-      ("Service", a.service.asJson),
-      ("ID", a.id.asJson),
-      ("Tags", a.tags.asJson),
-      ("Address", a.address.asJson),
-      ("TaggedAddresses", a.taggedAddresses.asJson),
-      ("Meta", a.meta.asJson),
-      ("Port", a.port.asJson),
-      ("EnableTagOverride", a.enableTagOverride.asJson),
-      ("Weights", a.weights.asJson)
+      ("Service", a.Service.asJson),
+      ("ID", a.ID.asJson),
+      ("Tags", a.Tags.asJson),
+      ("Address", a.Address.asJson),
+      ("TaggedAddresses", a.TaggedAddresses.asJson),
+      ("Meta", a.Meta.asJson),
+      ("Port", a.Port.asJson),
+      ("EnableTagOverride", a.EnableTagOverride.asJson),
+      ("Weights", a.Weights.asJson)
     )
   }
 
@@ -81,25 +81,25 @@ trait Catalog { this: Agent with Health with Common =>
 
   implicit val entityDeregistrationEncoder: Encoder[NodeDeregistration] = new Encoder[NodeDeregistration] {
     override def apply(a: NodeDeregistration): Json = Json.obj(
-      ("Node", a.node.asJson),
-      ("Datacenter", a.datacenter.asJson),
-      ("CheckID", a.checkId.asJson),
-      ("ServiceID", a.serviceId.asJson)
+      ("Node", a.Node.asJson),
+      ("Datacenter", a.Datacenter.asJson),
+      ("CheckID", a.CheckID.asJson),
+      ("ServiceID", a.ServiceID.asJson)
     )
   }
 
   implicit val entityRegistrationEncoder: Encoder[NodeRegistration] = new Encoder[NodeRegistration] {
     override def apply(a: NodeRegistration): Json = Json.obj(
-      ("Node", a.node.asJson),
-      ("Address", a.address.asJson),
-      ("Service", a.service.asJson),
-      ("Check", a.check.asJson),
-      ("Checks", a.checks.asJson),
-      ("ID", a.id.asJson),
-      ("Datacenter", a.datacenter.asJson),
-      ("TaggedAddresses", a.taggedAddresses.asJson),
-      ("NodeMeta", a.nodeMeta.asJson),
-      ("SkipNodeUpdate", a.skipNodeUpdate.asJson)
+      ("Node", a.Node.asJson),
+      ("Address", a.Address.asJson),
+      ("Service", a.Service.asJson),
+      ("Check", a.Check.asJson),
+      ("Checks", a.Checks.asJson),
+      ("ID", a.ID.asJson),
+      ("Datacenter", a.Datacenter.asJson),
+      ("TaggedAddresses", a.TaggedAddresses.asJson),
+      ("NodeMeta", a.NodeMeta.asJson),
+      ("SkipNodeUpdate", a.SkipNodeUpdate.asJson)
     )
   }
 

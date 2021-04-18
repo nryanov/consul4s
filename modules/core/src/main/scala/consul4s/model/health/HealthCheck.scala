@@ -4,47 +4,47 @@ import consul4s.model.CheckStatus
 import HealthCheck._
 
 /**
- * @param node
- * @param checkId
- * @param name
- * @param status
- * @param notes
- * @param output
- * @param serviceId
- * @param serviceName
- * @param serviceTags
- * @param `type`
- * @param definition - The Definition field can be provided with details for a TCP or HTTP health check.
- * @param createIndex
- * @param modifyIndex
+ * @param Node
+ * @param CheckID
+ * @param Name
+ * @param Status
+ * @param Notes
+ * @param Output
+ * @param ServiceID
+ * @param ServiceName
+ * @param ServiceTags
+ * @param Type
+ * @param Definition - The Definition field can be provided with details for a TCP or HTTP health check.
+ * @param CreateIndex
+ * @param ModifyIndex
  */
 final case class HealthCheck(
-  node: String,
-  checkId: String,
-  name: String,
-  status: CheckStatus,
-  notes: String,
-  output: String,
-  serviceId: String,
-  serviceName: String,
-  serviceTags: Option[List[String]],
-  `type`: String,
-  definition: HealthCheckDefinition,
-  createIndex: Long,
-  modifyIndex: Long
+  Node: String,
+  CheckID: String,
+  Name: String,
+  Status: CheckStatus,
+  Notes: String,
+  Output: String,
+  ServiceID: String,
+  ServiceName: String,
+  ServiceTags: Option[List[String]],
+  Type: String,
+  Definition: HealthCheckDefinition,
+  CreateIndex: Long,
+  ModifyIndex: Long
 )
 
 object HealthCheck {
   final case class HealthCheckDefinition(
-    http: Option[String],
-    header: Option[Map[String, String]],
-    method: Option[String],
-    body: Option[String],
-    tlsSkipVerify: Option[Boolean],
-    tcp: Option[String],
-    interval: Option[String],
-    timeout: Option[String],
-    deregisterCriticalServiceAfter: Option[String]
+    HTTP: Option[String],
+    Header: Option[Map[String, String]],
+    Method: Option[String],
+    Body: Option[String],
+    TLSSkipVerify: Option[Boolean],
+    TCP: Option[String],
+    Interval: Option[String],
+    Timeout: Option[String],
+    DeregisterCriticalServiceAfter: Option[String]
   )
 
 }
