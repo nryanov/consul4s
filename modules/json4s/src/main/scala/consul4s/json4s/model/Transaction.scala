@@ -5,7 +5,6 @@ import consul4s.model.transaction.TxTask._
 import consul4s.model.transaction._
 import org.json4s.JsonAST._
 import org.json4s.{CustomSerializer, FieldSerializer}
-import org.json4s.FieldSerializer._
 
 trait Transaction {
   class KVOpSerializer
@@ -56,45 +55,16 @@ trait Transaction {
         )
       )
 
-  val txResultFormat = FieldSerializer[TxResult](
-    Map(),
-    renameFrom("KV", "kv").orElse(renameFrom("Node", "node")).orElse(renameFrom("Service", "service")).orElse(renameFrom("Check", "check"))
-  )
-  val txErrorFormat = FieldSerializer[TxError](Map(), renameFrom("OpIndex", "opIndex").orElse(renameFrom("What", "what")))
-  val txResultsFormat = FieldSerializer[TxResults](Map(), renameFrom("Results", "results").orElse(renameFrom("Errors", "errors")))
+  val txResultFormat: FieldSerializer[TxResult] = FieldSerializer[TxResult]()
+  val txErrorFormat: FieldSerializer[TxError] = FieldSerializer[TxError]()
+  val txResultsFormat: FieldSerializer[TxResults] = FieldSerializer[TxResults]()
 
-  val kvTaskFormat = FieldSerializer[KVTask](
-    renameTo("verb", "Verb")
-      .orElse(renameTo("key", "Key"))
-      .orElse(renameTo("value", "Value"))
-      .orElse(renameTo("flags", "Flags").orElse(renameTo("index", "Index")).orElse(renameTo("session", "Session"))),
-    Map()
-  )
-  val serviceTaskFormat = FieldSerializer[ServiceTask](
-    renameTo("verb", "Verb").orElse(renameTo("node", "Node")).orElse(renameTo("service", "Service")),
-    Map()
-  )
-  val nodeTaskFormat = FieldSerializer[NodeTask](
-    renameTo("verb", "Verb").orElse(renameTo("node", "Node")),
-    Map()
-  )
-  val nodeDefinitionFormat = FieldSerializer[NodeDefinition](
-    renameTo("node", "Node")
-      .orElse(renameTo("address", "Address"))
-      .orElse(renameTo("id", "ID"))
-      .orElse(renameTo("datacenter", "Datacenter"))
-      .orElse(renameTo("taggedAddresses", "TaggedAddresses"))
-      .orElse(renameTo("nodeMeta", "NodeMeta")),
-    Map()
-  )
-  val checkTaskFormat = FieldSerializer[CheckTask](
-    renameTo("verb", "Verb").orElse(renameTo("check", "Check")),
-    Map()
-  )
-  val txTaskFormat = FieldSerializer[TxTask](
-    renameTo("kv", "KV").orElse(renameTo("node", "Node")).orElse(renameTo("service", "Service")).orElse(renameTo("check", "Check")),
-    Map()
-  )
+  val kvTaskFormat: FieldSerializer[KVTask] = FieldSerializer[KVTask]()
+  val serviceTaskFormat: FieldSerializer[ServiceTask] = FieldSerializer[ServiceTask]()
+  val nodeTaskFormat: FieldSerializer[NodeTask] = FieldSerializer[NodeTask]()
+  val nodeDefinitionFormat: FieldSerializer[NodeDefinition] = FieldSerializer[NodeDefinition]()
+  val checkTaskFormat: FieldSerializer[CheckTask] = FieldSerializer[CheckTask]()
+  val txTaskFormat: FieldSerializer[TxTask] = FieldSerializer[TxTask]()
 
   val transactionAllSerializers = List(
     new KVOpSerializer,

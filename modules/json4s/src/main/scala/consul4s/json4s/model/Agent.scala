@@ -4,7 +4,6 @@ import consul4s.model.agent._
 import org.json4s._
 import org.json4s.JsonAST.JString
 import org.json4s.FieldSerializer
-import org.json4s.FieldSerializer._
 
 trait Agent {
   class UpstreamDestTypeSerializer
@@ -19,70 +18,21 @@ trait Agent {
         )
       )
 
-  val aggregatedServiceStatusFormat = FieldSerializer[AggregatedServiceStatus](
-    Map(),
-    renameFrom("AggregatedStatus", "aggregatedStatus").orElse(renameFrom("Service", "service")).orElse(renameFrom("Checks", "checks"))
-  )
+  val aggregatedServiceStatusFormat: FieldSerializer[AggregatedServiceStatus] = FieldSerializer[AggregatedServiceStatus]()
 
-  val checkUpdateFormat = FieldSerializer[CheckUpdate](
-    renameTo("status", "Status").orElse(renameTo("output", "Output")),
-    Map()
-  )
+  val checkUpdateFormat: FieldSerializer[CheckUpdate] = FieldSerializer[CheckUpdate]()
 
-  val memberInfoFormat = FieldSerializer[MemberInfo](
-    Map(),
-    renameFrom("Name", "name")
-      .orElse(renameFrom("Addr", "address"))
-      .orElse(renameFrom("Port", "port"))
-      .orElse(renameFrom("Tags", "tags"))
-      .orElse(renameFrom("Status", "status"))
-      .orElse(renameFrom("ProtocolMin", "protocolMin"))
-      .orElse(renameFrom("ProtocolMax", "protocolMax"))
-      .orElse(renameFrom("ProtocolCur", "protocolCur"))
-      .orElse(renameFrom("DelegateMin", "delegateMin"))
-      .orElse(renameFrom("DelegateMax", "delegateMax"))
-      .orElse(renameFrom("DelegateCur", "delegateCur"))
-  )
+  val memberInfoFormat: FieldSerializer[MemberInfo] = FieldSerializer[MemberInfo]()
 
-  val newServiceFormat = FieldSerializer[NewService](
-    renameTo("name", "Name")
-      .orElse(renameTo("id", "ID"))
-      .orElse(renameTo("tags", "Tags"))
-      .orElse(renameTo("address", "Address"))
-      .orElse(renameTo("taggedAddresses", "TaggedAddresses"))
-      .orElse(renameTo("meta", "Meta"))
-      .orElse(renameTo("port", "Port"))
-      .orElse(renameTo("check", "Check"))
-      .orElse(renameTo("checks", "Checks"))
-      .orElse(renameTo("enableTagOverride", "EnableTagOverride"))
-      .orElse(renameTo("weights", "Weights")),
-    Map()
-  )
+  val newServiceFormat: FieldSerializer[NewService] = FieldSerializer[NewService]()
 
-  val serviceFormat = FieldSerializer[Service](
-    Map(),
-    renameFrom("Service", "service")
-      .orElse(renameFrom("ID", "id"))
-      .orElse(renameFrom("Tags", "tags"))
-      .orElse(renameFrom("Address", "address"))
-      .orElse(renameFrom("TaggedAddresses", "taggedAddresses"))
-      .orElse(renameFrom("Meta", "meta"))
-      .orElse(renameFrom("Port", "port"))
-      .orElse(renameFrom("EnableTagOverride", "enableTagOverride"))
-      .orElse(renameFrom("Weights", "weights"))
-  )
+  val serviceFormat: FieldSerializer[Service] = FieldSerializer[Service]()
 
-  val taggedAddressFormat = FieldSerializer[TaggedAddress](
-    renameTo("address", "Address").orElse(renameTo("port", "Port")),
-    renameFrom("Address", "address").orElse(renameFrom("Port", "port"))
-  )
+  val taggedAddressFormat: FieldSerializer[TaggedAddress] = FieldSerializer[TaggedAddress]()
 
-  val tokenFormat = FieldSerializer[Token](renameTo("token", "Token"), Map())
+  val tokenFormat: FieldSerializer[Token] = FieldSerializer[Token]()
 
-  val weightsFormat = FieldSerializer[Weights](
-    renameTo("passing", "Passing").orElse(renameTo("warning", "Warning")),
-    renameFrom("Passing", "passing").orElse(renameFrom("Warning", "warning"))
-  )
+  val weightsFormat: FieldSerializer[Weights] = FieldSerializer[Weights]()
 
   class CheckSerializer
       extends CustomSerializer[Check](implicit format =>
@@ -111,80 +61,81 @@ trait Agent {
                   JField("TLSSkipVerify", JBool(x.TLSSkipVerify)) ::
                   JField("Interval", JString(x.Interval)) ::
                   JField("Timeout", JString(x.Timeout)) ::
-                  JField("Header", Extraction.decompose(x.header)) ::
-                  JField("Method", optionToValue(x.method)) ::
-                  JField("Body", optionToValue(x.body)) ::
-                  JField("ID", optionToValue(x.id)) ::
-                  JField("ServiceID", optionToValue(x.serviceId)) ::
-                  JField("Status", JString(x.status.value)) ::
-                  JField("Notes", optionToValue(x.notes)) ::
-                  JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
-                  JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
-                  JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
-                  :: Nil
+                  JField("Header", Extraction.decompose(x.Header)) ::
+                  JField("Method", optionToValue(x.Method)) ::
+                  JField("Body", optionToValue(x.Body)) ::
+                  JField("ID", optionToValue(x.ID)) ::
+                  JField("ServiceID", optionToValue(x.ServiceID)) ::
+                  JField("Status", JString(x.Status.value)) ::
+                  JField("Notes", optionToValue(x.Notes)) ::
+                  JField("SuccessBeforePassing", JInt(x.SuccessBeforePassing)) ::
+                  JField("FailuresBeforeCritical", JInt(x.FailuresBeforeCritical)) ::
+                  JField("DeregisterCriticalServiceAfter", optionToValue(x.DeregisterCriticalServiceAfter)) ::
+                  Nil
               )
             case x: TCPCheck =>
               JObject(
-                JField("Name", JString(x.name)) ::
-                  JField("TCP", JString(x.tcp)) ::
-                  JField("Interval", JString(x.interval)) ::
-                  JField("Timeout", JString(x.timeout)) ::
-                  JField("ID", optionToValue(x.id)) ::
-                  JField("ServiceID", optionToValue(x.serviceId)) ::
-                  JField("Status", JString(x.status.value)) ::
-                  JField("Notes", optionToValue(x.notes)) ::
-                  JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
-                  JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
-                  JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
-                  :: Nil
+                JField("Name", JString(x.Name)) ::
+                  JField("TCP", JString(x.TCP)) ::
+                  JField("Interval", JString(x.Interval)) ::
+                  JField("Timeout", JString(x.Timeout)) ::
+                  JField("ID", optionToValue(x.ID)) ::
+                  JField("ServiceID", optionToValue(x.ServiceID)) ::
+                  JField("Status", JString(x.Status.value)) ::
+                  JField("Notes", optionToValue(x.Notes)) ::
+                  JField("SuccessBeforePassing", JInt(x.SuccessBeforePassing)) ::
+                  JField("FailuresBeforeCritical", JInt(x.FailuresBeforeCritical)) ::
+                  JField("DeregisterCriticalServiceAfter", optionToValue(x.DeregisterCriticalServiceAfter)) ::
+                  Nil
               )
             case x: TTLCheck =>
               JObject(
-                JField("Name", JString(x.name)) ::
-                  JField("TTL", JString(x.ttl)) ::
-                  JField("ID", optionToValue(x.id)) ::
-                  JField("ServiceID", optionToValue(x.serviceId)) ::
-                  JField("Status", JString(x.status.value)) ::
-                  JField("Notes", optionToValue(x.notes)) ::
-                  JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
-                  :: Nil
+                JField("Name", JString(x.Name)) ::
+                  JField("TTL", JString(x.TTL)) ::
+                  JField("ID", optionToValue(x.ID)) ::
+                  JField("ServiceID", optionToValue(x.ServiceID)) ::
+                  JField("Status", JString(x.Status.value)) ::
+                  JField("Notes", optionToValue(x.Notes)) ::
+                  JField("DeregisterCriticalServiceAfter", optionToValue(x.DeregisterCriticalServiceAfter)) ::
+                  Nil
               )
             case x: DockerCheck =>
               JObject(
-                JField("Name", JString(x.name)) ::
-                  JField("DockerContainerId", JString(x.dockerContainerId)) ::
-                  JField("Shell", JString(x.shell)) ::
-                  JField("Args", JArray(x.args.map(v => JString(v)))) ::
-                  JField("Interval", optionToValue(x.interval)) ::
-                  JField("ID", optionToValue(x.id)) ::
-                  JField("ServiceID", optionToValue(x.serviceId)) ::
-                  JField("Status", JString(x.status.value)) ::
-                  JField("Notes", optionToValue(x.notes)) ::
-                  JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
-                  JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
-                  JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
-                  :: Nil
+                JField("Name", JString(x.Name)) ::
+                  JField("DockerContainerID", JString(x.DockerContainerID)) ::
+                  JField("Shell", JString(x.Shell)) ::
+                  JField("Args", JArray(x.Args.map(v => JString(v)))) ::
+                  JField("Interval", optionToValue(x.Interval)) ::
+                  JField("ID", optionToValue(x.ID)) ::
+                  JField("ServiceID", optionToValue(x.ServiceID)) ::
+                  JField("Status", JString(x.Status.value)) ::
+                  JField("Notes", optionToValue(x.Notes)) ::
+                  JField("SuccessBeforePassing", JInt(x.SuccessBeforePassing)) ::
+                  JField("FailuresBeforeCritical", JInt(x.FailuresBeforeCritical)) ::
+                  JField("DeregisterCriticalServiceAfter", optionToValue(x.DeregisterCriticalServiceAfter)) ::
+                  Nil
               )
             case x: GRpcCheck =>
               JObject(
-                JField("Name", JString(x.name)) ::
-                  JField("GRPC", JString(x.grpc)) ::
-                  JField("GRPCUseTLS", JBool(x.grpcUseTLS)) ::
-                  JField("Interval", optionToValue(x.interval)) ::
-                  JField("ID", optionToValue(x.id)) ::
-                  JField("ServiceID", optionToValue(x.serviceId)) ::
-                  JField("Status", JString(x.status.value)) ::
-                  JField("Notes", optionToValue(x.notes)) ::
-                  JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
-                  JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
-                  JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
-                  :: Nil
+                JField("Name", JString(x.Name)) ::
+                  JField("GRPC", JString(x.GRPC)) ::
+                  JField("GRPCUseTLS", JBool(x.GRPCUseTLS)) ::
+                  JField("Interval", optionToValue(x.Interval)) ::
+                  JField("ID", optionToValue(x.ID)) ::
+                  JField("ServiceID", optionToValue(x.ServiceID)) ::
+                  JField("Status", JString(x.Status.value)) ::
+                  JField("Notes", optionToValue(x.Notes)) ::
+                  JField("SuccessBeforePassing", JInt(x.SuccessBeforePassing)) ::
+                  JField("FailuresBeforeCritical", JInt(x.FailuresBeforeCritical)) ::
+                  JField("DeregisterCriticalServiceAfter", optionToValue(x.DeregisterCriticalServiceAfter)) ::
+                  Nil
               )
             case x: AliasCheck =>
               JObject(
-                JField("ID", JString(x.id)) ::
-                  JField("AliasNode", optionToValue(x.aliasNode)) ::
-                  JField("AliasService", optionToValue(x.aliasService)) :: Nil
+                JField("ID", JString(x.ID)) ::
+                  JField("AliasNode", optionToValue(x.AliasNode)) ::
+                  JField("AliasService", optionToValue(x.AliasService)) ::
+                  Nil
               )
           }
         )
@@ -199,98 +150,99 @@ trait Agent {
           {
             case x: ServiceScriptCheck =>
               JObject(
-                JField("Name", JString(x.name)) ::
-                  JField("Args", JArray(x.args.map(v => JString(v)))) ::
-                  JField("Timeout", optionToValue(x.timeout)) ::
-                  JField("Interval", optionToValue(x.interval)) ::
-                  JField("CheckID", optionToValue(x.checkId)) ::
-                  JField("ServiceID", optionToValue(x.serviceId)) ::
-                  JField("Status", JString(x.status.value)) ::
-                  JField("Notes", optionToValue(x.notes)) ::
-                  JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
-                  :: Nil
+                JField("Name", JString(x.Name)) ::
+                  JField("Args", JArray(x.Args.map(v => JString(v)))) ::
+                  JField("Timeout", optionToValue(x.Timeout)) ::
+                  JField("Interval", optionToValue(x.Interval)) ::
+                  JField("CheckID", optionToValue(x.CheckID)) ::
+                  JField("ServiceID", optionToValue(x.ServiceID)) ::
+                  JField("Status", JString(x.Status.value)) ::
+                  JField("Notes", optionToValue(x.Notes)) ::
+                  JField("DeregisterCriticalServiceAfter", optionToValue(x.DeregisterCriticalServiceAfter)) ::
+                  Nil
               )
             case x: ServiceHttpCheck =>
               JObject(
-                JField("Name", JString(x.name)) ::
-                  JField("HTTP", JString(x.http)) ::
-                  JField("TLSSkipVerify", JBool(x.tlsSkipVerify)) ::
-                  JField("Interval", JString(x.interval)) ::
-                  JField("Timeout", JString(x.timeout)) ::
-                  JField("Header", Extraction.decompose(x.header)) ::
-                  JField("Method", optionToValue(x.method)) ::
-                  JField("Body", optionToValue(x.body)) ::
-                  JField("CheckID", optionToValue(x.checkId)) ::
-                  JField("ServiceID", optionToValue(x.serviceId)) ::
-                  JField("Status", JString(x.status.value)) ::
-                  JField("Notes", optionToValue(x.notes)) ::
-                  JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
-                  JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
-                  JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
-                  :: Nil
+                JField("Name", JString(x.Name)) ::
+                  JField("HTTP", JString(x.HTTP)) ::
+                  JField("TLSSkipVerify", JBool(x.TLSSkipVerify)) ::
+                  JField("Interval", JString(x.Interval)) ::
+                  JField("Timeout", JString(x.Timeout)) ::
+                  JField("Header", Extraction.decompose(x.Header)) ::
+                  JField("Method", optionToValue(x.Method)) ::
+                  JField("Body", optionToValue(x.Body)) ::
+                  JField("CheckID", optionToValue(x.CheckID)) ::
+                  JField("ServiceID", optionToValue(x.ServiceID)) ::
+                  JField("Status", JString(x.Status.value)) ::
+                  JField("Notes", optionToValue(x.Notes)) ::
+                  JField("SuccessBeforePassing", JInt(x.SuccessBeforePassing)) ::
+                  JField("FailuresBeforeCritical", JInt(x.FailuresBeforeCritical)) ::
+                  JField("DeregisterCriticalServiceAfter", optionToValue(x.DeregisterCriticalServiceAfter)) ::
+                  Nil
               )
             case x: ServiceTCPCheck =>
               JObject(
-                JField("Name", JString(x.name)) ::
-                  JField("TCP", JString(x.tcp)) ::
-                  JField("Interval", JString(x.interval)) ::
-                  JField("Timeout", JString(x.timeout)) ::
-                  JField("CheckID", optionToValue(x.checkId)) ::
-                  JField("ServiceID", optionToValue(x.serviceId)) ::
-                  JField("Status", JString(x.status.value)) ::
-                  JField("Notes", optionToValue(x.notes)) ::
-                  JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
-                  JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
-                  JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
-                  :: Nil
+                JField("Name", JString(x.Name)) ::
+                  JField("TCP", JString(x.TCP)) ::
+                  JField("Interval", JString(x.Interval)) ::
+                  JField("Timeout", JString(x.Timeout)) ::
+                  JField("CheckID", optionToValue(x.CheckID)) ::
+                  JField("ServiceID", optionToValue(x.ServiceID)) ::
+                  JField("Status", JString(x.Status.value)) ::
+                  JField("Notes", optionToValue(x.Notes)) ::
+                  JField("SuccessBeforePassing", JInt(x.SuccessBeforePassing)) ::
+                  JField("FailuresBeforeCritical", JInt(x.FailuresBeforeCritical)) ::
+                  JField("DeregisterCriticalServiceAfter", optionToValue(x.DeregisterCriticalServiceAfter)) ::
+                  Nil
               )
             case x: ServiceTTLCheck =>
               JObject(
-                JField("Name", JString(x.name)) ::
-                  JField("TTL", JString(x.ttl)) ::
-                  JField("CheckID", optionToValue(x.checkId)) ::
-                  JField("ServiceID", optionToValue(x.serviceId)) ::
-                  JField("Status", JString(x.status.value)) ::
-                  JField("Notes", optionToValue(x.notes)) ::
-                  JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
-                  :: Nil
+                JField("Name", JString(x.Name)) ::
+                  JField("TTL", JString(x.TTL)) ::
+                  JField("CheckID", optionToValue(x.CheckID)) ::
+                  JField("ServiceID", optionToValue(x.ServiceID)) ::
+                  JField("Status", JString(x.Status.value)) ::
+                  JField("Notes", optionToValue(x.Notes)) ::
+                  JField("DeregisterCriticalServiceAfter", optionToValue(x.DeregisterCriticalServiceAfter)) ::
+                  Nil
               )
             case x: ServiceDockerCheck =>
               JObject(
-                JField("Name", JString(x.name)) ::
-                  JField("DockerContainerId", JString(x.dockerContainerId)) ::
-                  JField("Shell", JString(x.shell)) ::
-                  JField("Args", JArray(x.args.map(v => JString(v)))) ::
-                  JField("Interval", optionToValue(x.interval)) ::
-                  JField("CheckID", optionToValue(x.checkId)) ::
-                  JField("ServiceID", optionToValue(x.serviceId)) ::
-                  JField("Status", JString(x.status.value)) ::
-                  JField("Notes", optionToValue(x.notes)) ::
-                  JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
-                  JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
-                  JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
-                  :: Nil
+                JField("Name", JString(x.Name)) ::
+                  JField("DockerContainerID", JString(x.DockerContainerID)) ::
+                  JField("Shell", JString(x.Shell)) ::
+                  JField("Args", JArray(x.Args.map(v => JString(v)))) ::
+                  JField("Interval", optionToValue(x.Interval)) ::
+                  JField("CheckID", optionToValue(x.CheckID)) ::
+                  JField("ServiceID", optionToValue(x.ServiceID)) ::
+                  JField("Status", JString(x.Status.value)) ::
+                  JField("Notes", optionToValue(x.Notes)) ::
+                  JField("SuccessBeforePassing", JInt(x.SuccessBeforePassing)) ::
+                  JField("FailuresBeforeCritical", JInt(x.FailuresBeforeCritical)) ::
+                  JField("DeregisterCriticalServiceAfter", optionToValue(x.DeregisterCriticalServiceAfter)) ::
+                  Nil
               )
             case x: ServiceGRpcCheck =>
               JObject(
-                JField("Name", JString(x.name)) ::
-                  JField("GRPC", JString(x.grpc)) ::
-                  JField("GRPCUseTLS", JBool(x.grpcUseTLS)) ::
-                  JField("Interval", optionToValue(x.interval)) ::
-                  JField("CheckID", optionToValue(x.checkId)) ::
-                  JField("ServiceID", optionToValue(x.serviceId)) ::
-                  JField("Status", JString(x.status.value)) ::
-                  JField("Notes", optionToValue(x.notes)) ::
-                  JField("SuccessBeforePassing", JInt(x.successBeforePassing)) ::
-                  JField("FailuresBeforeCritical", JInt(x.failuresBeforeCritical)) ::
-                  JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
-                  :: Nil
+                JField("Name", JString(x.Name)) ::
+                  JField("GRPC", JString(x.GRPC)) ::
+                  JField("GRPCUseTLS", JBool(x.GRPCUseTLS)) ::
+                  JField("Interval", optionToValue(x.Interval)) ::
+                  JField("CheckID", optionToValue(x.CheckID)) ::
+                  JField("ServiceID", optionToValue(x.ServiceID)) ::
+                  JField("Status", JString(x.Status.value)) ::
+                  JField("Notes", optionToValue(x.Notes)) ::
+                  JField("SuccessBeforePassing", JInt(x.SuccessBeforePassing)) ::
+                  JField("FailuresBeforeCritical", JInt(x.FailuresBeforeCritical)) ::
+                  JField("DeregisterCriticalServiceAfter", optionToValue(x.DeregisterCriticalServiceAfter)) ::
+                  Nil
               )
             case x: ServiceAliasCheck =>
               JObject(
-                JField("CheckID", JString(x.checkId)) ::
-                  JField("AliasNode", optionToValue(x.aliasNode)) ::
-                  JField("AliasService", optionToValue(x.aliasService)) :: Nil
+                JField("CheckID", JString(x.CheckID)) ::
+                  JField("AliasNode", optionToValue(x.AliasNode)) ::
+                  JField("AliasService", optionToValue(x.AliasService)) ::
+                  Nil
               )
           }
         )
