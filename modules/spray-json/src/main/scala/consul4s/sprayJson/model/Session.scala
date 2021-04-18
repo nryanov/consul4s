@@ -6,7 +6,7 @@ import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 trait Session extends DefaultJsonProtocol { this: Common =>
   implicit val newSessionFormat: RootJsonFormat[NewSession] = jsonFormat7(NewSession.apply)
 
-  implicit val sessionIdFormat: RootJsonFormat[SessionId] = jsonFormat1(SessionId)
+  implicit val sessionIdFormat: RootJsonFormat[SessionId] = jsonFormat(SessionId, "ID")
 
   implicit val sessionInfoFormat: RootJsonFormat[SessionInfo] = jsonFormat10(SessionInfo.apply)
 
