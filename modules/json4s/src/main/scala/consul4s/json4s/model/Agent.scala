@@ -93,24 +93,24 @@ trait Agent {
           {
             case x: ScriptCheck =>
               JObject(
-                JField("Name", JString(x.name)) ::
-                  JField("Args", JArray(x.args.map(v => JString(v)))) ::
-                  JField("Timeout", optionToValue(x.timeout)) ::
-                  JField("Interval", optionToValue(x.interval)) ::
-                  JField("ID", optionToValue(x.id)) ::
-                  JField("ServiceID", optionToValue(x.serviceId)) ::
-                  JField("Status", JString(x.status.value)) ::
-                  JField("Notes", optionToValue(x.notes)) ::
-                  JField("DeregisterCriticalServiceAfter", optionToValue(x.deregisterCriticalServiceAfter))
+                JField("Name", JString(x.Name)) ::
+                  JField("Args", JArray(x.Args.map(v => JString(v)))) ::
+                  JField("Timeout", optionToValue(x.Timeout)) ::
+                  JField("Interval", optionToValue(x.Interval)) ::
+                  JField("ID", optionToValue(x.ID)) ::
+                  JField("ServiceID", optionToValue(x.ServiceID)) ::
+                  JField("Status", JString(x.Status.value)) ::
+                  JField("Notes", optionToValue(x.Notes)) ::
+                  JField("DeregisterCriticalServiceAfter", optionToValue(x.DeregisterCriticalServiceAfter))
                   :: Nil
               )
             case x: HttpCheck =>
               JObject(
-                JField("Name", JString(x.name)) ::
-                  JField("HTTP", JString(x.http)) ::
-                  JField("TLSSkipVerify", JBool(x.tlsSkipVerify)) ::
-                  JField("Interval", JString(x.interval)) ::
-                  JField("Timeout", JString(x.timeout)) ::
+                JField("Name", JString(x.Name)) ::
+                  JField("HTTP", JString(x.HTTP)) ::
+                  JField("TLSSkipVerify", JBool(x.TLSSkipVerify)) ::
+                  JField("Interval", JString(x.Interval)) ::
+                  JField("Timeout", JString(x.Timeout)) ::
                   JField("Header", Extraction.decompose(x.header)) ::
                   JField("Method", optionToValue(x.method)) ::
                   JField("Body", optionToValue(x.body)) ::

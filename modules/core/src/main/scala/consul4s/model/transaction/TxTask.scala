@@ -5,45 +5,45 @@ import consul4s.model.catalog.NewCatalogService
 import consul4s.model.health.NewHealthCheck
 
 final case class TxTask(
-  kv: Option[KVTask] = None,
-  node: Option[NodeTask] = None,
-  service: Option[ServiceTask] = None,
-  check: Option[CheckTask] = None
+  KV: Option[KVTask] = None,
+  Node: Option[NodeTask] = None,
+  Service: Option[ServiceTask] = None,
+  Check: Option[CheckTask] = None
 )
 
 object TxTask {
   final case class KVTask(
-    verb: KVOp,
-    key: String,
-    value: Option[String] = None,
-    flags: Option[Int] = None,
-    index: Option[Int] = None,
-    session: Option[String] = None
+    Verb: KVOp,
+    Key: String,
+    Value: Option[String] = None,
+    Flags: Option[Int] = None,
+    Index: Option[Int] = None,
+    Session: Option[String] = None
   )
 
   final case class ServiceTask(
-    verb: ServiceOp,
-    node: String,
-    service: NewCatalogService
+    Verb: ServiceOp,
+    Node: String,
+    Service: NewCatalogService
   )
 
   final case class NodeTask(
-    verb: NodeOp,
-    node: NodeDefinition
+    Verb: NodeOp,
+    Node: NodeDefinition
   )
 
   final case class NodeDefinition(
-    node: String,
-    address: String,
-    id: Option[String] = None,
-    datacenter: Option[String] = None,
-    taggedAddresses: Option[Map[String, String]] = None,
-    nodeMeta: Option[Map[String, String]] = None
+    Node: String,
+    Address: String,
+    ID: Option[String] = None,
+    Datacenter: Option[String] = None,
+    TaggedAddresses: Option[Map[String, String]] = None,
+    NodeMeta: Option[Map[String, String]] = None
   )
 
   final case class CheckTask(
-    verb: CheckOp,
-    check: NewHealthCheck
+    Verb: CheckOp,
+    Check: NewHealthCheck
   )
 
 }

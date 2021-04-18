@@ -90,16 +90,16 @@ trait Catalog { this: Agent with Health with Common =>
 
   implicit val entityRegistrationEncoder: Encoder[NodeRegistration] = new Encoder[NodeRegistration] {
     override def apply(a: NodeRegistration): Json = Json.obj(
-      ("Node", a.node.asJson),
-      ("Address", a.address.asJson),
-      ("Service", a.service.asJson),
-      ("Check", a.check.asJson),
-      ("Checks", a.checks.asJson),
-      ("ID", a.id.asJson),
-      ("Datacenter", a.datacenter.asJson),
-      ("TaggedAddresses", a.taggedAddresses.asJson),
-      ("NodeMeta", a.nodeMeta.asJson),
-      ("SkipNodeUpdate", a.skipNodeUpdate.asJson)
+      ("Node", a.Node.asJson),
+      ("Address", a.Address.asJson),
+      ("Service", a.Service.asJson),
+      ("Check", a.Check.asJson),
+      ("Checks", a.Checks.asJson),
+      ("ID", a.ID.asJson),
+      ("Datacenter", a.Datacenter.asJson),
+      ("TaggedAddresses", a.TaggedAddresses.asJson),
+      ("NodeMeta", a.NodeMeta.asJson),
+      ("SkipNodeUpdate", a.SkipNodeUpdate.asJson)
     )
   }
 

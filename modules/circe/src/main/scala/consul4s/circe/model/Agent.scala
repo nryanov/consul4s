@@ -48,25 +48,25 @@ trait Agent { this: Common with Health =>
 
   implicit val scriptCheckEncoder: Encoder[ScriptCheck] = new Encoder[ScriptCheck] {
     override def apply(a: ScriptCheck): Json = Json.obj(
-      ("Name", a.name.asJson),
-      ("Args", a.args.asJson),
-      ("Timeout", a.timeout.asJson),
-      ("Interval", a.interval.asJson),
-      ("ID", a.id.asJson),
-      ("ServiceID", a.serviceId.asJson),
-      ("Status", a.status.asJson),
-      ("Notes", a.notes.asJson),
-      ("DeregisterCriticalServiceAfter", a.deregisterCriticalServiceAfter.asJson)
+      ("Name", a.Name.asJson),
+      ("Args", a.Args.asJson),
+      ("Timeout", a.Timeout.asJson),
+      ("Interval", a.Interval.asJson),
+      ("ID", a.ID.asJson),
+      ("ServiceID", a.ServiceID.asJson),
+      ("Status", a.Status.asJson),
+      ("Notes", a.Notes.asJson),
+      ("DeregisterCriticalServiceAfter", a.DeregisterCriticalServiceAfter.asJson)
     )
   }
 
   implicit val httpCheckEncoder: Encoder[HttpCheck] = new Encoder[HttpCheck] {
     override def apply(a: HttpCheck): Json = Json.obj(
-      ("Name", a.name.asJson),
-      ("HTTP", a.http.asJson),
-      ("TLSSkipVerify", a.tlsSkipVerify.asJson),
-      ("Interval", a.interval.asJson),
-      ("Timeout", a.timeout.asJson),
+      ("Name", a.Name.asJson),
+      ("HTTP", a.HTTP.asJson),
+      ("TLSSkipVerify", a.TLSSkipVerify.asJson),
+      ("Interval", a.Interval.asJson),
+      ("Timeout", a.Timeout.asJson),
       ("Header", a.header.asJson),
       ("Method", a.method.asJson),
       ("Body", a.body.asJson),

@@ -42,7 +42,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
     "register, get info and deregister node" in withContainers { consul =>
       val client = createClient(consul)
 
-      val registerNode = NodeRegistration("node", "address", check = Some(NewHealthCheck("node", "nodeCheck")))
+      val registerNode = NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "nodeCheck")))
       val deleteNode = NodeDeregistration("node")
 
       runEither {
@@ -61,7 +61,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
     "register, get info and deregister service" in withContainers { consul =>
       val client = createClient(consul)
 
-      val registerNode = NodeRegistration("node", "address", service = Some(NewCatalogService("testService")))
+      val registerNode = NodeRegistration("node", "address", Service = Some(NewCatalogService("testService")))
       val deleteNode = NodeDeregistration("node")
 
       runEither {
@@ -80,7 +80,7 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
     "register, get info about node and deregister" in withContainers { consul =>
       val client = createClient(consul)
 
-      val registerNode = NodeRegistration("node", "address", service = Some(NewCatalogService("testService")))
+      val registerNode = NodeRegistration("node", "address", Service = Some(NewCatalogService("testService")))
       val deleteNode = NodeDeregistration("node")
 
       runEither {
@@ -92,8 +92,8 @@ abstract class CatalogBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: J
           result3 <- client.getListOfNodeServices("node").body
           result4 <- client.getMapOfNodeServices("node").body
         } yield {
-          assert(result1.exists(_.node.node == "node") && result1.exists(_.services.exists(_.service == "testService")))
-          assert(result2.exists(_.node.node == "node") && result2.exists(_.services.contains("testService")))
+          assert(result1.exists(_.Node.node == "node") && result1.exists(_.Services.exists(_.service == "testService")))
+          assert(result2.exists(_.Node.node == "node") && result2.exists(_.Services.contains("testService")))
           assert(result3.isEmpty)
           assert(result4.isEmpty)
         }

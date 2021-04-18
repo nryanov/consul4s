@@ -198,11 +198,11 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
           _ <- client.deregisterAgentService("testService").body
           servicesAfterDeletion <- client.getAgentServices().body
         } yield {
-          assert(aggregatedServiceInfoById.exists(_.service == expectedService))
-          assert(aggregatedServiceInfoByName.exists(_.exists(_.service == expectedService)))
+          assert(aggregatedServiceInfoById.exists(_.Service == expectedService))
+          assert(aggregatedServiceInfoByName.exists(_.exists(_.Service == expectedService)))
 
-          assert(aggregatedServiceInfoById.exists(_.checks.length == 3))
-          assert(aggregatedServiceInfoByName.exists(_.exists(_.checks.length == 3)))
+          assert(aggregatedServiceInfoById.exists(_.Checks.length == 3))
+          assert(aggregatedServiceInfoByName.exists(_.exists(_.Checks.length == 3)))
 
           assert(services.contains("testService"))
           assert(!servicesAfterDeletion.contains("testService"))
@@ -235,8 +235,8 @@ abstract class AgentBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: Jso
           _ <- client.deregisterAgentService("testService").body
           servicesAfterDeletion <- client.getAgentServices().body
         } yield {
-          assert(aggregatedServiceInfoById.exists(_.service == expectedService))
-          assert(aggregatedServiceInfoById.exists(_.aggregatedStatus == CheckStatus.Maintenance))
+          assert(aggregatedServiceInfoById.exists(_.Service == expectedService))
+          assert(aggregatedServiceInfoById.exists(_.AggregatedStatus == CheckStatus.Maintenance))
 
           assert(services.contains("testService"))
           assert(!servicesAfterDeletion.contains("testService"))

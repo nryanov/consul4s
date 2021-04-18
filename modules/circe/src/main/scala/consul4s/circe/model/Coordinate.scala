@@ -18,8 +18,8 @@ trait Coordinate {
 
   implicit val nodeCoordinateEncoder: Encoder[NodeCoordinate] = new Encoder[NodeCoordinate] {
     override def apply(a: NodeCoordinate): Json = Json.obj(
-      ("Node", a.node.asJson),
-      ("Coord", a.coord.asJson)
+      ("Node", a.Node.asJson),
+      ("Coord", a.Coord.asJson)
     )
   }
 

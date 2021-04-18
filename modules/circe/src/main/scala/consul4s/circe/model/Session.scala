@@ -53,7 +53,7 @@ trait Session { this: Common =>
 
   implicit val sessionIdEncoder: Encoder[SessionId] = new Encoder[SessionId] {
     override def apply(a: SessionId): Json = Json.obj(
-      ("ID", a.id.asJson)
+      ("ID", a.ID.asJson)
     )
   }
 }
