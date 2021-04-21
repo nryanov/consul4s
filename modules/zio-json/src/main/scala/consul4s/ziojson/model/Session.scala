@@ -1,10 +1,14 @@
 package consul4s.ziojson.model
 
 import consul4s.model.session._
-import zio.json.{DeriveJsonCodec, JsonCodec}
+import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder}
 
 trait Session { this: Common =>
-  implicit val sessionInfoCodec: JsonCodec[SessionInfo] = DeriveJsonCodec.gen[SessionInfo]
-  implicit val newSessionInfoCodec: JsonCodec[NewSession] = DeriveJsonCodec.gen[NewSession]
-  implicit val sessionIdCodec: JsonCodec[SessionId] = DeriveJsonCodec.gen[SessionId]
+  implicit val sessionInfoEncoder: JsonEncoder[SessionInfo] = DeriveJsonEncoder.gen[SessionInfo]
+  implicit val newSessionInfoEncoder: JsonEncoder[NewSession] = DeriveJsonEncoder.gen[NewSession]
+  implicit val sessionIdEncoder: JsonEncoder[SessionId] = DeriveJsonEncoder.gen[SessionId]
+
+  implicit val sessionInfoCodec: JsonDecoder[SessionInfo] = DeriveJsonDecoder.gen[SessionInfo]
+  implicit val newSessionInfoCodec: JsonDecoder[NewSession] = DeriveJsonDecoder.gen[NewSession]
+  implicit val sessionIdCodec: JsonDecoder[SessionId] = DeriveJsonDecoder.gen[SessionId]
 }
