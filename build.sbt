@@ -22,6 +22,7 @@ def priorTo2_13(scalaVersion: String): Boolean =
   }
 
 lazy val buildSettings = Seq(
+  sonatypeProfileName := "com.nryanov",
   organization := "com.nryanov.consul4s",
   homepage := Some(url("https://github.com/nryanov/consul4s")),
   licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
