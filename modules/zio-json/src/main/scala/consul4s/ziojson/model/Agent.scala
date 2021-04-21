@@ -1,7 +1,7 @@
 package consul4s.ziojson.model
 
 import consul4s.model.agent._
-import zio.json.{DeriveJsonCodec, JsonCodec}
+import zio.json.{DeriveJsonCodec, DeriveJsonDecoder, DeriveJsonEncoder, JsonCodec, JsonDecoder, JsonEncoder}
 
 trait Agent { this: Common with Health =>
   implicit val scriptCheckCodec: JsonCodec[ScriptCheck] = DeriveJsonCodec.gen[ScriptCheck]
@@ -23,7 +23,8 @@ trait Agent { this: Common with Health =>
   implicit val memberInfoCodec: JsonCodec[MemberInfo] = DeriveJsonCodec.gen[MemberInfo]
   implicit val checkUpdateCodec: JsonCodec[CheckUpdate] = DeriveJsonCodec.gen[CheckUpdate]
   implicit val serviceCodec: JsonCodec[Service] = DeriveJsonCodec.gen[Service]
-  implicit val newServiceCodec: JsonCodec[NewService] = DeriveJsonCodec.gen[NewService]
+  implicit val newServiceEncoder: JsonEncoder[NewService] = DeriveJsonEncoder.gen[NewService]
+  implicit val newServiceDecoder: JsonDecoder[NewService] = DeriveJsonDecoder.gen[NewService]
   implicit val aggregatedServiceStatusCodec: JsonCodec[AggregatedServiceStatus] = DeriveJsonCodec.gen[AggregatedServiceStatus]
   implicit val tokenCodec: JsonCodec[Token] = DeriveJsonCodec.gen[Token]
   implicit val upstreamDestTypeCodec: JsonCodec[UpstreamDestType] = JsonCodec.string.xmap(v => UpstreamDestType.withValue(v), _.value)

@@ -3,7 +3,7 @@ package consul4s.ziojson.model
 import consul4s.model.transaction.TxResults._
 import consul4s.model.transaction.TxTask._
 import consul4s.model.transaction._
-import zio.json.{DeriveJsonCodec, JsonCodec}
+import zio.json.{DeriveJsonCodec, DeriveJsonDecoder, DeriveJsonEncoder, JsonCodec, JsonDecoder, JsonEncoder}
 
 trait Transaction { this: Common with Agent with Health with KV with Catalog =>
   implicit val kvOpCodec: JsonCodec[KVOp] = JsonCodec.string.xmap(v => KVOp.withValue(v), _.value)
@@ -18,6 +18,8 @@ trait Transaction { this: Common with Agent with Health with KV with Catalog =>
   implicit val checkTaskCodec: JsonCodec[CheckTask] = DeriveJsonCodec.gen[CheckTask]
   implicit val nodeDefinitionCodec: JsonCodec[NodeDefinition] = DeriveJsonCodec.gen[NodeDefinition]
   implicit val nodeTaskCodec: JsonCodec[NodeTask] = DeriveJsonCodec.gen[NodeTask]
-  implicit val serviceTaskCodec: JsonCodec[ServiceTask] = DeriveJsonCodec.gen[ServiceTask]
-  implicit val TxTaskCodec: JsonCodec[TxTask] = DeriveJsonCodec.gen[TxTask]
+  implicit val serviceTaskEncoder: JsonEncoder[ServiceTask] = DeriveJsonEncoder.gen[ServiceTask]
+  implicit val serviceTaskDecoder: JsonDecoder[ServiceTask] = DeriveJsonDecoder.gen[ServiceTask]
+  implicit val txTaskEncoder: JsonEncoder[TxTask] = DeriveJsonEncoder.gen[TxTask]
+  implicit val txTaskDecoder: JsonDecoder[TxTask] = DeriveJsonDecoder.gen[TxTask]
 }

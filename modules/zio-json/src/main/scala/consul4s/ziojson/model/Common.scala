@@ -8,6 +8,8 @@ trait Common {
   implicit val checkStatusCodec: JsonCodec[CheckStatus] = JsonCodec.string.xmap(v => CheckStatus.withValue(v), _.value)
   implicit val serviceKindCodec: JsonCodec[ServiceKind] = JsonCodec.string.xmap(v => ServiceKind.withValue(v), _.value)
   implicit val sessionBehaviorCodec: JsonCodec[SessionBehavior] = JsonCodec.string.xmap(v => SessionBehavior.withValue(v), _.value)
-  implicit val weightsCodec: JsonCodec[Weights] = DeriveJsonCodec.gen[Weights]
-  implicit val taggedAddressCodec: JsonCodec[TaggedAddress] = DeriveJsonCodec.gen[TaggedAddress]
+//  implicit val weightsCodec: JsonCodec[Weights] = DeriveJsonCodec.gen[Weights]
+  implicit val weightsCodec: JsonCodec[Weights] = null
+//  implicit val taggedAddressCodec: JsonCodec[TaggedAddress] = DeriveJsonCodec.gen[TaggedAddress]
+  implicit val taggedAddressCodec: JsonCodec[TaggedAddress] = null
 }
