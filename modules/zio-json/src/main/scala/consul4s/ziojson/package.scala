@@ -13,7 +13,7 @@ import consul4s.model.transaction.{TxResults, TxTask}
 import sttp.client3._
 import sttp.client3.ziojson._
 import consul4s.ziojson.model._
-import zio.json.{EncoderOps, JsonCodec}
+import zio.json.EncoderOps
 
 import scala.util.control.NoStackTrace
 
@@ -45,7 +45,7 @@ package object ziojson
   private val allowedCodes = Set(200, 429, 503)
 
   private def asJsonMappedError[A](implicit
-    reader: zio.json.JsonDecoder[A]
+    decoder: zio.json.JsonDecoder[A]
   ): ResponseAs[Either[ConsulResponseError, A], Any] =
     asJson[A].mapLeft {
       case err @ HttpError(_, _)                 => err
@@ -53,7 +53,7 @@ package object ziojson
     }
 
   private def asJsonOption404[A](implicit
-    reader: JsonCodec[Option[A]]
+    decoder: zio.json.JsonDecoder[Option[A]]
   ): ResponseAs[Either[ConsulResponseError, Option[A]], Any] =
     asStringAlways.mapWithMetadata { (str, meta) =>
       if (meta.isSuccess) {
@@ -66,7 +66,7 @@ package object ziojson
     }
 
   private def asJsonOption404Extended[A](implicit
-    reader: JsonCodec[Option[A]]
+    decoder: zio.json.JsonDecoder[Option[A]]
   ): ResponseAs[Either[ConsulResponseError, Option[A]], Any] =
     asStringAlways.mapWithMetadata { (str, meta) =>
       if (allowedCodes.contains(meta.code.code)) {
@@ -78,7 +78,9 @@ package object ziojson
       }
     }
 
-  private def asJson200or409[A: JsonCodec]: ResponseAs[Either[ConsulResponseError, A], Any] =
+  private def asJson200or409[A](implicit
+    decoder: zio.json.JsonDecoder[A]
+  ): ResponseAs[Either[ConsulResponseError, A], Any] =
     asStringAlways.mapWithMetadata { (str, meta) =>
       if (meta.code.code == 200 || meta.code.code == 409) {
         deserializeJson[A].apply(str).fold(err => Left(DeserializationException(str, ParsingError(err))), res => Right(res))
