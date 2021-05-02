@@ -17,17 +17,7 @@ import zio.json.EncoderOps
 
 import scala.util.control.NoStackTrace
 
-package object ziojson
-    extends Agent
-    with Catalog
-    with Common
-    with Event
-    with Health
-    with KV
-    with Transaction
-    with Session
-    with Coordinate
-    with Query {
+package object ziojson extends PrimitiveTypes with SimpleTypes with ComplexTypes with DeepComplexTypes {
 
   final case class ParsingError(msg: String) extends Exception(msg) with NoStackTrace
   implicit val showParsingError: ShowError[ParsingError] = new ShowError[ParsingError] {
