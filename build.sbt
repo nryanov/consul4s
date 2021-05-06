@@ -16,6 +16,7 @@ val scala2_13 = "2.13.5"
 val compileAndTest = "compile->compile;test->test"
 
 lazy val buildSettings = Seq(
+  sonatypeProfileName := "com.nryanov",
   organization := "com.nryanov.consul4s",
   homepage := Some(url("https://github.com/nryanov/consul4s")),
   licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
