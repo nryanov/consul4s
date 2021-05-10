@@ -1,8 +1,8 @@
 lazy val refinedVersion = "0.9.24"
 lazy val sttpClientVersion = "3.3.1"
 lazy val kindProjectorVersion = "0.11.3"
-lazy val circeVersion = "0.13.0"
 lazy val json4sVersion = "3.6.11"
+lazy val paradiseVersion = "2.1.1"
 lazy val enumeratumVersion = "1.6.1"
 lazy val slf4jApiVersion = "1.7.30"
 
@@ -14,6 +14,12 @@ val scala2_12 = "2.12.13"
 val scala2_13 = "2.13.5"
 
 val compileAndTest = "compile->compile;test->test"
+
+def priorTo2_13(scalaVersion: String): Boolean =
+  CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, minor)) if minor < 13 => true
+    case _                              => false
+  }
 
 lazy val buildSettings = Seq(
   sonatypeProfileName := "com.nryanov",
@@ -77,7 +83,29 @@ lazy val commonSettings = Seq(
   Test / parallelExecution := false
 )
 
-lazy val allSettings = commonSettings ++ buildSettings
+lazy val macroSettings = Seq(
+  libraryDependencies ++= Seq(
+    scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
+    scalaOrganization.value % "scala-reflect" % scalaVersion.value % Provided
+  ) ++ (
+    if (priorTo2_13(scalaVersion.value)) {
+      Seq(
+        compilerPlugin(
+          ("org.scalamacros" % "paradise" % paradiseVersion).cross(CrossVersion.full)
+        )
+      )
+    } else Nil
+  ),
+  scalacOptions ++= {
+    if (priorTo2_13(scalaVersion.value)) {
+      Nil
+    } else {
+      Seq("-Ymacro-annotations")
+    }
+  }
+)
+
+lazy val allSettings = commonSettings ++ buildSettings ++ macroSettings
 
 lazy val consul4s = project
   .in(file("."))
@@ -88,7 +116,8 @@ lazy val consul4s = project
     core,
     circe,
     json4s,
-    sprayJson
+    sprayJson,
+    zioJson
   )
 
 lazy val core = project
@@ -136,6 +165,17 @@ lazy val sprayJson = project
   .settings(
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client3" %% "spray-json" % sttpClientVersion
+    )
+  )
+  .dependsOn(core % compileAndTest)
+
+lazy val zioJson = project
+  .in(file("modules/zio-json"))
+  .settings(moduleName := "consul4s-zio-json")
+  .settings(allSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.softwaremill.sttp.client3" %% "zio-json" % sttpClientVersion
     )
   )
   .dependsOn(core % compileAndTest)
