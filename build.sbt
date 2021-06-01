@@ -1,5 +1,5 @@
 lazy val refinedVersion = "0.9.26"
-lazy val sttpClientVersion = "3.3.4"
+lazy val sttpClientVersion = "3.3.5"
 lazy val kindProjectorVersion = "0.13.0"
 lazy val circeVersion = "0.13.0"
 lazy val json4sVersion = "3.6.11"
