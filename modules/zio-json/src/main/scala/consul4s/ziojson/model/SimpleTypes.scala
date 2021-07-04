@@ -21,50 +21,13 @@ trait SimpleTypes extends PrimitiveTypes {
   implicit val checkUpdateEncoder: JsonEncoder[CheckUpdate] = DeriveJsonEncoder.gen[CheckUpdate]
   implicit val checkUpdateDecoder: JsonDecoder[CheckUpdate] = DeriveJsonDecoder.gen[CheckUpdate]
 
-  implicit val scriptCheckEncoder: JsonEncoder[ScriptCheck] = DeriveJsonEncoder.gen[ScriptCheck]
-  implicit val scriptCheckDecoder: JsonDecoder[ScriptCheck] = DeriveJsonDecoder.gen[ScriptCheck]
+  implicit val checkEncoder: JsonEncoder[Check] = DeriveJsonEncoder.gen[CheckRepr].contramap[Check](v => CheckRepr.fromCheck(v))
+  implicit val checkDecoder: JsonDecoder[Check] = DeriveJsonDecoder.gen[CheckRepr].map(v => CheckRepr.toCheck(v)).<>()
 
-  implicit val httpCheckEncoder: JsonEncoder[HttpCheck] = DeriveJsonEncoder.gen[HttpCheck]
-  implicit val httpCheckDecoder: JsonDecoder[HttpCheck] = DeriveJsonDecoder.gen[HttpCheck]
-
-  implicit val tcpCheckEncoder: JsonEncoder[TCPCheck] = DeriveJsonEncoder.gen[TCPCheck]
-  implicit val tcpCheckDecoder: JsonDecoder[TCPCheck] = DeriveJsonDecoder.gen[TCPCheck]
-
-  implicit val ttlCheckEncoder: JsonEncoder[TTLCheck] = DeriveJsonEncoder.gen[TTLCheck]
-  implicit val ttlCheckDecoder: JsonDecoder[TTLCheck] = DeriveJsonDecoder.gen[TTLCheck]
-
-  implicit val dockerCheckEncoder: JsonEncoder[DockerCheck] = DeriveJsonEncoder.gen[DockerCheck]
-  implicit val dockerCheckDecoder: JsonDecoder[DockerCheck] = DeriveJsonDecoder.gen[DockerCheck]
-
-  implicit val grpcCheckEncoder: JsonEncoder[GRpcCheck] = DeriveJsonEncoder.gen[GRpcCheck]
-  implicit val grpcCheckDecoder: JsonDecoder[GRpcCheck] = DeriveJsonDecoder.gen[GRpcCheck]
-
-  implicit val checkEncoder: JsonEncoder[Check] = DeriveJsonEncoder.gen[Check]
-  implicit val checkDecoder: JsonDecoder[Check] = DeriveJsonDecoder.gen[Check]
-
-  implicit val serviceScriptCheckEncoder: JsonEncoder[ServiceScriptCheck] = DeriveJsonEncoder.gen[ServiceScriptCheck]
-  implicit val serviceScriptCheckDecoder: JsonDecoder[ServiceScriptCheck] = DeriveJsonDecoder.gen[ServiceScriptCheck]
-
-  implicit val serviceHttpCheckEncoder: JsonEncoder[ServiceHttpCheck] = DeriveJsonEncoder.gen[ServiceHttpCheck]
-  implicit val serviceHttpCheckDecoder: JsonDecoder[ServiceHttpCheck] = DeriveJsonDecoder.gen[ServiceHttpCheck]
-
-  implicit val serviceTCPCheckEncoder: JsonEncoder[ServiceTCPCheck] = DeriveJsonEncoder.gen[ServiceTCPCheck]
-  implicit val serviceTCPCheckDecoder: JsonDecoder[ServiceTCPCheck] = DeriveJsonDecoder.gen[ServiceTCPCheck]
-
-  implicit val serviceTTLCheckEncoder: JsonEncoder[ServiceTTLCheck] = DeriveJsonEncoder.gen[ServiceTTLCheck]
-  implicit val serviceTTLCheckDecoder: JsonDecoder[ServiceTTLCheck] = DeriveJsonDecoder.gen[ServiceTTLCheck]
-
-  implicit val serviceDockerCheckEncoder: JsonEncoder[ServiceDockerCheck] = DeriveJsonEncoder.gen[ServiceDockerCheck]
-  implicit val serviceDockerCheckDecoder: JsonDecoder[ServiceDockerCheck] = DeriveJsonDecoder.gen[ServiceDockerCheck]
-
-  implicit val serviceGRpcCheckEncoder: JsonEncoder[ServiceGRpcCheck] = DeriveJsonEncoder.gen[ServiceGRpcCheck]
-  implicit val serviceGRpcCheckDecoder: JsonDecoder[ServiceGRpcCheck] = DeriveJsonDecoder.gen[ServiceGRpcCheck]
-
-  implicit val serviceAliasCheckEncoder: JsonEncoder[ServiceAliasCheck] = DeriveJsonEncoder.gen[ServiceAliasCheck]
-  implicit val serviceAliasCheckDecoder: JsonDecoder[ServiceAliasCheck] = DeriveJsonDecoder.gen[ServiceAliasCheck]
-
-  implicit val serviceCheckEncoder: JsonEncoder[ServiceCheck] = DeriveJsonEncoder.gen[ServiceCheck]
-  implicit val serviceCheckDecoder: JsonDecoder[ServiceCheck] = DeriveJsonDecoder.gen[ServiceCheck]
+  implicit val serviceCheckEncoder: JsonEncoder[ServiceCheck] =
+    DeriveJsonEncoder.gen[ServiceCheckRepr].contramap[ServiceCheck](v => ServiceCheckRepr.fromServiceCheck(v))
+  implicit val serviceCheckDecoder: JsonDecoder[ServiceCheck] =
+    DeriveJsonDecoder.gen[ServiceCheckRepr].map(v => ServiceCheckRepr.toServiceCheck(v))
 
   implicit val nodeCoordinateEncoder: JsonEncoder[NodeCoordinate] = DeriveJsonEncoder.gen[NodeCoordinate]
   implicit val nodeCoordinateDecoder: JsonDecoder[NodeCoordinate] = DeriveJsonDecoder.gen[NodeCoordinate]

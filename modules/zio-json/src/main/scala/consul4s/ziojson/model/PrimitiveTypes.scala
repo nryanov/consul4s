@@ -1,7 +1,7 @@
 package consul4s.ziojson.model
 
 import consul4s.model.{CheckStatus, ServiceKind, SessionBehavior}
-import consul4s.model.agent.{AliasCheck, MemberInfo, TaggedAddress, Token, UpstreamDestType, Weights}
+import consul4s.model.agent.{AliasCheck, MemberInfo, ServiceAliasCheck, TaggedAddress, Token, UpstreamDestType, Weights}
 import consul4s.model.catalog.{Node, NodeDeregistration}
 import consul4s.model.coordinate.NodeCoordinate.Coord
 import consul4s.model.event.UserEvent
@@ -84,7 +84,4 @@ trait PrimitiveTypes {
 
   implicit val nodeDefinitionEncoder: JsonEncoder[NodeDefinition] = DeriveJsonEncoder.gen[NodeDefinition]
   implicit val nodeDefinitionDecoder: JsonDecoder[NodeDefinition] = DeriveJsonDecoder.gen[NodeDefinition]
-
-  implicit val aliasCheckEncoder: JsonEncoder[AliasCheck] = DeriveJsonEncoder.gen[AliasCheck]
-  implicit val aliasCheckDecoder: JsonDecoder[AliasCheck] = DeriveJsonDecoder.gen[AliasCheck]
 }
