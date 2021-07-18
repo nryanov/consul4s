@@ -70,7 +70,6 @@ lazy val scala213CompilerOptions = Seq(
 
 lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
-//    "org.slf4j" % "slf4j-api" % slf4jApiVersion,
     "org.scalatest" %% "scalatest" % scalaTestVersion % Test
   ),
   scalacOptions ++= compilerOptions(scalaVersion.value),
@@ -87,6 +86,7 @@ lazy val consul4s = project
   .settings(noPublish)
   .aggregate(
     core,
+    examples,
     circe,
     json4s,
     sprayJson
