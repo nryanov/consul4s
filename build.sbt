@@ -12,6 +12,7 @@ lazy val logbackVersion = "1.2.3"
 
 val scala2_12 = "2.12.14"
 val scala2_13 = "2.13.6"
+val scala3 = "3.0.1"
 
 val compileAndTest = "compile->compile;test->test"
 
@@ -29,7 +30,7 @@ lazy val buildSettings = Seq(
     )
   ),
   scalaVersion := scala2_13,
-  crossScalaVersions := Seq(scala2_12, scala2_13)
+  crossScalaVersions := Seq(scala2_12, scala2_13, scala3)
 )
 
 lazy val noPublish = Seq(
@@ -69,7 +70,7 @@ lazy val scala213CompilerOptions = Seq(
 
 lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
-    "org.slf4j" % "slf4j-api" % slf4jApiVersion,
+//    "org.slf4j" % "slf4j-api" % slf4jApiVersion,
     "org.scalatest" %% "scalatest" % scalaTestVersion % Test
   ),
   scalacOptions ++= compilerOptions(scalaVersion.value),
