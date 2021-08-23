@@ -7,7 +7,7 @@ lazy val enumeratumVersion = "1.7.0"
 lazy val slf4jApiVersion = "1.7.31"
 
 lazy val scalaTestVersion = "3.2.9"
-lazy val testContainersVersion = "0.39.5"
+lazy val testContainersVersion = "0.39.6"
 lazy val logbackVersion = "1.2.3"
 
 val scala2_12 = "2.12.14"
