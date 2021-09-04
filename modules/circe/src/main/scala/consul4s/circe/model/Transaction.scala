@@ -13,9 +13,11 @@ import io.circe.syntax._
 
 trait Transaction { this: Common with Agent with Health with KV with Catalog =>
   implicit val kvOpDecoder: Decoder[KVOp] = new Decoder[KVOp] {
-    override def apply(c: HCursor): Result[KVOp] = for {
-      value <- c.as[String]
-    } yield KVOp.withValue(value)
+    override def apply(c: HCursor): Result[KVOp] =
+      c.as[String].flatMap {
+        case KVOp(value) => Right(value)
+        case str         => Left(DecodingFailure(s"Can't convert $str to KVOp", c.history))
+      }
   }
 
   implicit val kvOpEncoder: Encoder[KVOp] = new Encoder[KVOp] {
@@ -23,9 +25,11 @@ trait Transaction { this: Common with Agent with Health with KV with Catalog =>
   }
 
   implicit val checkOpDecoder: Decoder[CheckOp] = new Decoder[CheckOp] {
-    override def apply(c: HCursor): Result[CheckOp] = for {
-      value <- c.as[String]
-    } yield CheckOp.withValue(value)
+    override def apply(c: HCursor): Result[CheckOp] =
+      c.as[String].flatMap {
+        case CheckOp(value) => Right(value)
+        case str            => Left(DecodingFailure(s"Can't convert $str to CheckOp", c.history))
+      }
   }
 
   implicit val checkOpEncoder: Encoder[CheckOp] = new Encoder[CheckOp] {
@@ -33,9 +37,11 @@ trait Transaction { this: Common with Agent with Health with KV with Catalog =>
   }
 
   implicit val nodeOpDecoder: Decoder[NodeOp] = new Decoder[NodeOp] {
-    override def apply(c: HCursor): Result[NodeOp] = for {
-      value <- c.as[String]
-    } yield NodeOp.withValue(value)
+    override def apply(c: HCursor): Result[NodeOp] =
+      c.as[String].flatMap {
+        case NodeOp(value) => Right(value)
+        case str           => Left(DecodingFailure(s"Can't convert $str to NodeOp", c.history))
+      }
   }
 
   implicit val nodeOpEncoder: Encoder[NodeOp] = new Encoder[NodeOp] {
@@ -43,9 +49,11 @@ trait Transaction { this: Common with Agent with Health with KV with Catalog =>
   }
 
   implicit val serviceOpDecoder: Decoder[ServiceOp] = new Decoder[ServiceOp] {
-    override def apply(c: HCursor): Result[ServiceOp] = for {
-      value <- c.as[String]
-    } yield ServiceOp.withValue(value)
+    override def apply(c: HCursor): Result[ServiceOp] =
+      c.as[String].flatMap {
+        case ServiceOp(value) => Right(value)
+        case str              => Left(DecodingFailure(s"Can't convert $str to ServiceOp", c.history))
+      }
   }
 
   implicit val serviceOpEncoder: Encoder[ServiceOp] = new Encoder[ServiceOp] {

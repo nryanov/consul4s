@@ -88,8 +88,12 @@ trait Agent extends DefaultJsonProtocol { this: Health with Catalog with Common 
     override def write(obj: UpstreamDestType): JsValue = JsString(obj.value)
 
     override def read(json: JsValue): UpstreamDestType = json match {
-      case JsString(value) => UpstreamDestType.withValue(value)
-      case _               => deserializationError("UpstreamDestType expected")
+      case JsString(value) =>
+        value match {
+          case UpstreamDestType(r) => r
+          case _                   => deserializationError(s"Can't convert $value to UpstreamDestType")
+        }
+      case _ => deserializationError("UpstreamDestType expected")
     }
   }
 }

@@ -1,9 +1,7 @@
-lazy val refinedVersion = "0.9.27"
 lazy val sttpClientVersion = "3.3.14"
 lazy val kindProjectorVersion = "0.13.2"
 lazy val circeVersion = "0.13.0"
 lazy val json4sVersion = "4.0.3"
-lazy val enumeratumVersion = "1.7.0"
 
 lazy val scalaTestVersion = "3.2.9"
 lazy val testContainersVersion = "0.39.7"
@@ -97,9 +95,7 @@ lazy val core = project
   .settings(moduleName := "consul4s-core")
   .settings(
     libraryDependencies ++= Seq(
-      "eu.timepit" %% "refined" % refinedVersion,
       "com.softwaremill.sttp.client3" %% "core" % sttpClientVersion,
-      "com.beachape" %% "enumeratum" % enumeratumVersion,
       "com.softwaremill.sttp.client3" %% "slf4j-backend" % sttpClientVersion % Test,
       "com.dimafeng" %% "testcontainers-scala" % testContainersVersion % Test,
       "ch.qos.logback" % "logback-classic" % logbackVersion % Test
@@ -147,7 +143,9 @@ lazy val examples = project
   .settings(noPublish)
   .settings(
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpClientVersion
+      "org.typelevel" %% "cats-effect" % "3.2.5",
+      "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpClientVersion,
+      "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % sttpClientVersion
     )
   )
   .dependsOn(core, circe)

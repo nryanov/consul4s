@@ -1,11 +1,14 @@
 package consul4s
 
-import enumeratum.values._
+sealed abstract class ConsistencyMode(val value: String)
 
-sealed abstract class ConsistencyMode(val value: String) extends StringEnumEntry
-
-object ConsistencyMode extends StringEnum[ConsistencyMode] {
-  val values = findValues
+object ConsistencyMode {
+  def unapply(v: String): Option[ConsistencyMode] = v match {
+    case "default"    => Some(Default)
+    case "consistent" => Some(Consistent)
+    case "stale"      => Some(Stale)
+    case _            => None
+  }
 
   /**
    * If not specified, the default is strongly consistent in almost all cases. However, there is a small window in which a new leader may be

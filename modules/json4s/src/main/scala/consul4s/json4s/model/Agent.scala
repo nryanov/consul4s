@@ -10,7 +10,10 @@ trait Agent {
       extends CustomSerializer[UpstreamDestType](implicit format =>
         (
           { case JString(value) =>
-            UpstreamDestType.withValue(value)
+            value match {
+              case UpstreamDestType(result) => result
+              case _                        => throw new MappingException(s"Can't convert $value to UpstreamDestType")
+            }
           },
           { case op: UpstreamDestType =>
             JString(op.value)
