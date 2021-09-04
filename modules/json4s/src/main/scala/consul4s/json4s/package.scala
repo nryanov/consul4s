@@ -50,12 +50,9 @@ package object json4s
   }
 
   /**
-   * Used only for /agent/health/service/name/:serviceName and /agent/health/service/id/:serviceId
-   * 200	All healthchecks of every matching service instance are passing
-   * 400	Bad parameter (missing service name of id)
-   * 404	No such service id or name
-   * 429	Some healthchecks are passing, at least one is warning
-   * 503	At least one of the healthchecks is critical
+   * Used only for /agent/health/service/name/:serviceName and /agent/health/service/id/:serviceId 200 All healthchecks of every matching
+   * service instance are passing 400 Bad parameter (missing service name of id) 404 No such service id or name 429 Some healthchecks are
+   * passing, at least one is warning 503 At least one of the healthchecks is critical
    */
   private val allowedCodes = Set(200, 429, 503)
 

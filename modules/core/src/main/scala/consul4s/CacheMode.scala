@@ -11,7 +11,7 @@ case object NoCache extends CacheMode
 final case class SimpleCache(cacheControlHeader: Option[String] = None) extends CacheMode
 
 /**
- * HTTP Cache-Control headers are ignored in this mode since the cache is being actively updated and
- * has different semantics to a typical passive cache
+ * HTTP Cache-Control headers are ignored in this mode since the cache is being actively updated and has different semantics to a typical
+ * passive cache
  */
 case object BackgroundRefreshCache extends CacheMode

@@ -7,9 +7,11 @@ import sttp.client3._
 trait Coordinate[F[_]] { this: ConsulApi[F] =>
 
   /**
-   * GET	/coordinate/datacenters
-   * @param token - consul token
-   * @return - This endpoint returns the WAN network coordinates for all Consul servers, organized by datacenters.
+   * GET /coordinate/datacenters
+   * @param token
+   *   - consul token
+   * @return
+   *   - This endpoint returns the WAN network coordinates for all Consul servers, organized by datacenters.
    */
   def getDatacenterCoordinates(token: Option[String] = None): F[Result[List[DatacenterCoordinate]]] = {
     val requestTemplate = basicRequest.get(uri"$url/coordinate/datacenters")
@@ -19,12 +21,16 @@ trait Coordinate[F[_]] { this: ConsulApi[F] =>
   }
 
   /**
-   * GET	/coordinate/nodes
-   * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
-   * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
-   * @param consistencyMode - see [[ConsistencyMode]]
-   * @param token - consul token
-   * @return - This endpoint returns the LAN network coordinates for all nodes in a given datacenter.
+   * GET /coordinate/nodes
+   * @param dc
+   *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
+   *   URL as a query parameter. Using this across datacenters is not recommended.
+   * @param consistencyMode
+   *   - see [[ConsistencyMode]]
+   * @param token
+   *   - consul token
+   * @return
+   *   - This endpoint returns the LAN network coordinates for all nodes in a given datacenter.
    */
   def getNodeCoordinates(
     dc: Option[String] = None,
@@ -38,13 +44,18 @@ trait Coordinate[F[_]] { this: ConsulApi[F] =>
   }
 
   /**
-   * GET	/coordinate/node/:node
-   * @param node - node id
-   * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
-   * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
-   * @param consistencyMode - see [[ConsistencyMode]]
-   * @param token - consul token
-   * @return - This endpoint returns the LAN network coordinates for the given node.
+   * GET /coordinate/node/:node
+   * @param node
+   *   - node id
+   * @param dc
+   *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
+   *   URL as a query parameter. Using this across datacenters is not recommended.
+   * @param consistencyMode
+   *   - see [[ConsistencyMode]]
+   * @param token
+   *   - consul token
+   * @return
+   *   - This endpoint returns the LAN network coordinates for the given node.
    */
   def getNodeCoordinate(
     node: String,
@@ -59,13 +70,16 @@ trait Coordinate[F[_]] { this: ConsulApi[F] =>
   }
 
   /**
-   * PUT	/coordinate/update
-   * This endpoint updates the LAN network coordinates for a node in a given datacenter.
-   * @param nodeCoordinate - new coordinates
-   * @param dc - Specifies the datacenter to query. This will default to the datacenter of the agent being queried.
-   * This is specified as part of the URL as a query parameter. Using this across datacenters is not recommended.
-   * @param token - consul token
-   * @return - unit
+   * PUT /coordinate/update This endpoint updates the LAN network coordinates for a node in a given datacenter.
+   * @param nodeCoordinate
+   *   - new coordinates
+   * @param dc
+   *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
+   *   URL as a query parameter. Using this across datacenters is not recommended.
+   * @param token
+   *   - consul token
+   * @return
+   *   - unit
    */
   def updateNodeCoordinate(nodeCoordinate: NodeCoordinate, dc: Option[String] = None, token: Option[String] = None): F[Result[Unit]] = {
     val requestTemplate = basicRequest.put(uri"$url/coordinate/update?dc=$dc")
