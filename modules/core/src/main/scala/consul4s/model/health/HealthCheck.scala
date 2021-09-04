@@ -14,7 +14,8 @@ import HealthCheck._
  * @param ServiceName
  * @param ServiceTags
  * @param Type
- * @param Definition - The Definition field can be provided with details for a TCP or HTTP health check.
+ * @param Definition
+ *   - The Definition field can be provided with details for a TCP or HTTP health check.
  * @param CreateIndex
  * @param ModifyIndex
  */
