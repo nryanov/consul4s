@@ -13,7 +13,7 @@ trait Session[F[_]] { this: ConsulApi[F] =>
    *   - session definition
    * @param dc
    *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
-   *   URL as a query parameter. Using this across datacenters is not recommended.
+   *     URL as a query parameter. Using this across datacenters is not recommended.
    * @param token
    *   - consul token
    * @return
@@ -33,7 +33,7 @@ trait Session[F[_]] { this: ConsulApi[F] =>
    *   - session ID
    * @param dc
    *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
-   *   URL as a query parameter. Using this across datacenters is not recommended.
+   *     URL as a query parameter. Using this across datacenters is not recommended.
    * @param token
    *   - consul token
    * @return
@@ -52,7 +52,7 @@ trait Session[F[_]] { this: ConsulApi[F] =>
    *   - session id
    * @param dc
    *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
-   *   URL as a query parameter. Using this across datacenters is not recommended.
+   *     URL as a query parameter. Using this across datacenters is not recommended.
    * @param consistencyMode
    *   - see [[ConsistencyMode]]
    * @param token
@@ -78,7 +78,7 @@ trait Session[F[_]] { this: ConsulApi[F] =>
    *   - Specifies the name or ID of the node to query. This is required and is specified as part of the URL path.
    * @param dc
    *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
-   *   URL as a query parameter. Using this across datacenters is not recommended.
+   *     URL as a query parameter. Using this across datacenters is not recommended.
    * @param consistencyMode
    *   - see [[ConsistencyMode]]
    * @param token
@@ -102,7 +102,7 @@ trait Session[F[_]] { this: ConsulApi[F] =>
    * GET /session/list This endpoint returns the list of active sessions.
    * @param dc
    *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
-   *   URL as a query parameter. Using this across datacenters is not recommended.
+   *     URL as a query parameter. Using this across datacenters is not recommended.
    * @param consistencyMode
    *   - see [[ConsistencyMode]]
    * @param token
@@ -128,7 +128,7 @@ trait Session[F[_]] { this: ConsulApi[F] =>
    *   - Specifies the UUID of the session to renew. This is required and is specified as part of the URL path.
    * @param dc
    *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
-   *   URL as a query parameter. Using this across datacenters is not recommended.
+   *     URL as a query parameter. Using this across datacenters is not recommended.
    * @param token
    *   - consul token
    * @return

@@ -24,7 +24,7 @@ trait Coordinate[F[_]] { this: ConsulApi[F] =>
    * GET /coordinate/nodes
    * @param dc
    *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
-   *   URL as a query parameter. Using this across datacenters is not recommended.
+   *     URL as a query parameter. Using this across datacenters is not recommended.
    * @param consistencyMode
    *   - see [[ConsistencyMode]]
    * @param token
@@ -49,7 +49,7 @@ trait Coordinate[F[_]] { this: ConsulApi[F] =>
    *   - node id
    * @param dc
    *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
-   *   URL as a query parameter. Using this across datacenters is not recommended.
+   *     URL as a query parameter. Using this across datacenters is not recommended.
    * @param consistencyMode
    *   - see [[ConsistencyMode]]
    * @param token
@@ -75,7 +75,7 @@ trait Coordinate[F[_]] { this: ConsulApi[F] =>
    *   - new coordinates
    * @param dc
    *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
-   *   URL as a query parameter. Using this across datacenters is not recommended.
+   *     URL as a query parameter. Using this across datacenters is not recommended.
    * @param token
    *   - consul token
    * @return

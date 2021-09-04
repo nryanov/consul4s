@@ -10,7 +10,7 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
    * GET /agent/members
    * @param wan
    *   - Specifies to list WAN members instead of the LAN members (which is the default). This is only eligible for agents running in server
-   *   mode. This is specified as part of the URL as a query parameter.
+   *     mode. This is specified as part of the URL as a query parameter.
    * @param token
    *   - consul token
    * @return
@@ -44,8 +44,8 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
    *   - Specifies whether to enable or disable maintenance mode. This is specified as part of the URL as a query string parameter.
    * @param reason
    *   - Specifies a text string explaining the reason for placing the node into maintenance mode. This is simply to aid human operators. If
-   *   no reason is provided, a default value will be used instead. This is specified as part of the URL as a query string parameter, and,
-   *   as such, must be URI-encoded.
+   *     no reason is provided, a default value will be used instead. This is specified as part of the URL as a query string parameter, and,
+   *     as such, must be URI-encoded.
    * @param token
    *   - consul token
    */
@@ -62,7 +62,7 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
    *   - Specifies the address of the other agent to join. This is specified as part of the URL.
    * @param wan
    *   - Specifies to list WAN members instead of the LAN members (which is the default). This is only eligible for agents running in server
-   *   mode. This is specified as part of the URL as a query parameter.
+   *     mode. This is specified as part of the URL as a query parameter.
    * @param token
    *   - consul token
    * @return
@@ -317,7 +317,7 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
    *   - service definition
    * @param replaceExistingChecks
    *   - Missing healthchecks from the request will be deleted from the agent. Using this parameter allows to idempotently register a
-   *   service and its checks without having to manually deregister checks.
+   *     service and its checks without having to manually deregister checks.
    * @param token
    *   - consul token
    */
@@ -356,8 +356,8 @@ trait Agent[F[_]] { this: ConsulApi[F] =>
    *   - Specifies whether to enable or disable maintenance mode. This is specified as part of the URL as a query string parameter.
    * @param reason
    *   - Specifies a text string explaining the reason for placing the node into maintenance mode. This is simply to aid human operators. If
-   *   no reason is provided, a default value will be used instead. This is specified as part of the URL as a query string parameter, and,
-   *   as such, must be URI-encoded.
+   *     no reason is provided, a default value will be used instead. This is specified as part of the URL as a query string parameter, and,
+   *     as such, must be URI-encoded.
    * @param token
    *   - consul token
    */

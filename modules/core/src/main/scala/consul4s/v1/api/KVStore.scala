@@ -15,7 +15,7 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
    *   - Specifies the path of the key to read.
    * @param dc
    *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
-   *   URL as a query parameter. Using this across datacenters is not recommended.
+   *     URL as a query parameter. Using this across datacenters is not recommended.
    * @param consistencyMode
    *   - see [[ConsistencyMode]]
    * @param token
@@ -41,7 +41,7 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
    *   - Specifies the path of the key to read.
    * @param dc
    *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
-   *   URL as a query parameter. Using this across datacenters is not recommended.
+   *     URL as a query parameter. Using this across datacenters is not recommended.
    * @param consistencyMode
    *   - see [[ConsistencyMode]]
    * @param token
@@ -67,10 +67,10 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
    *   - Specifies the path of the key to read.
    * @param dc
    *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
-   *   URL as a query parameter. Using this across datacenters is not recommended.
+   *     URL as a query parameter. Using this across datacenters is not recommended.
    * @param separator
    *   - Specifies the string to use as a separator for recursive key lookups. This option is only used when paired with the keys parameter
-   *   to limit the prefix of keys returned, only up to the given separator. This is specified as part of the URL as a query parameter.
+   *     to limit the prefix of keys returned, only up to the given separator. This is specified as part of the URL as a query parameter.
    * @param consistencyMode
    *   - see [[ConsistencyMode]]
    * @param token
@@ -97,7 +97,7 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
    *   - Specifies the path of the key to read.
    * @param dc
    *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
-   *   URL as a query parameter. Using this across datacenters is not recommended.
+   *     URL as a query parameter. Using this across datacenters is not recommended.
    * @param consistencyMode
    *   - see [[ConsistencyMode]]
    * @param token
@@ -133,25 +133,25 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
    *   - The payload is arbitrary, and is loaded directly into Consul as supplied.
    * @param dc
    *   - Specifies the datacenter to query. This will default to the datacenter of the agent being queried. This is specified as part of the
-   *   URL as a query parameter. Using this across datacenters is not recommended.
+   *     URL as a query parameter. Using this across datacenters is not recommended.
    * @param flags
    *   - Specifies an unsigned value between 0 and pow(2, 64)-1. Clients can choose to use this however makes sense for their application.
-   *   This is specified as part of the URL as a query parameter.
+   *     This is specified as part of the URL as a query parameter.
    * @param cas
    *   - Specifies to use a Check-And-Set operation. This is very useful as a building block for more complex synchronization primitives. If
-   *   the index is 0, Consul will only put the key if it does not already exist. If the index is non-zero, the key is only set if the index
-   *   matches the ModifyIndex of that key.
+   *     the index is 0, Consul will only put the key if it does not already exist. If the index is non-zero, the key is only set if the
+   *     index matches the ModifyIndex of that key.
    * @param acquire
    *   - Supply a session ID to use in a lock acquisition operation. This is useful as it allows leader election to be built on top of
-   *   Consul. If the lock is not held and the session is valid, this increments the LockIndex and sets the Session value of the key in
-   *   addition to updating the key contents. A key does not need to exist to be acquired. If the lock is already held by the given session,
-   *   then the LockIndex is not incremented but the key contents are updated. This lets the current lock holder update the key contents
-   *   without having to give up the lock and reacquire it. Note that an update that does not include the acquire parameter will proceed
-   *   normally even if another session has locked the key.
+   *     Consul. If the lock is not held and the session is valid, this increments the LockIndex and sets the Session value of the key in
+   *     addition to updating the key contents. A key does not need to exist to be acquired. If the lock is already held by the given
+   *     session, then the LockIndex is not incremented but the key contents are updated. This lets the current lock holder update the key
+   *     contents without having to give up the lock and reacquire it. Note that an update that does not include the acquire parameter will
+   *     proceed normally even if another session has locked the key.
    * @param release
    *   - Supply a session ID to use in a release operation. This is useful when paired with ?acquire= as it allows clients to yield a lock.
-   *   This will leave the LockIndex unmodified but will clear the associated Session of the key. The key must be held by this session to be
-   *   unlocked.
+   *     This will leave the LockIndex unmodified but will clear the associated Session of the key. The key must be held by this session to
+   *     be unlocked.
    * @param token
    *   - consul token
    * @return
@@ -183,8 +183,8 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
    *   - Specifies the path of the key to read.
    * @param cas
    *   - Specifies to use a Check-And-Set operation. This is very useful as a building block for more complex synchronization primitives. If
-   *   the index is 0, Consul will only put the key if it does not already exist. If the index is non-zero, the key is only set if the index
-   *   matches the ModifyIndex of that key.
+   *     the index is 0, Consul will only put the key if it does not already exist. If the index is non-zero, the key is only set if the
+   *     index matches the ModifyIndex of that key.
    * @param token
    *   - consul token
    * @return
@@ -203,8 +203,8 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
    *   - Specifies the path of the key to delete.
    * @param cas
    *   - Specifies to use a Check-And-Set operation. This is very useful as a building block for more complex synchronization primitives. If
-   *   the index is 0, Consul will only put the key if it does not already exist. If the index is non-zero, the key is only set if the index
-   *   matches the ModifyIndex of that key.
+   *     the index is 0, Consul will only put the key if it does not already exist. If the index is non-zero, the key is only set if the
+   *     index matches the ModifyIndex of that key.
    * @param token
    *   - consul token
    * @return
