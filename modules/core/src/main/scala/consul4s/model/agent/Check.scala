@@ -252,7 +252,7 @@ final case class DockerCheck(
  *     runs every 30 seconds, so it may take slightly longer than the configured timeout to trigger the deregistration. This should
  *     generally be configured with a timeout that's much, much longer than any expected recoverable outage for the given service.
  */
-final case class GRpcCheck(
+final case class GrpcCheck(
   Name: String,
   GRPC: String,
   GRPCUseTLS: Boolean,
