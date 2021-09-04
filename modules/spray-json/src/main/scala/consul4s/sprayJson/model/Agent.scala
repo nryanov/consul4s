@@ -24,7 +24,7 @@ trait Agent extends DefaultJsonProtocol { this: Health with Catalog with Common 
 
   implicit val dockerCheckFormat: RootJsonFormat[DockerCheck] = jsonFormat12(DockerCheck.apply)
 
-  implicit val gRpcCheckFormat: RootJsonFormat[GRpcCheck] = jsonFormat11(GRpcCheck.apply)
+  implicit val gRpcCheckFormat: RootJsonFormat[GrpcCheck] = jsonFormat11(GrpcCheck.apply)
 
   implicit val aliasCheckFormat: RootJsonFormat[AliasCheck] = jsonFormat3(AliasCheck.apply)
 
@@ -37,7 +37,7 @@ trait Agent extends DefaultJsonProtocol { this: Health with Catalog with Common 
           case v: TCPCheck    => v.toJson
           case v: TTLCheck    => v.toJson
           case v: DockerCheck => v.toJson
-          case v: GRpcCheck   => v.toJson
+          case v: GrpcCheck   => v.toJson
           case v: AliasCheck  => v.toJson
         }).asJsObject.fields
       )
@@ -55,7 +55,7 @@ trait Agent extends DefaultJsonProtocol { this: Health with Catalog with Common 
 
   implicit val serviceDockerCheckFormat: RootJsonFormat[ServiceDockerCheck] = jsonFormat12(ServiceDockerCheck.apply)
 
-  implicit val serviceGRpcCheckFormat: RootJsonFormat[ServiceGRpcCheck] = jsonFormat11(ServiceGRpcCheck.apply)
+  implicit val serviceGrpcCheckFormat: RootJsonFormat[ServiceGrpcCheck] = jsonFormat11(ServiceGrpcCheck.apply)
 
   implicit val serviceAliasCheckFormat: RootJsonFormat[ServiceAliasCheck] =
     jsonFormat3(ServiceAliasCheck.apply)
@@ -69,7 +69,7 @@ trait Agent extends DefaultJsonProtocol { this: Health with Catalog with Common 
           case v: ServiceTCPCheck    => v.toJson
           case v: ServiceTTLCheck    => v.toJson
           case v: ServiceDockerCheck => v.toJson
-          case v: ServiceGRpcCheck   => v.toJson
+          case v: ServiceGrpcCheck   => v.toJson
           case v: ServiceAliasCheck  => v.toJson
         }).asJsObject.fields
       )

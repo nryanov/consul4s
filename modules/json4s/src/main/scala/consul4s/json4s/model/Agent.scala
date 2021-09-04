@@ -115,7 +115,7 @@ trait Agent {
                   JField("DeregisterCriticalServiceAfter", optionToValue(x.DeregisterCriticalServiceAfter)) ::
                   Nil
               )
-            case x: GRpcCheck =>
+            case x: GrpcCheck =>
               JObject(
                 JField("Name", JString(x.Name)) ::
                   JField("GRPC", JString(x.GRPC)) ::
@@ -222,7 +222,7 @@ trait Agent {
                   JField("DeregisterCriticalServiceAfter", optionToValue(x.DeregisterCriticalServiceAfter)) ::
                   Nil
               )
-            case x: ServiceGRpcCheck =>
+            case x: ServiceGrpcCheck =>
               JObject(
                 JField("Name", JString(x.Name)) ::
                   JField("GRPC", JString(x.GRPC)) ::
