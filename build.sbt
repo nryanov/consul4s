@@ -1,5 +1,4 @@
 lazy val sttpClientVersion = "3.3.14"
-lazy val kindProjectorVersion = "0.13.2"
 lazy val circeVersion = "0.13.0"
 lazy val json4sVersion = "4.0.3"
 
@@ -70,7 +69,6 @@ lazy val commonSettings = Seq(
     "org.scalatest" %% "scalatest" % scalaTestVersion % Test
   ),
   scalacOptions ++= compilerOptions(scalaVersion.value),
-  addCompilerPlugin(("org.typelevel" %% "kind-projector" % kindProjectorVersion).cross(CrossVersion.full)),
   Test / parallelExecution := false
 )
 
