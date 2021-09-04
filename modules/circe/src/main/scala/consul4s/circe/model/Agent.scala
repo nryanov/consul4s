@@ -125,8 +125,8 @@ trait Agent { this: Common with Health =>
     )
   }
 
-  implicit val gRPCCheckEncoder: Encoder[GRpcCheck] = new Encoder[GRpcCheck] {
-    override def apply(a: GRpcCheck): Json = Json.obj(
+  implicit val gRpcCheckEncoder: Encoder[GrpcCheck] = new Encoder[GrpcCheck] {
+    override def apply(a: GrpcCheck): Json = Json.obj(
       ("Name", a.Name.asJson),
       ("GRPC", a.GRPC.asJson),
       ("GRPCUseTLS", a.GRPCUseTLS.asJson),
@@ -155,7 +155,7 @@ trait Agent { this: Common with Health =>
     case v: TCPCheck    => v.asJson
     case v: TTLCheck    => v.asJson
     case v: DockerCheck => v.asJson
-    case v: GRpcCheck   => v.asJson
+    case v: GrpcCheck   => v.asJson
     case v: AliasCheck  => v.asJson
   }
 
@@ -238,8 +238,8 @@ trait Agent { this: Common with Health =>
     )
   }
 
-  implicit val serviceGRPCCheckEncoder: Encoder[ServiceGRpcCheck] = new Encoder[ServiceGRpcCheck] {
-    override def apply(a: ServiceGRpcCheck): Json = Json.obj(
+  implicit val serviceGrpcCheckEncoder: Encoder[ServiceGrpcCheck] = new Encoder[ServiceGrpcCheck] {
+    override def apply(a: ServiceGrpcCheck): Json = Json.obj(
       ("Name", a.Name.asJson),
       ("GRPC", a.GRPC.asJson),
       ("GRPCUseTLS", a.GRPCUseTLS.asJson),
@@ -268,7 +268,7 @@ trait Agent { this: Common with Health =>
     case v: ServiceTCPCheck    => v.asJson
     case v: ServiceTTLCheck    => v.asJson
     case v: ServiceDockerCheck => v.asJson
-    case v: ServiceGRpcCheck   => v.asJson
+    case v: ServiceGrpcCheck   => v.asJson
     case v: ServiceAliasCheck  => v.asJson
   }
 
