@@ -1,12 +1,12 @@
 lazy val refinedVersion = "0.9.27"
-lazy val sttpClientVersion = "3.3.14"
+lazy val sttpClientVersion = "3.3.15"
 lazy val kindProjectorVersion = "0.13.2"
 lazy val circeVersion = "0.13.0"
 lazy val json4sVersion = "4.0.3"
 lazy val enumeratumVersion = "1.7.0"
 
-lazy val scalaTestVersion = "3.2.9"
-lazy val testContainersVersion = "0.39.8"
+lazy val scalaTestVersion = "3.2.10"
+lazy val testContainersVersion = "0.39.7"
 lazy val logbackVersion = "1.2.3"
 
 val scala2_12 = "2.12.14"
