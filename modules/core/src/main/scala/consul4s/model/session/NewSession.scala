@@ -4,9 +4,9 @@ import consul4s.model.SessionBehavior
 
 /**
  * @param Node
- *   - Specifies the duration for the lock delay. This must be greater than 0. Example: "15s"
- * @param LockDelay
  *   - Specifies the name of the node. This must refer to a node that is already registered.
+ * @param LockDelay
+ *   - Specifies the duration for the lock delay. This must be greater than 0. Example: "15s"*
  * @param Name
  *   - Specifies a human-readable name for the session.
  * @param ID
@@ -23,7 +23,7 @@ import consul4s.model.SessionBehavior
  *     values (> 1 hour) should be avoided.
  */
 final case class NewSession(
-  Node: String,
+  Node: Option[String],
   LockDelay: String,
   Name: Option[String] = None,
   ID: Option[String] = None,
