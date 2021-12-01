@@ -13,7 +13,26 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
   "session api" should {
     "create session" in withContainers { consul =>
       val client = createClient(consul)
-      val session = NewSession("node", "15s")
+      val session = NewSession(Some("node"), "15s")
+
+      runEitherEventually {
+        for {
+          // node should exist
+          _ <- client
+            .registerEntity(
+              NodeRegistration("node", "address", Check = Some(NewHealthCheck("node", "serfHealth", Status = Some(CheckStatus.Passing))))
+            )
+            .body
+          sessionId <- client.createSession(session).body
+          sessionList <- client.getListOfActiveSessions(consistencyMode = ConsistencyMode.Consistent).body
+          _ <- client.deregisterEntity(NodeDeregistration("node")).body
+        } yield assert(sessionList.exists(_.ID == sessionId.ID))
+      }
+    }
+
+    "create session without specifying node" in withContainers { consul =>
+      val client = createClient(consul)
+      val session = NewSession(Node = None, "15s")
 
       runEitherEventually {
         for {
@@ -32,7 +51,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
 
     "create session and list sessions for specific node" in withContainers { consul =>
       val client = createClient(consul)
-      val session = NewSession("node", "15s")
+      val session = NewSession(Some("node"), "15s")
 
       runEitherEventually {
         for {
@@ -55,7 +74,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
 
     "create session and get session info" in withContainers { consul =>
       val client = createClient(consul)
-      val session = NewSession("node", "15s")
+      val session = NewSession(Some("node"), "15s")
 
       runEitherEventually {
         for {
@@ -74,7 +93,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
 
     "create session, get session info and delete" in withContainers { consul =>
       val client = createClient(consul)
-      val session = NewSession("node", "15s")
+      val session = NewSession(Some("node"), "15s")
 
       runEitherEventually {
         for {
@@ -98,7 +117,7 @@ class SessionBaseSpec(implicit jsonDecoder: JsonDecoder, jsonEncoder: JsonEncode
 
     "create and renew session" in withContainers { consul =>
       val client = createClient(consul)
-      val session = NewSession("node", "15s")
+      val session = NewSession(Some("node"), "15s")
 
       runEitherEventually {
         for {
