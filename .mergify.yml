@@ -1,0 +1,18 @@
+pull_request_rules:
+  - name: assign and label scala-steward's PRs
+    conditions:
+      - author=scala-steward
+    actions:
+      label:
+        add: [dependency-update]
+  - name: automatically merge Scala Steward PRs on CI success
+    conditions:
+      - author=scala-steward
+      - "status-success=scalafmt (adopt@1.11, 2.13.6)"
+      - "status-success=Scala 2.12.14, Java adopt@1.8"
+      - "status-success=Scala 2.13.6, Java adopt@1.8"
+      - "status-success=Scala 2.12.14, Java adopt@1.11 "
+      - "status-success=Scala 2.13.6, Java adopt@1.11"
+    actions:
+      merge:
+        method: merge
