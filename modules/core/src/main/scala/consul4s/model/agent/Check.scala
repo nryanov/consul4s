@@ -64,7 +64,7 @@ final case class ScriptCheck(
  * @param Method
  *   - Specifies the frequency at which to run this check. This is required for HTTP and TCP checks.
  * @param Body
- *   - - Specifies a timeout for outgoing connections in the case of a Script, HTTP, TCP, or gRPC check. Can be specified in the form of
+ *   - \- Specifies a timeout for outgoing connections in the case of a Script, HTTP, TCP, or gRPC check. Can be specified in the form of
  *     "10s" or "5m" (i.e., 10 seconds or 5 minutes, respectively).
  * @param ID
  *   - Specifies a unique ID for this check on the node. This defaults to the "Name" parameter, but it may be necessary to provide an ID for
