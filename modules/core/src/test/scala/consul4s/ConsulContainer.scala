@@ -6,7 +6,7 @@ import org.testcontainers.containers.wait.strategy.HttpWaitStrategy
 class ConsulContainer(underlying: GenericContainer) extends GenericContainer(underlying) {}
 
 object ConsulContainer {
-  val waitStrategy = new HttpWaitStrategy().forPort(8500)
+  val waitStrategy = new HttpWaitStrategy.forPort(8500)
 
   case class Def()
       extends GenericContainer.Def[ConsulContainer](

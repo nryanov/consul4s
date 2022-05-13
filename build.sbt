@@ -52,8 +52,8 @@ def compilerOptions(scalaVersion: String) = Seq(
   "-language:existentials",
   "-language:postfixOps"
 ) ++ (CrossVersion.partialVersion(scalaVersion) match {
-  case Some((2, scalaMajor)) if scalaMajor == 12 => scala212CompilerOptions
-  case Some((2, scalaMajor)) if scalaMajor == 13 => scala213CompilerOptions
+  case Some(2, scalaMajor) if scalaMajor == 12 => scala212CompilerOptions
+  case Some(2, scalaMajor) if scalaMajor == 13 => scala213CompilerOptions
 })
 
 lazy val scala212CompilerOptions = Seq(
