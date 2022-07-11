@@ -9,7 +9,7 @@ pull_request_rules:
     conditions:
       - author=scala-steward
       - "status-success=scalafmt (adopt@1.11, 2.13.8)"
-      - "status-success=Scala 2.12.15, Java adopt@1.11 "
+      - "status-success=Scala 2.12.16, Java adopt@1.11 "
       - "status-success=Scala 2.13.8, Java adopt@1.11"
     actions:
       merge:
