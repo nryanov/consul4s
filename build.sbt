@@ -5,7 +5,7 @@ lazy val circeVersion = "0.13.0"
 lazy val json4sVersion = "4.0.5"
 lazy val enumeratumVersion = "1.7.0"
 
-lazy val scalaTestVersion = "3.2.13"
+lazy val scalaTestVersion = "3.2.14"
 lazy val testContainersVersion = "0.40.10"
 lazy val logbackVersion = "1.4.1"
 
