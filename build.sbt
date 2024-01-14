@@ -11,7 +11,7 @@ lazy val logbackVersion = "1.4.14"
 
 val scala2_12 = "2.12.14"
 val scala2_13 = "2.13.12"
-val scala3 = "3.3.0"
+val scala3 = "3.0.1"
 
 val compileAndTest = "compile->compile;test->test"
 
@@ -55,6 +55,7 @@ def compilerOptions(scalaVersion: String) = Seq(
 ) ++ (CrossVersion.partialVersion(scalaVersion) match {
   case Some((2, scalaMajor)) if scalaMajor == 12 => scala212CompilerOptions
   case Some((2, scalaMajor)) if scalaMajor == 13 => scala213CompilerOptions
+  case Some((3, _))                              => scala3CompilerOptions
 })
 
 lazy val scala212CompilerOptions = Seq(
@@ -65,6 +66,9 @@ lazy val scala212CompilerOptions = Seq(
 
 lazy val scala213CompilerOptions = Seq(
   "-Wunused:imports"
+)
+
+lazy val scala3CompilerOptions = Seq(
 )
 
 lazy val commonSettings = Seq(
