@@ -152,7 +152,7 @@ lazy val examples = project
   .settings(noPublish)
   .settings(
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "cats-effect" % "3.2.5",
+      "org.typelevel" %% "cats-effect" % "3.2.9",
       "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpClientVersion,
       "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % sttpClientVersion
     )
