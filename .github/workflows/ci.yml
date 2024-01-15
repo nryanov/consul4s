@@ -48,8 +48,8 @@ jobs:
       - name: Run circe-tests
         run: sbt ++${{ matrix.scala }} circe/test
 
-      - name: Run json4s-tests
-        run: sbt ++${{ matrix.scala }} json4s/test
-
       - name: Run sprayJson-tests
         run: sbt ++${{ matrix.scala }} sprayJson/test
+
+      - name: Run json4s-tests
+        run: sbt ++${{ matrix.scala }} json4s/test
