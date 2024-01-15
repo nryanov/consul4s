@@ -27,13 +27,13 @@ jobs:
       - name: scalafmt
         run: sbt ++${{ matrix.scala }} scalafmtCheckAll
 
-  test:
+  test-scala2:
     name: Scala ${{ matrix.scala }}, Java ${{ matrix.java }}
     strategy:
       fail-fast: false
       matrix:
         java: [adopt@1.11]
-        scala: [2.12.15, 2.13.8, 3.3.1]
+        scala: [2.12.15, 2.13.8]
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
@@ -53,3 +53,24 @@ jobs:
 
       - name: Run sprayJson-tests
         run: sbt ++${{ matrix.scala }} sprayJson/test
+
+  test-scala3:
+    name: Scala ${{ matrix.scala }}, Java ${{ matrix.java }}
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [adopt@1.11]
+        scala: [3.3.1]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v2
+
+      - name: Set up Java and Scala
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: ${{ matrix.java }}
+
+      - name: Run circe-tests
+        run: sbt ++${{ matrix.scala }} circe/test
