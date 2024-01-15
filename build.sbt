@@ -125,7 +125,7 @@ lazy val json4s = project
   .settings(allSettings)
   .settings(
     libraryDependencies ++= Seq(
-      ("com.softwaremill.sttp.client3" %% "json4s" % sttpClientVersion).cross(CrossVersion.for3Use2_13),
+      "com.softwaremill.sttp.client3" %% "json4s" % sttpClientVersion,
       ("org.json4s" %% "json4s-jackson" % json4sVersion).cross(CrossVersion.for3Use2_13)
     )
   )
@@ -137,7 +137,7 @@ lazy val sprayJson = project
   .settings(allSettings)
   .settings(
     libraryDependencies ++= Seq(
-      ("com.softwaremill.sttp.client3" %% "spray-json" % sttpClientVersion).cross(CrossVersion.for3Use2_13)
+      "com.softwaremill.sttp.client3" %% "spray-json" % sttpClientVersion
     )
   )
   .dependsOn(core % compileAndTest)
