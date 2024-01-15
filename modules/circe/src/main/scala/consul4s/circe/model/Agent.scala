@@ -9,9 +9,11 @@ import io.circe.Decoder.Result
 
 trait Agent { this: Common with Health =>
   implicit val upstreamDestTypeDecoder: Decoder[UpstreamDestType] = new Decoder[UpstreamDestType] {
-    override def apply(c: HCursor): Result[UpstreamDestType] = for {
-      value <- c.as[String]
-    } yield UpstreamDestType.withValue(value)
+    override def apply(c: HCursor): Result[UpstreamDestType] =
+      c.as[String].flatMap {
+        case UpstreamDestType(value) => Right(value)
+        case str                     => Left(DecodingFailure(s"Can't convert $str to UpstreamDestType", c.history))
+      }
   }
 
   implicit val upstreamDestTypeEncoder: Encoder[UpstreamDestType] = new Encoder[UpstreamDestType] {

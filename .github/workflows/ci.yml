@@ -27,7 +27,7 @@ jobs:
       - name: scalafmt
         run: sbt ++${{ matrix.scala }} scalafmtCheckAll
 
-  test:
+  test-scala2:
     name: Scala ${{ matrix.scala }}, Java ${{ matrix.java }}
     strategy:
       fail-fast: false
@@ -46,16 +46,31 @@ jobs:
           java-version: ${{ matrix.java }}
 
       - name: Run circe-tests
-        run: sbt ++${{ matrix.scala }} coverage circe/test
+        run: sbt ++${{ matrix.scala }} circe/test
 
       - name: Run json4s-tests
-        run: sbt ++${{ matrix.scala }} coverage json4s/test
+        run: sbt ++${{ matrix.scala }} json4s/test
 
       - name: Run sprayJson-tests
-        run: sbt ++${{ matrix.scala }} coverage sprayJson/test
+        run: sbt ++${{ matrix.scala }} sprayJson/test
 
-      - name: Coverage Report
-        run: sbt coverageReport
+  test-scala3:
+    name: Scala ${{ matrix.scala }}, Java ${{ matrix.java }}
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [adopt@1.11]
+        scala: [3.3.1]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v2
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+      - name: Set up Java and Scala
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: ${{ matrix.java }}
+
+      - name: Run circe-tests
+        run: sbt ++${{ matrix.scala }} circe/test

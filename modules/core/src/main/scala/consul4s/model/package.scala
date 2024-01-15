@@ -1,13 +1,18 @@
 package consul4s
 
-import enumeratum.values._
-
 package object model {
 
-  sealed abstract class CheckStatus(val value: String) extends StringEnumEntry
+  sealed abstract class CheckStatus(val value: String)
 
-  object CheckStatus extends StringEnum[CheckStatus] {
-    val values = findValues
+  object CheckStatus {
+    def unapply(v: String): Option[CheckStatus] = v match {
+      case "any"         => Some(Any)
+      case "passing"     => Some(Passing)
+      case "warning"     => Some(Warning)
+      case "critical"    => Some(Critical)
+      case "maintenance" => Some(Maintenance)
+      case _             => None
+    }
 
     case object Any extends CheckStatus("any")
 
@@ -20,10 +25,16 @@ package object model {
     case object Maintenance extends CheckStatus("maintenance")
   }
 
-  sealed abstract class ServiceKind(val value: String) extends StringEnumEntry
+  sealed abstract class ServiceKind(val value: String)
 
-  object ServiceKind extends StringEnum[ServiceKind] {
-    val values = findValues
+  object ServiceKind {
+    def unapply(v: String): Option[ServiceKind] = v match {
+      case ""                => Some(Typical)
+      case "connect-proxy"   => Some(ConnectProxy)
+      case "mesh-gateway"    => Some(MeshGateway)
+      case "ingress-gateway" => Some(IngressGateway)
+      case _                 => None
+    }
 
     case object Typical extends ServiceKind("")
 
@@ -34,10 +45,14 @@ package object model {
     case object IngressGateway extends ServiceKind("ingress-gateway")
   }
 
-  sealed abstract class SessionBehavior(val value: String) extends StringEnumEntry
+  sealed abstract class SessionBehavior(val value: String)
 
-  object SessionBehavior extends StringEnum[SessionBehavior] {
-    val values = findValues
+  object SessionBehavior {
+    def unapply(v: String): Option[SessionBehavior] = v match {
+      case "release" => Some(Release)
+      case "delete"  => Some(Delete)
+      case _         => None
+    }
 
     case object Release extends SessionBehavior("release")
 

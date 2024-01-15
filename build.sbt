@@ -11,8 +11,11 @@ lazy val logbackVersion = "1.4.14"
 
 val scala2_12 = "2.12.14"
 val scala2_13 = "2.13.12"
+val scala3 = "3.3.1"
 
 val compileAndTest = "compile->compile;test->test"
+val crossScala2Versions = Seq(scala2_12, scala2_13)
+val crossScalaAllVersions = Seq(scala2_12, scala2_13, scala3)
 
 lazy val buildSettings = Seq(
   sonatypeProfileName := "com.nryanov",
@@ -28,7 +31,7 @@ lazy val buildSettings = Seq(
     )
   ),
   scalaVersion := scala2_13,
-  crossScalaVersions := Seq(scala2_12, scala2_13)
+  crossScalaVersions := crossScalaAllVersions
 )
 
 lazy val noPublish = Seq(
@@ -54,6 +57,7 @@ def compilerOptions(scalaVersion: String) = Seq(
 ) ++ (CrossVersion.partialVersion(scalaVersion) match {
   case Some((2, scalaMajor)) if scalaMajor == 12 => scala212CompilerOptions
   case Some((2, scalaMajor)) if scalaMajor == 13 => scala213CompilerOptions
+  case Some((3, _))                              => scala3CompilerOptions
 })
 
 lazy val scala212CompilerOptions = Seq(
@@ -66,12 +70,14 @@ lazy val scala213CompilerOptions = Seq(
   "-Wunused:imports"
 )
 
+lazy val scala3CompilerOptions = Seq(
+)
+
 lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "org.scalatest" %% "scalatest" % scalaTestVersion % Test
   ),
   scalacOptions ++= compilerOptions(scalaVersion.value),
-  addCompilerPlugin(("org.typelevel" %% "kind-projector" % kindProjectorVersion).cross(CrossVersion.full)),
   Test / parallelExecution := false
 )
 
@@ -84,6 +90,7 @@ lazy val consul4s = project
   .settings(noPublish)
   .aggregate(
     core,
+    examples,
     circe,
     json4s,
     sprayJson
@@ -95,9 +102,7 @@ lazy val core = project
   .settings(moduleName := "consul4s-core")
   .settings(
     libraryDependencies ++= Seq(
-      "eu.timepit" %% "refined" % refinedVersion,
       "com.softwaremill.sttp.client3" %% "core" % sttpClientVersion,
-      "com.beachape" %% "enumeratum" % enumeratumVersion,
       "com.softwaremill.sttp.client3" %% "slf4j-backend" % sttpClientVersion % Test,
       "com.dimafeng" %% "testcontainers-scala" % testContainersVersion % Test,
       "ch.qos.logback" % "logback-classic" % logbackVersion % Test
@@ -123,7 +128,8 @@ lazy val json4s = project
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client3" %% "json4s" % sttpClientVersion,
       "org.json4s" %% "json4s-jackson" % json4sVersion
-    )
+    ),
+    crossScalaVersions := crossScala2Versions
   )
   .dependsOn(core % compileAndTest)
 
@@ -134,7 +140,8 @@ lazy val sprayJson = project
   .settings(
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client3" %% "spray-json" % sttpClientVersion
-    )
+    ),
+    crossScalaVersions := crossScala2Versions
   )
   .dependsOn(core % compileAndTest)
 
@@ -145,7 +152,9 @@ lazy val examples = project
   .settings(noPublish)
   .settings(
     libraryDependencies ++= Seq(
-      "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpClientVersion
+      "org.typelevel" %% "cats-effect" % "3.2.5",
+      "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpClientVersion,
+      "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % sttpClientVersion
     )
   )
   .dependsOn(core, circe)

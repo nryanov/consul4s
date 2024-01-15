@@ -3,8 +3,6 @@ package consul4s.v1.api
 import consul4s.ConsulResponseError
 import consul4s.ConsistencyMode
 import consul4s.model.kv.KVPair
-import eu.timepit.refined.api.Refined
-import eu.timepit.refined.numeric._
 import sttp.client3._
 
 trait KVStore[F[_]] { this: ConsulApi[F] =>
@@ -161,8 +159,8 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
     key: String,
     value: String,
     dc: Option[String] = None,
-    flags: Option[Refined[Int, NonNegative]] = None,
-    cas: Option[Refined[Int, NonNegative]] = None,
+    flags: Option[Int] = None,
+    cas: Option[Int] = None,
     acquire: Option[String] = None,
     release: Option[String] = None,
     token: Option[String] = None
@@ -190,7 +188,7 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
    * @return
    *   - true if key was deleted
    */
-  def deleteByKey(key: String, cas: Option[Refined[Int, NonNegative]] = None, token: Option[String] = None): F[Result[Boolean]] = {
+  def deleteByKey(key: String, cas: Option[Int] = None, token: Option[String] = None): F[Result[Boolean]] = {
     val requestTemplate = basicRequest.delete(uri"$url/kv/$key?cas=${cas.map(_.toString())}")
     val request = requestTemplate.copy(response = jsonDecoder.asBoolean)
 
@@ -210,7 +208,7 @@ trait KVStore[F[_]] { this: ConsulApi[F] =>
    * @return
    *   - true if key was deleted
    */
-  def deleteByKeyPath(path: String, cas: Option[Refined[Int, NonNegative]] = None, token: Option[String] = None): F[Result[Boolean]] = {
+  def deleteByKeyPath(path: String, cas: Option[Int] = None, token: Option[String] = None): F[Result[Boolean]] = {
     val requestTemplate = basicRequest.delete(uri"$url/kv/$path?recurse&cas=${cas.map(_.toString())}")
     val request = requestTemplate.copy(response = jsonDecoder.asBoolean)
 

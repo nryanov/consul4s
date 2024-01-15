@@ -15,6 +15,6 @@ object CatsBackendExample extends IOApp {
     } yield ExitCode.Success
   }
 
-  def createClient[F[_]: Concurrent: ContextShift](): Resource[F, ConsulClient[F]] =
+  def createClient[F[_]: Concurrent: Async](): Resource[F, ConsulClient[F]] =
     AsyncHttpClientCatsBackend.resource().map(client => ConsulClient(client))
 }

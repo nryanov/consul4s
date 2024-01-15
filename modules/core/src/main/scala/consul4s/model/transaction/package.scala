@@ -1,12 +1,17 @@
 package consul4s.model
 
-import enumeratum.values.{StringEnum, StringEnumEntry}
-
 package object transaction {
-  sealed abstract class CheckOp(val value: String) extends StringEnumEntry
+  sealed abstract class CheckOp(val value: String)
 
-  object CheckOp extends StringEnum[CheckOp] {
-    val values = findValues
+  object CheckOp {
+    def unapply(v: String): Option[CheckOp] = v match {
+      case "get"        => Some(Get)
+      case "set"        => Some(Set)
+      case "cas"        => Some(Cas)
+      case "delete"     => Some(Delete)
+      case "delete-cas" => Some(DeleteCas)
+      case _            => None
+    }
 
     case object Get extends CheckOp("get")
 
@@ -19,10 +24,24 @@ package object transaction {
     case object DeleteCas extends CheckOp("delete-cas")
   }
 
-  sealed abstract class KVOp(val value: String) extends StringEnumEntry
+  sealed abstract class KVOp(val value: String)
 
-  object KVOp extends StringEnum[KVOp] {
-    val values = findValues
+  object KVOp {
+    def unapply(v: String): Option[KVOp] = v match {
+      case "set"              => Some(Set)
+      case "delete"           => Some(Delete)
+      case "delete-cas"       => Some(DeleteCAS)
+      case "delete-tree"      => Some(DeleteTree)
+      case "cas"              => Some(CAS)
+      case "lock"             => Some(Lock)
+      case "unlock"           => Some(Unlock)
+      case "get"              => Some(Get)
+      case "get-tree"         => Some(GetTree)
+      case "check-session"    => Some(CheckSession)
+      case "check-index"      => Some(CheckIndex)
+      case "check-not-exists" => Some(CheckNotExists)
+      case _                  => None
+    }
 
     case object Set extends KVOp("set")
 
@@ -49,10 +68,17 @@ package object transaction {
     case object CheckNotExists extends KVOp("check-not-exists")
   }
 
-  sealed abstract class NodeOp(val value: String) extends StringEnumEntry
+  sealed abstract class NodeOp(val value: String)
 
-  object NodeOp extends StringEnum[NodeOp] {
-    val values = findValues
+  object NodeOp {
+    def unapply(v: String): Option[NodeOp] = v match {
+      case "get"        => Some(Get)
+      case "set"        => Some(Set)
+      case "cas"        => Some(Cas)
+      case "delete"     => Some(Delete)
+      case "delete-cas" => Some(DeleteCas)
+      case _            => None
+    }
 
     case object Get extends NodeOp("get")
 
@@ -65,10 +91,17 @@ package object transaction {
     case object DeleteCas extends NodeOp("delete-cas")
   }
 
-  sealed abstract class ServiceOp(val value: String) extends StringEnumEntry
+  sealed abstract class ServiceOp(val value: String)
 
-  object ServiceOp extends StringEnum[ServiceOp] {
-    val values = findValues
+  object ServiceOp {
+    def unapply(v: String): Option[ServiceOp] = v match {
+      case "get"        => Some(Get)
+      case "set"        => Some(Set)
+      case "cas"        => Some(Cas)
+      case "delete"     => Some(Delete)
+      case "delete-cas" => Some(DeleteCas)
+      case _            => None
+    }
 
     case object Get extends ServiceOp("get")
 

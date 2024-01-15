@@ -10,8 +10,12 @@ trait Transaction extends DefaultJsonProtocol { this: Health with KV with Catalo
     override def write(obj: KVOp): JsValue = JsString(obj.value)
 
     override def read(json: JsValue): KVOp = json match {
-      case JsString(value) => KVOp.withValue(value)
-      case _               => deserializationError("KVOp expected")
+      case JsString(value) =>
+        value match {
+          case KVOp(r) => r
+          case _       => deserializationError(s"Can't convert $value to KVOp")
+        }
+      case _ => deserializationError("KVOp expected")
     }
   }
 
@@ -19,8 +23,12 @@ trait Transaction extends DefaultJsonProtocol { this: Health with KV with Catalo
     override def write(obj: CheckOp): JsValue = JsString(obj.value)
 
     override def read(json: JsValue): CheckOp = json match {
-      case JsString(value) => CheckOp.withValue(value)
-      case _               => deserializationError("CheckOp expected")
+      case JsString(value) =>
+        value match {
+          case CheckOp(r) => r
+          case _          => deserializationError(s"Can't convert $value to CheckOp")
+        }
+      case _ => deserializationError("CheckOp expected")
     }
   }
 
@@ -28,8 +36,12 @@ trait Transaction extends DefaultJsonProtocol { this: Health with KV with Catalo
     override def write(obj: NodeOp): JsValue = JsString(obj.value)
 
     override def read(json: JsValue): NodeOp = json match {
-      case JsString(value) => NodeOp.withValue(value)
-      case _               => deserializationError("NodeOp expected")
+      case JsString(value) =>
+        value match {
+          case NodeOp(r) => r
+          case _         => deserializationError(s"Can't convert $value to NodeOp")
+        }
+      case _ => deserializationError("NodeOp expected")
     }
   }
 
@@ -37,8 +49,12 @@ trait Transaction extends DefaultJsonProtocol { this: Health with KV with Catalo
     override def write(obj: ServiceOp): JsValue = JsString(obj.value)
 
     override def read(json: JsValue): ServiceOp = json match {
-      case JsString(value) => ServiceOp.withValue(value)
-      case _               => deserializationError("ServiceOp expected")
+      case JsString(value) =>
+        value match {
+          case ServiceOp(r) => r
+          case _            => deserializationError(s"Can't convert $value to ServiceOp")
+        }
+      case _ => deserializationError("ServiceOp expected")
     }
   }
 

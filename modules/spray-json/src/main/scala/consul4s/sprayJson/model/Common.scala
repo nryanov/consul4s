@@ -8,8 +8,12 @@ trait Common extends DefaultJsonProtocol {
     override def write(obj: CheckStatus): JsValue = JsString(obj.value)
 
     override def read(json: JsValue): CheckStatus = json match {
-      case JsString(value) => CheckStatus.withValue(value)
-      case _               => deserializationError("CheckStatus expected")
+      case JsString(value) =>
+        value match {
+          case CheckStatus(r) => r
+          case _              => deserializationError(s"Can't convert $value to CheckStatus")
+        }
+      case _ => deserializationError("CheckStatus expected")
     }
   }
 
@@ -17,8 +21,12 @@ trait Common extends DefaultJsonProtocol {
     override def write(obj: ServiceKind): JsValue = JsString(obj.value)
 
     override def read(json: JsValue): ServiceKind = json match {
-      case JsString(value) => ServiceKind.withValue(value)
-      case _               => deserializationError("ServiceKind expected")
+      case JsString(value) =>
+        value match {
+          case ServiceKind(r) => r
+          case _              => deserializationError(s"Can't convert $value to ServiceKind")
+        }
+      case _ => deserializationError("ServiceKind expected")
     }
   }
 
@@ -26,8 +34,12 @@ trait Common extends DefaultJsonProtocol {
     override def write(obj: SessionBehavior): JsValue = JsString(obj.value)
 
     override def read(json: JsValue): SessionBehavior = json match {
-      case JsString(value) => SessionBehavior.withValue(value)
-      case _               => deserializationError("SessionBehavior expected")
+      case JsString(value) =>
+        value match {
+          case SessionBehavior(r) => r
+          case _                  => deserializationError(s"Can't convert $value to SessionBehavior")
+        }
+      case _ => deserializationError("SessionBehavior expected")
     }
   }
 

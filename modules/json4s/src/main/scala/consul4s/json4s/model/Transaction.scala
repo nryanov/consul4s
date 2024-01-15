@@ -4,14 +4,17 @@ import consul4s.model.transaction.TxResults.{TxError, TxResult}
 import consul4s.model.transaction.TxTask._
 import consul4s.model.transaction._
 import org.json4s.JsonAST._
-import org.json4s.{CustomSerializer, FieldSerializer}
+import org.json4s.{CustomSerializer, FieldSerializer, MappingException}
 
 trait Transaction {
   class KVOpSerializer
       extends CustomSerializer[KVOp](implicit format =>
         (
           { case JString(value) =>
-            KVOp.withValue(value)
+            value match {
+              case KVOp(result) => result
+              case _            => throw new MappingException(s"Can't convert $value to KVOp")
+            }
           },
           { case op: KVOp =>
             JString(op.value)
@@ -23,7 +26,10 @@ trait Transaction {
       extends CustomSerializer[CheckOp](implicit format =>
         (
           { case JString(value) =>
-            CheckOp.withValue(value)
+            value match {
+              case CheckOp(result) => result
+              case _               => throw new MappingException(s"Can't convert $value to CheckOp")
+            }
           },
           { case op: CheckOp =>
             JString(op.value)
@@ -35,7 +41,10 @@ trait Transaction {
       extends CustomSerializer[NodeOp](implicit format =>
         (
           { case JString(value) =>
-            NodeOp.withValue(value)
+            value match {
+              case NodeOp(result) => result
+              case _              => throw new MappingException(s"Can't convert $value to NodeOp")
+            }
           },
           { case op: NodeOp =>
             JString(op.value)
@@ -47,7 +56,10 @@ trait Transaction {
       extends CustomSerializer[ServiceOp](implicit format =>
         (
           { case JString(value) =>
-            ServiceOp.withValue(value)
+            value match {
+              case ServiceOp(result) => result
+              case _                 => throw new MappingException(s"Can't convert $value to ServiceOp")
+            }
           },
           { case op: ServiceOp =>
             JString(op.value)

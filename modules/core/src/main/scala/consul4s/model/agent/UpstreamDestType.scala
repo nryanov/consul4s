@@ -1,11 +1,13 @@
 package consul4s.model.agent
 
-import enumeratum.values.{StringEnum, StringEnumEntry}
+sealed abstract class UpstreamDestType(val value: String)
 
-sealed abstract class UpstreamDestType(val value: String) extends StringEnumEntry
-
-object UpstreamDestType extends StringEnum[UpstreamDestType] {
-  val values = findValues
+object UpstreamDestType {
+  def unapply(v: String): Option[UpstreamDestType] = v match {
+    case "service"        => Some(Service)
+    case "prepared_query" => Some(PreparedQuery)
+    case _                => None
+  }
 
   case object Service extends UpstreamDestType("service")
 

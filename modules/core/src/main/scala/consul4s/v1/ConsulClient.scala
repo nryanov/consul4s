@@ -2,7 +2,7 @@ package consul4s.v1
 
 import consul4s.v1.api.ConsulApi
 import consul4s.{JsonDecoder, JsonEncoder}
-import sttp.client3.{SttpBackend, _}
+import sttp.client3.SttpBackend
 
 final class ConsulClient[F[_]](url: String, sttpBackend: SttpBackend[F, Any])(implicit
   jsonDecoder: JsonDecoder,

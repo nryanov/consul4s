@@ -9,7 +9,10 @@ trait Common {
       extends CustomSerializer[CheckStatus](implicit format =>
         (
           { case JString(value) =>
-            CheckStatus.withValue(value)
+            value match {
+              case CheckStatus(result) => result
+              case _                   => throw new MappingException(s"Can't convert $value to CheckStatus")
+            }
           },
           { case op: CheckStatus =>
             JString(op.value)
@@ -21,7 +24,10 @@ trait Common {
       extends CustomSerializer[ServiceKind](implicit format =>
         (
           { case JString(value) =>
-            ServiceKind.withValue(value)
+            value match {
+              case ServiceKind(result) => result
+              case _                   => throw new MappingException(s"Can't convert $value to ServiceKind")
+            }
           },
           { case op: ServiceKind =>
             JString(op.value)
@@ -33,7 +39,10 @@ trait Common {
       extends CustomSerializer[SessionBehavior](implicit format =>
         (
           { case JString(value) =>
-            SessionBehavior.withValue(value)
+            value match {
+              case SessionBehavior(result) => result
+              case _                       => throw new MappingException(s"Can't convert $value to SessionBehavior")
+            }
           },
           { case op: SessionBehavior =>
             JString(op.value)
@@ -45,7 +54,10 @@ trait Common {
       extends CustomKeySerializer[CheckStatus](implicit format =>
         (
           { case value: String =>
-            CheckStatus.withValue(value)
+            value match {
+              case CheckStatus(result) => result
+              case _                   => throw new MappingException(s"Can't convert $value to CheckStatus")
+            }
           },
           { case op: CheckStatus =>
             op.value
