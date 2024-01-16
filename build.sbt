@@ -14,6 +14,7 @@ val scala2_13 = "2.13.12"
 val scala3 = "3.3.1"
 
 val compileAndTest = "compile->compile;test->test"
+val crossScala2Versions = Seq(scala2_12, scala2_13)
 val crossScalaAllVersions = Seq(scala2_12, scala2_13, scala3)
 
 lazy val buildSettings = Seq(
@@ -126,8 +127,9 @@ lazy val json4s = project
   .settings(
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client3" %% "json4s" % sttpClientVersion,
-      ("org.json4s" %% "json4s-jackson" % json4sVersion).cross(CrossVersion.for3Use2_13)
-    )
+      "org.json4s" %% "json4s-jackson" % json4sVersion
+    ),
+    crossScalaVersions := crossScala2Versions
   )
   .dependsOn(core % compileAndTest)
 
@@ -138,7 +140,8 @@ lazy val sprayJson = project
   .settings(
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client3" %% "spray-json" % sttpClientVersion
-    )
+    ),
+    crossScalaVersions := crossScala2Versions
   )
   .dependsOn(core % compileAndTest)
 
