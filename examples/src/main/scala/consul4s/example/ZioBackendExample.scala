@@ -1,20 +1,18 @@
 package consul4s.example
 
+import zio._
+import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
 import consul4s.circe._
 import consul4s.v1.ConsulClient
-import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
-import zio._
-import zio.console._
 
-object ZioBackendExample extends zio.App {
-  override def run(args: List[String]): URIO[zio.ZEnv, ExitCode] = createClient().use { client =>
-    for {
-      result <- client.getDatacenters()
-      body <- ZIO.fromEither(result.body)
-      _ <- putStrLn(s"Datacenters: ${body.mkString("[", ", ", "]")}")
-    } yield ()
-  }.exitCode
+object ZioBackendExample extends ZIOAppDefault {
+  override def run = for {
+    client <- createClient()
+    result <- client.getDatacenters()
+    body <- ZIO.fromEither(result.body)
+    _ <- Console.printLine(s"Datacenters: ${body.mkString("[", ", ", "]")}")
+  } yield ()
 
-  def createClient(): ZManaged[Any, Throwable, ConsulClient[Task]] =
-    AsyncHttpClientZioBackend.managed().map(ConsulClient[Task])
+  def createClient() =
+    AsyncHttpClientZioBackend().map(ConsulClient[Task])
 }

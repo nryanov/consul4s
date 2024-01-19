@@ -1,7 +1,7 @@
 lazy val refinedVersion = "0.11.0"
 lazy val sttpClientVersion = "3.9.2"
 lazy val kindProjectorVersion = "0.13.2"
-lazy val circeVersion = "0.13.0"
+lazy val circeVersion = "0.14.6"
 lazy val json4sVersion = "4.0.6"
 lazy val enumeratumVersion = "1.7.3"
 
@@ -30,8 +30,7 @@ lazy val buildSettings = Seq(
       url("https://nryanov.com")
     )
   ),
-  scalaVersion := scala2_13,
-  crossScalaVersions := crossScalaAllVersions
+  scalaVersion := scala2_13
 )
 
 lazy val noPublish = Seq(
@@ -99,8 +98,9 @@ lazy val consul4s = project
 lazy val core = project
   .in(file("modules/core"))
   .settings(allSettings)
-  .settings(moduleName := "consul4s-core")
   .settings(
+    moduleName := "consul4s-core",
+    crossScalaVersions := crossScalaAllVersions,
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client3" %% "core" % sttpClientVersion,
       "com.softwaremill.sttp.client3" %% "slf4j-backend" % sttpClientVersion % Test,
@@ -111,9 +111,10 @@ lazy val core = project
 
 lazy val circe = project
   .in(file("modules/circe"))
-  .settings(moduleName := "consul4s-circe")
   .settings(allSettings)
   .settings(
+    moduleName := "consul4s-circe",
+    crossScalaVersions := crossScalaAllVersions,
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client3" %% "circe" % sttpClientVersion
     )
@@ -122,35 +123,36 @@ lazy val circe = project
 
 lazy val json4s = project
   .in(file("modules/json4s"))
-  .settings(moduleName := "consul4s-json4s")
   .settings(allSettings)
   .settings(
+    moduleName := "consul4s-json4s",
+    crossScalaVersions := crossScala2Versions,
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client3" %% "json4s" % sttpClientVersion,
       "org.json4s" %% "json4s-jackson" % json4sVersion
-    ),
-    crossScalaVersions := crossScala2Versions
+    )
   )
   .dependsOn(core % compileAndTest)
 
 lazy val sprayJson = project
   .in(file("modules/spray-json"))
-  .settings(moduleName := "consul4s-spray-json")
   .settings(allSettings)
   .settings(
+    moduleName := "consul4s-spray-json",
+    crossScalaVersions := crossScala2Versions,
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client3" %% "spray-json" % sttpClientVersion
-    ),
-    crossScalaVersions := crossScala2Versions
+    )
   )
   .dependsOn(core % compileAndTest)
 
 lazy val examples = project
   .in(file("examples"))
-  .settings(moduleName := "examples")
-  .settings(allSettings)
   .settings(noPublish)
+  .settings(commonSettings)
   .settings(
+    moduleName := "examples",
+    scalaVersion := scala2_13,
     libraryDependencies ++= Seq(
       "org.typelevel" %% "cats-effect" % "3.2.9",
       "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpClientVersion,
