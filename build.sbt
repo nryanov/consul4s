@@ -6,7 +6,7 @@ lazy val json4sVersion = "4.0.7"
 lazy val enumeratumVersion = "1.7.3"
 
 lazy val scalaTestVersion = "3.2.17"
-lazy val testContainersVersion = "0.41.2"
+lazy val testContainersVersion = "0.41.3"
 lazy val logbackVersion = "1.5.0"
 
 val scala2_12 = "2.12.14"
