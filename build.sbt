@@ -9,7 +9,7 @@ lazy val scalaTestVersion = "3.2.17"
 lazy val testContainersVersion = "0.41.3"
 lazy val logbackVersion = "1.5.1"
 
-val scala2_12 = "2.12.14"
+val scala2_12 = "2.12.19"
 val scala2_13 = "2.13.12"
 val scala3 = "3.3.1"
 
