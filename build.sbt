@@ -11,7 +11,7 @@ lazy val logbackVersion = "1.5.8"
 
 val scala2_12 = "2.12.20"
 val scala2_13 = "2.13.15"
-val scala3 = "3.4.2"
+val scala3 = "3.4.3"
 
 val compileAndTest = "compile->compile;test->test"
 val crossScala2Versions = Seq(scala2_12, scala2_13)
