@@ -60,7 +60,7 @@ package object api {
       request: RequestT[Identity, Either[ConsulResponseError, A], Any],
       cacheMode: CacheMode
     ): RequestT[Identity, Either[ConsulResponseError, A], Any] = cacheMode match {
-      case NoCache => request
+      case NoCache                         => request
       case SimpleCache(cacheControlHeader) =>
         cacheControlHeader match {
           case Some(value) =>
