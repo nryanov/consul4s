@@ -2,7 +2,7 @@ lazy val refinedVersion = "0.11.0"
 lazy val sttpClientVersion = "3.9.7"
 lazy val kindProjectorVersion = "0.13.2"
 lazy val circeVersion = "0.14.6"
-lazy val json4sVersion = "4.0.7"
+lazy val json4sVersion = "4.1.0"
 lazy val enumeratumVersion = "1.7.3"
 
 lazy val scalaTestVersion = "3.2.19"
@@ -129,7 +129,7 @@ lazy val json4s = project
     crossScalaVersions := crossScala2Versions,
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.client3" %% "json4s" % sttpClientVersion,
-      "org.json4s" %% "json4s-jackson" % json4sVersion
+      "io.github.json4s" %% "json4s-jackson" % json4sVersion
     )
   )
   .dependsOn(core % compileAndTest)
