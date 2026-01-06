@@ -18,7 +18,6 @@ val crossScala2Versions = Seq(scala2_12, scala2_13)
 val crossScalaAllVersions = Seq(scala2_12, scala2_13, scala3)
 
 lazy val buildSettings = Seq(
-  sonatypeProfileName := "com.nryanov",
   organization := "com.nryanov.consul4s",
   homepage := Some(url("https://github.com/nryanov/consul4s")),
   licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
