@@ -13,37 +13,37 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [adopt@1.11]
+        java: ['17']
         scala: [2.13.8]
     steps:
-      - name: Checkout current branch
-        uses: actions/checkout@v2
-
-      - name: Set up Java and Scala
-        uses: olafurpg/setup-scala@v10
+      - uses: sbt/setup-sbt@v1
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
+          distribution: 'temurin'
           java-version: ${{ matrix.java }}
+          cache: 'sbt'
 
       - name: scalafmt
         run: sbt ++${{ matrix.scala }} scalafmtCheckAll
 
   test-scala2:
+    runs-on: ubuntu-latest
     name: Scala ${{ matrix.scala }}, Java ${{ matrix.java }}
     strategy:
       fail-fast: false
       matrix:
-        java: [adopt@1.11]
-        scala: [2.12.15, 2.13.8]
-    runs-on: ubuntu-latest
+        java: ['17']
+        scala: [2.12.20, 2.13.17]
     continue-on-error: true
     steps:
-      - name: Checkout current branch
-        uses: actions/checkout@v2
-
-      - name: Set up Java and Scala
-        uses: olafurpg/setup-scala@v10
+      - uses: sbt/setup-sbt@v1
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
+          distribution: 'temurin'
           java-version: ${{ matrix.java }}
+          cache: 'sbt'
 
       - name: Run circe-tests
         run: sbt ++${{ matrix.scala }} circe/test
@@ -55,22 +55,22 @@ jobs:
         run: sbt ++${{ matrix.scala }} sprayJson/test
 
   test-scala3:
+    runs-on: ubuntu-latest
     name: Scala ${{ matrix.scala }}, Java ${{ matrix.java }}
     strategy:
       fail-fast: false
       matrix:
-        java: [adopt@1.11]
-        scala: [3.3.1]
-    runs-on: ubuntu-latest
+        java: ['17']
+        scala: [3.7.3]
     continue-on-error: true
     steps:
-      - name: Checkout current branch
-        uses: actions/checkout@v2
-
-      - name: Set up Java and Scala
-        uses: olafurpg/setup-scala@v10
+      - uses: sbt/setup-sbt@v1
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
         with:
+          distribution: 'temurin'
           java-version: ${{ matrix.java }}
+          cache: 'sbt'
 
       - name: Run circe-tests
         run: sbt ++${{ matrix.scala }} circe/test
