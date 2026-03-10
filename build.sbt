@@ -153,7 +153,7 @@ lazy val examples = project
     moduleName := "examples",
     scalaVersion := scala2_13,
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "cats-effect" % "3.6.3",
+      "org.typelevel" %% "cats-effect" % "3.7.0",
       "com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % sttpClientVersion,
       "com.softwaremill.sttp.client3" %% "async-http-client-backend-zio" % sttpClientVersion
     )
